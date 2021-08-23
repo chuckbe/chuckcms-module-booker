@@ -1,0 +1,33 @@
+{
+    "name": "chuckbe/chuckcms-module-booker",
+    "description": "",
+    "keywords": [],
+    "homepage": "https://github.com/chuckbe/chuckcms-module-booker",
+    "require": {
+        "php": ">=7.0.0",
+        "laravel/framework": "~5.5||~5.6||~5.7||~5.8||^6.0",
+        "chuckbe/chuckcms": "*"
+    },
+    "authors": [
+        {
+            "name": "Karel Brijs",
+            "email": "karel@chuck.be"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Chuckbe\\ChuckcmsModuleBooker\\": "src"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Chuckbe\\ChuckcmsModuleBooker\\ChuckcmsModuleBookerServiceProvider"
+            ],
+            "aliases": {
+                
+            }
+        }
+    },
+    "minimum-stability": "dev"
+}
