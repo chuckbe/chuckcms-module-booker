@@ -13,7 +13,7 @@ class CreatePaymentsTable extends Migration
      */
     public function up()
     {
-        Schema::create('payments', function (Blueprint $table) {
+        Schema::create(config('chuckcms-module-booker.payments.table'), function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('external_id');
             $table->string('type');
@@ -30,6 +30,6 @@ class CreatePaymentsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('payments');
+        Schema::dropIfExists(config('chuckcms-module-booker.payments.table'));
     }
 }
