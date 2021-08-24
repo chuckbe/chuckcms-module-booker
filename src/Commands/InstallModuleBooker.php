@@ -57,6 +57,13 @@ class InstallModuleBooker extends Command
         $json = [];
         $json['admin']['show_in_menu'] = true;
 
+        $json['admin']['menu'] = array(
+            'name' => 'Booker',
+            'icon' => "calender",
+            'route' => 'dashboard.module.booker.index',
+            'has_submenu' => false
+        );
+
         // create the module
         $module = $this->moduleRepository->createFromArray([
             'name' => $name,
@@ -68,13 +75,6 @@ class InstallModuleBooker extends Command
             'author' => $author,
             'json' => $json
         ]);
-
-        $json['admin']['menu'] = array(
-            'name' => 'Booker',
-            'icon' => "calender",
-            'route' => 'dashboard.module.booker.index',
-            'has_submenu' => false
-        );
 
 
         $this->info('.         .');
