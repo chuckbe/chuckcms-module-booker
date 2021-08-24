@@ -2,17 +2,18 @@
 
 namespace Chuckbe\ChuckcmsModuleBooker\Chuck;
 
+use Chuckbe\ChuckcmsModuleBooker\Models\Service;
 use Chuckbe\ChuckcmsModuleBooker\Models\Location;
 use Illuminate\Http\Request;
 use Auth;
 
-class LocationRepository
+class ServiceRepository
 {
-    private $location;
+    private $appointment;
 
-    public function __construct(Location $location)
+    public function __construct(Service $service)
     {
-        $this->location = $location;
+        $this->service = $service;
     }
 
     /**
@@ -22,11 +23,11 @@ class LocationRepository
      **/
     public function get()
     {
-        return $this->location->get();
+        return $this->service->get();
     }
-
     public function find($id)
     {
-        return $this->location->where('id', $id)->first();
+        return $this->service->where('id', $id)->first();
     }
+ 
 }
