@@ -57,6 +57,7 @@ class InstallModuleBooker extends Command
         $json = [];
         $json['admin']['show_in_menu'] = true;
 
+
         $json['admin']['menu'] = array(
             'name' => 'Booker',
             'icon' => "calender",

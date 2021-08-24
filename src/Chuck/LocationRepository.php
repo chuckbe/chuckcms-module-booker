@@ -2,16 +2,17 @@
 
 namespace Chuckbe\ChuckcmsModuleBooker\Chuck;
 
-use Chuckbe\Chuckcms\Models\Repeater;
+use Chuckbe\ChuckcmsModuleBooker\Models\Location;
 use Illuminate\Http\Request;
+use Auth;
 
 class LocationRepository
 {
-    private $repeater;
+    private $location;
 
-    public function __construct(Repeater $repeater)
+    public function __construct(Location $location)
     {
-        $this->repeater = $repeater;
+        $this->location = $location;
     }
 
     /**
@@ -21,6 +22,6 @@ class LocationRepository
      **/
     public function get()
     {
-        return $this->repeater->where('slug', config('chuckcms-module-booker.locations.slug'))->get()->sortBy('json.order');
+        return $this->location->get();
     }
 }

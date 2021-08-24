@@ -12,6 +12,7 @@
 
 @section('content')
 <div class="container">
+{{dd($locations)}}
 </div>
 @endsection
 
