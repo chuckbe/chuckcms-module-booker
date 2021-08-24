@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateLocationsTable extends Migration
+class CreatePaymentsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,12 @@ class CreateLocationsTable extends Migration
      */
     public function up()
     {
-        Schema::create(config('chuckcms-module-booker.locations.table'), function (Blueprint $table) {
+        Schema::create('payments', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('name');
-            $table->decimal('lat', 8,6);
-            $table->decimal('long', 9,6);
-            $table->string('google_calendar_id')->nullable()->default(null);
+            $table->string('external_id');
+            $table->string('type');
+            $table->bigInteger('amount');
+            $table->longtext('log');
             $table->timestamps();
         });
     }
@@ -30,6 +30,6 @@ class CreateLocationsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists(config('chuckcms-module-booker.locations.table'));
+        Schema::dropIfExists('payments');
     }
 }
