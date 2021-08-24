@@ -17,6 +17,7 @@ class CreatePaymentsTable extends Migration
             $table->bigIncrements('id');
             $table->string('external_id');
             $table->string('type');
+            $table->string('status');
             $table->bigInteger('amount');
             $table->longtext('log');
             $table->timestamps();
