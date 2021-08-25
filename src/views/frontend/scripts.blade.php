@@ -5,9 +5,12 @@
         format: 'dd/mm/yyyy'
     });
     $('#datepicker').on('changeDate', function() {
-        $('#my_hidden_input').val(
+        $('#datepicker_hidden').val(
             $('#datepicker').datepicker('getFormattedDate')
         );
+        let date = $('#datepicker').datepicker('getFormattedDate');
+        $('.date-data #day').html(moment(date, "DD-MM-YYYY").format('dddd'));
+        $('.date-data #date').html(moment(date, "DD-MM-YYYY").format('DD MMMM yyyy'));
     });
     $('.date-data #day').html(moment($('#datepicker').data('date'), "DD-MM-YYYY").format('dddd'));
     $('.date-data #date').html(moment($('#datepicker').data('date'), "DD-MM-YYYY").format('DD MMMM yyyy'));
@@ -39,4 +42,5 @@
         placeholder: 'Select an option',
         allowClear: true
     })
+
 </script>
