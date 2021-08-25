@@ -1,7 +1,7 @@
 @extends('chuckcms::backend.layouts.base')
 
 @section('title')
-	Order Form
+	Booking Module
 @endsection
 
 @section('breadcrumbs')
@@ -34,9 +34,9 @@
                                 <td>{{$appointment->id}}</td>
                                 <td>{{$locations->find($appointment->location_id)->name}}</td>
                                 <td>{{$services->find($appointment)->name}}</td>
-                                <td>{{$appointment->price}}</td>
-                                <td>{{$appointment->date}}</td>
-                                <td>{{$appointment->time}}</td>
+                                <td>€ {{number_format($appointment->price, 2, ',', '.')}}</td>
+                                <td>{{date( "d M,y", strtotime($appointment->date))}}</td>
+                                <td>{{date("h:i a", strtotime($appointment->time))}}</td>
                                 <td>{{$appointment->status}}</td>
                                 <td>{{$appointment->is_cancelled}}</td>
                             </tr>

@@ -35,4 +35,12 @@ class BookerController extends Controller
         $services = $this->serviceRepository->get();
         return view('chuckcms-module-booker::backend.dashboard.index', compact('appointments', 'locations', 'services'));
     }
+
+    public function getServices()
+    {
+        $services = $this->serviceRepository->get();
+        return response()->json([
+            'services' => $services
+        ]);
+    }
 }
