@@ -4,14 +4,14 @@ namespace Chuckbe\ChuckcmsModuleBooker\Models;
 
 use Eloquent;
 
-class Service extends Eloquent
+class Client extends Eloquent
 {
     /**
      * The table associated with the model.
      *
      * @var string
      */
-    protected $table = 'cmb_services';
+    protected $table = 'cmb_clients';
 
     /**
      * The attributes that are mass assignable.
@@ -19,7 +19,7 @@ class Service extends Eloquent
      * @var array
      */
     protected $fillable = [
-        'type', 'name', 'duration', 'min_duration', 'max_duration', 'price', 'excluded_days', 'excluded_dates'
+        'name', 'email', 'tel'
     ];
 
     protected $casts = [
@@ -42,9 +42,8 @@ class Service extends Eloquent
      *
      * @var array
      */
-    public function locations()
+    public function appointments()
     {
-        return $this->belongsToMany(Location::class, 'location_services', 'location_id', 'service_id');
+        return $this->hasMany(Appointment::class);
     }
-
 }

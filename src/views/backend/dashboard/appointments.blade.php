@@ -6,12 +6,12 @@
 
 @section('breadcrumbs')
 	<ol class="breadcrumb">
-		<li class="breadcrumb-item active"><a href="{{ route('dashboard.module.booker.index') }}">Overzicht</a></li>
+		<li class="breadcrumb-item active"><a href="{{ route('dashboard.module.booker.appointments') }}">Appointments</a></li>
 	</ol>
 @endsection
 
 @section('content')
-<div class="container">
+<div class="container min-height">
     <div class="row bg-light shadow-sm rounded p-3 my-5 mx-1">
         <div class="col-sm-12 my-3">
 			<div class="table-responsive">
@@ -32,11 +32,17 @@
                         @foreach($appointments as $appointment)
                             <tr>
                                 <td>{{$appointment->id}}</td>
-                                <td>{{$locations->find($appointment->location_id)->name}}</td>
-                                <td>{{$services->find($appointment)->name}}</td>
+                                <td>{{$appointment->location->name}}</td>
+                                <td>
+                                    @foreach ($appointment->services as $service)
+                                        @if($loop->last){{$service->name}}
+                                        @else{{$service->name.", "}}
+                                        @endif
+                                    @endforeach
+                                </td>
                                 <td>€ {{number_format($appointment->price, 2, ',', '.')}}</td>
-                                <td>{{date( "d M,y", strtotime($appointment->date))}}</td>
-                                <td>{{date("h:i a", strtotime($appointment->time))}}</td>
+                                <td style="min-width: 90px">{{date( "d M,y", strtotime($appointment->date))}}</td>
+                                <td style="min-width: 90px">{{date("h:i a", strtotime($appointment->time))}}</td>
                                 <td>{{$appointment->status}}</td>
                                 <td>{{$appointment->is_cancelled}}</td>
                             </tr>

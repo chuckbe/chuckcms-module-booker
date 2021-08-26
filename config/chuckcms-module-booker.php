@@ -13,4 +13,7 @@ return [
     'payments' => [
 		'table' => 'cmb_payments'
 	],
+	'clients' => [
+		'table' => 'cmb_clients'
+	],
 ];

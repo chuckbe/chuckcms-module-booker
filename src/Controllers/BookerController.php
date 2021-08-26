@@ -28,12 +28,18 @@ class BookerController extends Controller
         $this->serviceRepository = $serviceRepository;
     }
 
-    public function index()
+    public function appointments()
+    {   
+        $appointments = $this->appointmentRepository->get();
+        return view('chuckcms-module-booker::backend.dashboard.appointments', compact('appointments'));
+    }
+
+    public function locations()
     {   
         $appointments = $this->appointmentRepository->get();
         $locations = $this->locationRepository->get();
         $services = $this->serviceRepository->get();
-        return view('chuckcms-module-booker::backend.dashboard.index', compact('appointments', 'locations', 'services'));
+        return view('chuckcms-module-booker::backend.locations.index', compact('appointments', 'locations', 'services'));
     }
 
     public function getServices()

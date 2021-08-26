@@ -42,13 +42,25 @@ class Appointment extends Eloquent
      *
      * @var array
      */
+    public function location()
+    {
+        return $this->belongsTo(location::class);
+    } 
+
     public function services()
     {
-        return $this->belongsToMany(Service::class);
+        return $this->belongsToMany(Service::class, 'appointments_services', 'appointment_id', 'service_id');
     }
 
     public function payment()
     {
         return $this->belongsToMany(Payment::class);
     }
+
+    public function client()
+    {
+        return $this->belongsTo(Client::class);
+    }
+
+
 }

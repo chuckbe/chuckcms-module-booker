@@ -61,8 +61,26 @@ class InstallModuleBooker extends Command
         $json['admin']['menu'] = array(
             'name' => 'Booker',
             'icon' => "calender",
-            'route' => 'dashboard.module.booker.index',
-            'has_submenu' => false
+            'route' => '#',
+            'has_submenu' => true,
+            'submenu' => array(
+                'a' => array(
+                    'name' => 'afspraken',
+                    'icon' => true,
+                    'icon_data' => 'calendar',
+                    'route' => 'dashboard.module.booker.appointments',
+                    'has_submenu' => false,
+                    'submenu' => null
+                ),
+                'b' => array(
+                    'name' => 'locaties',
+                    'icon' => true,
+                    'icon_data' => 'map-marked-alt',
+                    'route' => 'dashboard.module.booker.locations',
+                    'has_submenu' => false,
+                    'submenu' => null
+                ),
+            )
         );
 
         // create the module
