@@ -30,7 +30,7 @@
             processResults: function (data) {
                 let arr = []
                 $.each(data.services, function( index, value ) {
-                    console.log(value);
+                    // console.log(value);
                    arr.push({
                        id : index,
                        text: value.name
@@ -63,6 +63,21 @@
         },
         placeholder: 'Select an option',
         allowClear: true
+    });
+    $('body').on('click', '.step1btn', function(e){
+        e.preventDefault();
+        if($('form.afspraakform .step1 #soortafspraak').val().length > 0 &&  $("#checkmedicalquestionnaire:checked").length !== 0  && $("#checkmedicalquestionnaire:checked").length !== 0){
+            if(!$('form.afspraakform .step1').hasClass('d-none')){
+                $('form.afspraakform .step1').addClass('d-none');
+                if($('form.afspraakform .step2').hasClass('d-none')){
+                    $('form.afspraakform .step2').removeClass('d-none');
+                }
+            }
+            
+        }
+        // console.log($("#checkmedicalquestionnaire:checked").length);
+        // console.log($("#checkterms:checked").length);
+        // $('form.afspraakform .step2').removeClass('d-none');
     })
 
 </script>
