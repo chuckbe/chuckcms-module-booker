@@ -11,9 +11,11 @@
         let date = $('#datepicker').datepicker('getFormattedDate');
         $('.date-data #day').html(moment(date, "DD-MM-YYYY").format('dddd'));
         $('.date-data #date').html(moment(date, "DD-MM-YYYY").format('DD MMMM yyyy'));
+        $('#datepicker_date_hidden').val(date);
     });
     $('.date-data #day').html(moment($('#datepicker').data('date'), "DD-MM-YYYY").format('dddd'));
     $('.date-data #date').html(moment($('#datepicker').data('date'), "DD-MM-YYYY").format('DD MMMM yyyy'));
+    $('#datepicker_date_hidden').val($('#datepicker').data('date'));
     $("#soortafspraak").select2({
         ajax: {
             url: '/dashboard/booker/getservices',

@@ -1,6 +1,7 @@
 <form class="afspraakform">
     @csrf
     <div class="step1">
+        <input type="hidden" id="datepicker_date_hidden">
         <div class="form-group">
             <label class="text-white" for="soortafspraak">Soort afspraak </label>
             <select id="soortafspraak" class="soortafspraak w-100" multiple="multiple"></select>
@@ -20,13 +21,15 @@
             </div>
         </div>
     </div>
-    <div class="step2">
+    <div class="step2 d-none">
         <div class="form-group">
             <label class="text-white" for="location">Kies Locatie</label>
             <select id="location" class="location w-100" multiple="multiple"></select>
         </div>
     </div>
     <div class="d-flex w-100">
-        <button class="btn btn-light ml-auto">Boek Afspraak</button>
+        <button class="btn btn-light ml-auto step1btn">Next</button>
+        <button class="btn btn-light ml-auto step2btn d-none">Next</button>
+        {{-- <button class="btn btn-light ml-auto">Boek Afspraak</button> --}}
     </div>
 </form>
