@@ -36,6 +36,11 @@ class Client extends Eloquent
     {
         return $this->getAttribute($key) ?? $this->getJson($key);
     }
+    
+    public function getById($id)
+    {
+        return $this->where('id', $id)->first();
+    }
 
      /**
      * The attributes that should be cast to native types.

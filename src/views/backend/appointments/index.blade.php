@@ -20,12 +20,13 @@
 						<tr>
 							<th scope="col">#</th>
 							<th scope="col">Location</th>
-                            <th scope="col">Service</th>
-                            <th scope="col">Price</th>
+                            <th scope="col">Client</th>
+                            {{-- <th scope="col">Price</th> --}}
 							<th scope="col">Date</th>
 							<th scope="col">Time</th>
 							<th scope="col">Status</th>
 							<th scope="col">is_cancelled</th>
+                            <th scope="col">Actions</th>
 						</tr>
 					</thead>
                     <tbody>
@@ -33,18 +34,26 @@
                             <tr>
                                 <td>{{$appointment->id}}</td>
                                 <td>{{$appointment->location->name}}</td>
-                                <td>
-                                    @foreach ($appointment->services as $service)
+                                <td>{{$appointment->client->name}}
+                                    {{-- @foreach ($appointment->services as $service)
                                         @if($loop->last){{$service->name}}
                                         @else{{$service->name.", "}}
                                         @endif
-                                    @endforeach
+                                    @endforeach --}}
                                 </td>
-                                <td>€ {{number_format($appointment->price, 2, ',', '.')}}</td>
+                                {{-- <td>€ {{number_format($appointment->price, 2, ',', '.')}}</td> --}}
                                 <td style="min-width: 90px">{{date( "d M,y", strtotime($appointment->date))}}</td>
                                 <td style="min-width: 90px">{{date("h:i a", strtotime($appointment->time))}}</td>
                                 <td>{{$appointment->status}}</td>
                                 <td>{{$appointment->is_cancelled}}</td>
+                                <td>
+                                    <a 
+                                    {{-- data-id = "{{$appointment->id}}" --}}
+                                        href="{{ route('dashboard.module.booker.appointment.details', ['appointment' => $appointment->id]) }}" 
+                                        class="btn btn-sm btn-outline-secondary rounded d-inline-block appointment_detail">
+                                        <i class="fa fa-info-circle"></i> Details
+                                    </a>
+                                </td>
                             </tr>
                         @endforeach
                     </tbody>
@@ -53,8 +62,16 @@
         </div>
     </div>
 </div>
+@include('chuckcms-module-booker::backend.appointments._modal')
 @endsection
 
 @section('scripts')
-
+<script>
+$(function() {
+    // $('body').on('click', '.appointment_detail', function(){
+    //     let appointment = $(this).data('id');
+    //     $('#appointmentDetailsModal').modal('show');
+    // });
+});
+</script>
 @endsection

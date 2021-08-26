@@ -16,6 +16,7 @@ class CreateAppointmentsTable extends Migration
         Schema::create(config('chuckcms-module-booker.appointments.table'), function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->integer('location_id');
+            $table->integer('client_id');
             $table->string('date');
             $table->string('time');
             $table->string('duration');

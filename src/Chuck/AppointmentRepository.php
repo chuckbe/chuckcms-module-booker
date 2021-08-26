@@ -25,6 +25,11 @@ class AppointmentRepository
     {
         return $this->appointment->get();
     }
+
+    public function getById($id)
+    {
+        return $this->appointment->where('id', $id)->first();
+    }
     /**
      * Get all the Appointments for the Location
      *
