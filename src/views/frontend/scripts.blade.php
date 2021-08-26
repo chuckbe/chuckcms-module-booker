@@ -16,7 +16,7 @@
     $('.date-data #date').html(moment($('#datepicker').data('date'), "DD-MM-YYYY").format('DD MMMM yyyy'));
     $("#soortafspraak").select2({
         ajax: {
-            url: '/dashboard/booker/services',
+            url: '/dashboard/booker/getservices',
             type: 'get',
             // headers: {
             //     'Accept': 'application/json',
@@ -29,6 +29,26 @@
                 let arr = []
                 $.each(data.services, function( index, value ) {
                     console.log(value);
+                   arr.push({
+                       id : index,
+                       text: value.name
+                   })
+                });
+                return {
+                    results: arr
+                };
+            }
+        },
+        placeholder: 'Select an option',
+        allowClear: true
+    });
+    $("#location").select2({
+        ajax: {
+            url: '/dashboard/booker/getlocations',
+            type: 'get',
+            processResults: function (data) {
+                let arr = []
+                $.each(data.locations, function( index, value ) {
                    arr.push({
                        id : index,
                        text: value.name

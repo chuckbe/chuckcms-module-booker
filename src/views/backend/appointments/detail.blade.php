@@ -34,6 +34,7 @@
                Location : {{$appointment->location->name}} <br>
                Date : {{date( "d M Y", strtotime($appointment->date))}} <br>
                Booking : {{date("h:i a", strtotime($appointment->time))}} - {{date("h:i a", strtotime("+".$appointment->duration." minutes", strtotime($appointment->time)) )}}<br>
+               Price : € {{number_format($appointment->price, 2, ',', '.')}}<br>
                Status : {{$appointment->status}}<br>
                is_cancelled : {{$appointment->is_cancelled}}
             </span>

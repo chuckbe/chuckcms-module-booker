@@ -35,11 +35,6 @@
                                 <td>{{$appointment->id}}</td>
                                 <td>{{$appointment->location->name}}</td>
                                 <td>{{$appointment->client->name}}
-                                    {{-- @foreach ($appointment->services as $service)
-                                        @if($loop->last){{$service->name}}
-                                        @else{{$service->name.", "}}
-                                        @endif
-                                    @endforeach --}}
                                 </td>
                                 {{-- <td>€ {{number_format($appointment->price, 2, ',', '.')}}</td> --}}
                                 <td style="min-width: 90px">{{date( "d M,y", strtotime($appointment->date))}}</td>

@@ -9,8 +9,8 @@ Route::group(['middleware' => ['web']], function() {
     // Route::group(['middleware' => 'auth:api'], function(){
     //     Route::get('/dashboard/booker/services', 'Chuckbe\ChuckcmsModuleBooker\Controllers\BookerController@getServices')->name('dashboard.module.booker.services');
     // }); 
-    Route::get('/dashboard/booker/services', 'Chuckbe\ChuckcmsModuleBooker\Controllers\BookerController@getServices')->name('dashboard.module.booker.services');
-
+    Route::get('/dashboard/booker/getservices', 'Chuckbe\ChuckcmsModuleBooker\Controllers\BookerController@getServices')->name('dashboard.module.booker.getservices');
+    Route::get('/dashboard/booker/getlocations', 'Chuckbe\ChuckcmsModuleBooker\Controllers\BookerController@getLocations')->name('dashboard.module.booker.getlocations');
 });
 
 

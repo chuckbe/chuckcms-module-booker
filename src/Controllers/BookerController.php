@@ -55,4 +55,12 @@ class BookerController extends Controller
             'services' => $services
         ]);
     }
+
+    public function getLocations()
+    {
+        $locations = $this->locationRepository->get();
+        return response()->json([
+            'locations' => $locations
+        ]);
+    }
 }
