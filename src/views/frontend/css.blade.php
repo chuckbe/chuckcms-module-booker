@@ -19,4 +19,11 @@
     .afspraakform [class^='select2'] {
         border-radius: 0px !important;
     }
+    .select2-container {
+        min-width: 100% !important;
+    }
+    .d-none {
+        /* display: block !important;
+        border: 1px solid red; */
+    }
 </style>

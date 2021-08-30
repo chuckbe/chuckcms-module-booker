@@ -24,7 +24,11 @@
     <div class="step2 d-none">
         <div class="form-group">
             <label class="text-white" for="location">Kies Locatie</label>
-            <select id="location" class="location w-100" multiple="multiple"></select>
+            <select id="location" class="location w-100"></select>
+        </div>
+        <div class="form-group pt-3">
+            <label class="text-white" for="location">Kies tijslot</label>
+            <select id="timeslot" class="timesmot w-100"></select>
         </div>
     </div>
     <div class="d-flex w-100">

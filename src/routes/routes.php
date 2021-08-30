@@ -11,6 +11,7 @@ Route::group(['middleware' => ['web']], function() {
     // }); 
     Route::get('/dashboard/booker/getservices', 'Chuckbe\ChuckcmsModuleBooker\Controllers\BookerController@getServices')->name('dashboard.module.booker.getservices');
     Route::get('/dashboard/booker/getlocations', 'Chuckbe\ChuckcmsModuleBooker\Controllers\BookerController@getLocations')->name('dashboard.module.booker.getlocations');
+    Route::post('/dashboard/booker/getavailabletimeslots', 'Chuckbe\ChuckcmsModuleBooker\Controllers\BookerController@getAvailableTimeslots')->name('dashboard.module.booker.gettimeslots');
 });
 
 
