@@ -1,5 +1,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
 <script>
     $('#datepicker').datepicker({
         format: 'dd/mm/yyyy'
@@ -87,71 +88,95 @@
         }
     ]
     $("#timeslot").select2({
-        // ajax: {
-        //     url: '/dashboard/booker/getavailabletimeslots',
-        //     type: 'post',
-        //     data: {
-        //         _token: $('input[name="_token"]').attr('value'),
-        //         service: $('form.afspraakform .step1 #soortafspraak').select2('data'),
-        //         location: $('form.afspraakform .step2 #location').select2('data')
-        //     },
-        //     processResults: function (data) {
-        //         // let arr = []
-        //         console.log(data);
-        //         // $.each(data.locations, function( index, value ) {
-        //         //    arr.push({
-        //         //        id : index,
-        //         //        text: value.name
-        //         //    })
-        //         // });
-        //         // return {
-        //         //     results: arr
-        //         // };
-        //     }
-        // },
         data: data,
         placeholder: 'Select an option',
         allowClear: true
     });
-    $('body').on('click', '.step1btn', function(e){
+    $('body').on('submit', '#afspraak-form', function(e){
         e.preventDefault();
-        if($('form.afspraakform .step1 #soortafspraak').val().length > 0 &&  $("#checkmedicalquestionnaire:checked").length !== 0  && $("#checkterms:checked").length !== 0){
-            if(!$('form.afspraakform .step1').hasClass('d-none')){
-                $('form.afspraakform .step1').addClass('d-none');
-                if(!$('.step1btn').hasClass('d-none')){
-                    $('.step1btn').addClass('d-none');
-                }
-                if($('form.afspraakform .step2').hasClass('d-none')){
-                    $('form.afspraakform .step2').removeClass('d-none');
-                }
-                if($('.step2btn').hasClass('d-none')){
-                    $('.step2btn').removeClass('d-none');
-                }
-            }
-        }else{
-            if($('form.afspraakform .step1 #soortafspraak').val().length == 0){
-                $(".afspraakform .step1 .form-group > .select2").css("border", "1px solid red");
-            }else{
-                if($(".afspraakform .step1 .form-group > .select2").css("border") == "1px solid rgb(255, 0, 0)"){
-                    $(".afspraakform .step1 .form-group > .select2").css("border", "none");
-                }
-            }
-            if($("#checkmedicalquestionnaire:checked").length == 0){
-                $("#checkmedicalquestionnaire").css("outline", "1px solid red");
-            }else{
-                
-                if($("#checkmedicalquestionnaire").css("outline") == "rgb(255, 0, 0) solid 1px"){
-                    $("#checkmedicalquestionnaire").css("outline", "none");
-                }
-            }
-            if($("#checkterms:checked").length == 0){
-                $("#checkterms").css("outline", "1px solid red");
-            }else{
-                if($("#checkterms").css("outline") == "rgb(255, 0, 0) solid 1px"){
-                    $("#checkterms").css("outline", "none");
-                }
-            }
-        }
+        $('#afspraak-form').validate({
+
+            focusCleanup: false,
+            errorElement: "span",
+            // submitHandler: function(form) {
+            //     $.ajax({
+            //     url: "{{dashboard.module.booker.formhandle}}",
+            //         data: {
+            //             services: $form.find('#soortafspraak').val(),
+            //             location : $form.find('#soortafspraak').val(),
+            //         }
+               
+            //     });  
+            // }
+        });
+        
     })
+    // $('body').on('click', '.step1btn', function(e){
+    //     e.preventDefault();
+    //     if($('form.afspraakform .step1 #soortafspraak').val().length > 0 &&  $("#checkmedicalquestionnaire:checked").length !== 0  && $("#checkterms:checked").length !== 0){
+    //         if(!$('form.afspraakform .step1').hasClass('d-none')){
+    //             $('form.afspraakform .step1').addClass('d-none');
+    //             if(!$('.step1btn').hasClass('d-none')){
+    //                 $('.step1btn').addClass('d-none');
+    //             }
+    //             if($('form.afspraakform .step2').hasClass('d-none')){
+    //                 $('form.afspraakform .step2').removeClass('d-none');
+    //             }
+    //             if($('.step2btn').hasClass('d-none')){
+    //                 $('.step2btn').removeClass('d-none');
+    //             }
+    //         }
+    //     }else{
+    //         if($('form.afspraakform .step1 #soortafspraak').val().length == 0){
+    //             $(".afspraakform .step1 .form-group > .select2").css("border", "1px solid red");
+    //         }else{
+    //             if($(".afspraakform .step1 .form-group > .select2").css("border") == "1px solid rgb(255, 0, 0)"){
+    //                 $(".afspraakform .step1 .form-group > .select2").css("border", "none");
+    //             }
+    //         }
+    //         if($("#checkmedicalquestionnaire:checked").length == 0){
+    //             $("#checkmedicalquestionnaire").css("outline", "1px solid red");
+    //         }else{
+                
+    //             if($("#checkmedicalquestionnaire").css("outline") == "rgb(255, 0, 0) solid 1px"){
+    //                 $("#checkmedicalquestionnaire").css("outline", "none");
+    //             }
+    //         }
+    //         if($("#checkterms:checked").length == 0){
+    //             $("#checkterms").css("outline", "1px solid red");
+    //         }else{
+    //             if($("#checkterms").css("outline") == "rgb(255, 0, 0) solid 1px"){
+    //                 $("#checkterms").css("outline", "none");
+    //             }
+    //         }
+    //     }
+    // });
+    // $('body').on('click', '.step2btn', function(e){
+    //     e.preventDefault();
+    //     if($('form.afspraakform .step2 #location').val().length > 0 &&  $('form.afspraakform .step2 #timeslot').val() !== null){
+    //         if(!$('form.afspraakform .step2').hasClass('d-none')){
+    //             $('form.afspraakform .step2').addClass('d-none');
+    //             if(!$('.step2btn').hasClass('d-none')){
+    //                 $('.step2btn').addClass('d-none');
+    //             }
+    //             if($('form.afspraakform .step3').hasClass('d-none')){
+    //                 $('form.afspraakform .step3').removeClass('d-none');
+    //             }
+    //             if($('.step3btn').hasClass('d-none')){
+    //                 $('.step3btn').removeClass('d-none');
+    //             }
+    //         }
+    //     }else{
+    //         if($('form.afspraakform .step2 #location').val().length == 0){
+    //             $(".afspraakform .step2 .form-group > .select2").css("border", "1px solid red");
+    //         }else{
+    //             if($(".afspraakform .step2 .form-group > .select2").css("border") == "1px solid rgb(255, 0, 0)"){
+    //                 $(".afspraakform .step2 .form-group > .select2").css("border", "none");
+    //             }
+    //         }
+    //     }
+    // });
+
+    
 
 </script>

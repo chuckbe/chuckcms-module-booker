@@ -20,6 +20,7 @@ class CreatePaymentsTable extends Migration
             $table->string('status');
             $table->bigInteger('amount');
             $table->longtext('log');
+            $table->longtext('json');
             $table->timestamps();
         });
     }

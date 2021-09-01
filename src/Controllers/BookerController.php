@@ -63,7 +63,7 @@ class BookerController extends Controller
             'locations' => $locations
         ]);
     }
-    public function getAvailableTimeslots(Request $request){
+    public function formHandle(Request $request){
         dd($request);
     }
 }

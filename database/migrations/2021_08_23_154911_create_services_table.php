@@ -21,8 +21,10 @@ class CreateServicesTable extends Migration
             $table->string('min_duration')->nullable()->default(null);
             $table->string('max_duration')->nullable()->default(null);
             $table->decimal('price', 6,2);
+            $table->decimal('deposit', 6,2);
             $table->longtext('excluded_days');
             $table->longtext('excluded_dates');
+            $table->longtext('json');
             $table->timestamps();
         });
     }

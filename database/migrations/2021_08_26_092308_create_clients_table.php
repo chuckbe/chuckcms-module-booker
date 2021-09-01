@@ -18,6 +18,7 @@ class CreateClientsTable extends Migration
             $table->string('name');
             $table->string('email');
             $table->string('tel');
+            $table->longtext('json');
             $table->timestamps();
         });
     }

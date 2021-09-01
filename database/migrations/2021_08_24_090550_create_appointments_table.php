@@ -23,6 +23,7 @@ class CreateAppointmentsTable extends Migration
             $table->string('status');
             $table->string('is_cancelled');
             $table->decimal('price', 6,2);
+            $table->longtext('json');
             $table->timestamps();
         });
     }

@@ -54,7 +54,7 @@ class Appointment extends Eloquent
 
     public function payment()
     {
-        return $this->belongsToMany(Payment::class);
+        return $this->belongsToMany(Payment::class, 'appointments_services', 'appointment_id', 'payment_id');
     }
 
     public function client()
