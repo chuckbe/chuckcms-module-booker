@@ -19,7 +19,7 @@ class Location extends Eloquent
      * @var array
      */
     protected $fillable = [
-        'name', 'lat', 'long', 'google_calender_id'
+        'name', 'lat', 'long', 'google_calendar_id', 'json'
     ];
 
     protected $casts = [
@@ -39,6 +39,19 @@ class Location extends Eloquent
     public function getById($id)
     {
         return $this->where('id', $id)->first();
+    }
+    public function deleteById($id)
+    {
+        $location = $this->where('id', $id)->first();
+        if ($location) {
+            if ($location->delete()) {
+                return 'success';
+            } else {
+                return 'error';
+            }
+        } else {
+            return 'false';
+        }
     }
 
 }

@@ -19,7 +19,7 @@ class Service extends Eloquent
      * @var array
      */
     protected $fillable = [
-        'type', 'name', 'duration', 'min_duration', 'max_duration', 'price', 'excluded_days', 'excluded_dates'
+        'type', 'name', 'duration', 'min_duration', 'max_duration', 'price', 'excluded_days', 'excluded_dates', 'json'
     ];
 
     protected $casts = [

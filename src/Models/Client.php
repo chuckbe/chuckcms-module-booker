@@ -19,7 +19,7 @@ class Client extends Eloquent
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'tel'
+        'name', 'email', 'tel', 'json'
     ];
 
     protected $casts = [

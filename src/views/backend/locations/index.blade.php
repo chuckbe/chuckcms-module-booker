@@ -46,7 +46,7 @@
 									<td class="semi-bold">{{ $location->name }}</td>
 									<td>
 										<a 
-											{{-- href="{{ route('dashboard.module.booker.locations.edit', ['location' => $location->id]) }}"  --}}
+											href="{{ route('dashboard.module.booker.location.edit', ['location_id' => $location->id]) }}"
 											class="btn btn-sm btn-outline-secondary rounded d-inline-block">
 							    			<i class="fa fa-edit"></i> edit
 							    		</a>
@@ -74,19 +74,49 @@
 @endsection
 
 @section('scripts')
-{{--  <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
-<script type="text/javascript">
-
-var geocoder = new google.maps.Geocoder();
-var address = 'Berlaarsestraat 10, 2500 Lier';
-
-geocoder.geocode( { 'address': address}, function(results, status) {
-
-if (status == google.maps.GeocoderStatus.OK) {
-    var latitude = results[0].geometry.location.lat();
-    var longitude = results[0].geometry.location.lng();
-    	console.log(latitude+', '+longitude);
-    } 
-}); 
-</script>  --}}
+<script src="https://cdn.chuck.be/assets/plugins/sweetalert2.all.js"></script>
+<script>
+	$(function() {
+		$('.location_delete').each(function(){
+			let locationId = $(this).data('id');
+			let token = '{{ Session::token() }}';
+			$(this).click(function(event){
+				event.preventDefault();
+				swal({
+					title: 'Are you sure?',
+					text: "This will delete this location. You won't be able to revert this!",
+					type: 'warning',
+					showCancelButton: true,
+					confirmButtonColor: '#3085d6',
+					cancelButtonColor: '#d33',
+					confirmButtonText: 'Yes, delete it!'
+				}).then((result)=>{
+					$.ajax({
+						method: 'POST',
+						url: "{{ route('dashboard.module.booker.deletelocation') }}",
+						data: { 
+							location_id: locationId, 
+							_token: token
+						}
+					}).done(function(data){
+						if(data == 'success'){
+							$("tr[data-id='"+locationId+"']").first().remove();
+							swal(
+								'Deleted!',
+								'The location has been deleted.',
+								'success'
+							)
+						}else{
+							swal(
+								'Oops!',
+								'Something went wrong...',
+								'danger'
+							)
+						}
+					})
+				})
+			})
+		});
+	});
+</script>
 @endsection

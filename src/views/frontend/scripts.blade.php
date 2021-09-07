@@ -95,21 +95,7 @@
     $('body').on('submit', '#afspraak-form', function(e){
         e.preventDefault();
         $('#afspraak-form').validate({
-
-            focusCleanup: false,
-            errorElement: "span",
-            // submitHandler: function(form) {
-            //     $.ajax({
-            //     url: "{{dashboard.module.booker.formhandle}}",
-            //         data: {
-            //             services: $form.find('#soortafspraak').val(),
-            //             location : $form.find('#soortafspraak').val(),
-            //         }
-               
-            //     });  
-            // }
         });
-        
     })
     // $('body').on('click', '.step1btn', function(e){
     //     e.preventDefault();

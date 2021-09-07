@@ -18,8 +18,8 @@ class CreateLocationsTable extends Migration
             $table->string('name');
             $table->decimal('lat', 8,6);
             $table->decimal('long', 9,6);
-            $table->string('google_calendar_id')->nullable()->default(null);
-            $table->longtext('json');
+            $table->string('google_calendar_id')->nullable();
+            $table->longtext('json')->nullable()->default(null);
             $table->timestamps();
         });
     }

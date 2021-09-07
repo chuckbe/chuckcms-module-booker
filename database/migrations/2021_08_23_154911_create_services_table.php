@@ -24,7 +24,7 @@ class CreateServicesTable extends Migration
             $table->decimal('deposit', 6,2);
             $table->longtext('excluded_days');
             $table->longtext('excluded_dates');
-            $table->longtext('json');
+            $table->longtext('json')->nullable()->default(null);
             $table->timestamps();
         });
     }

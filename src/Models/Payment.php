@@ -19,7 +19,7 @@ class Payment extends Eloquent
      * @var array
      */
     protected $fillable = [
-        'external_id', 'type', 'status', 'amount', 'log'
+        'external_id', 'type', 'status', 'amount', 'log', 'json'
     ];
 
     protected $casts = [

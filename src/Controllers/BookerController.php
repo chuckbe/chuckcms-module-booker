@@ -15,14 +15,16 @@ use ChuckSite;
 class BookerController extends Controller
 {
     private $appointmentRepository;
+    private $location;
 
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct(AppointmentRepository $appointmentRepository, LocationRepository $locationRepository, ServiceRepository $serviceRepository)
+    public function __construct(Location $location, AppointmentRepository $appointmentRepository, LocationRepository $locationRepository, ServiceRepository $serviceRepository)
     {
+        $this->location = $location;
         $this->appointmentRepository = $appointmentRepository;
         $this->locationRepository = $locationRepository;
         $this->serviceRepository = $serviceRepository;
@@ -46,6 +48,71 @@ class BookerController extends Controller
         $locations = $this->locationRepository->get();
         $services = $this->serviceRepository->get();
         return view('chuckcms-module-booker::backend.locations.index', compact('appointments', 'locations', 'services'));
+    }
+
+    public function editLocation($location_id)
+    {
+        $location = $this->location->getById($location_id);
+        return view('chuckcms-module-booker::backend.locations.edit', compact('location'));
+    }
+
+    public function saveLocation(Request $request)
+    {
+        $location = $this->location->getById($request->get('location_id'));
+        $json = [];
+        $arr = json_decode( $request->get('location_opening_hours'), true );
+        foreach($arr as $key=>$value) {
+            switch ($key) {
+                case "0":
+                  $json["opening-hours"]["monday"] = $value;
+                  break;
+                case "1":
+                $json["opening-hours"]["tuesday"] = $value;
+                break;
+                case "2":
+                    $json["opening-hours"]["wednesday"] = $value;
+                    break;
+                case "3":
+                    $json["opening-hours"]["thursday"] = $value;
+                    break;
+                case "4":
+                    $json["opening-hours"]["friday"] = $value;
+                    break;
+                case "5":
+                    $json["opening-hours"]["saturday"] = $value;
+                    break;
+                case "6":
+                    $json["opening-hours"]["sunday"] = $value;
+                    break;
+                default:
+            }
+        }
+        $location->name = $request->get('location_name');
+        $location->lat = $request->get('location_lat');
+        $location->long = $request->get('location_long');
+        $location->google_calendar_id = $request->get('location_gid');
+        $location->json = $json;
+        $location->save();
+        return redirect()->route('dashboard.module.booker.locations');
+    }
+
+    public function createLocation(Request $request)
+    {
+        $this->location->create([
+            'name' => $request->get('location_name'),
+            'lat' => $request->get('location_lat'),
+            'long' => $request->get('location_long'),
+            'google_calendar_id' => $request->get('location_gid')
+        ]);
+        return redirect()->back();
+    }
+    public function deleteLocation(Request $request)
+    {
+        $this->validate(request(), [
+            'location_id' => 'required',
+        ]);
+        $status = $this->location->deleteById($request->get('location_id'));
+        return $status;
     }
 
     public function getServices()
