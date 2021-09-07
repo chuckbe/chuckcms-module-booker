@@ -4,8 +4,8 @@
     "keywords": [],
     "homepage": "https://github.com/chuckbe/chuckcms-module-booker",
     "require": {
-        "php": ">=7.0.0",
-        "laravel/framework": "~5.5||~5.6||~5.7||~5.8||^6.0",
+        "php": ">=7.2.5",
+        "laravel/framework": "^6.0||^7.0||^8.0",
         "chuckbe/chuckcms": "*"
     },
     "authors": [

@@ -19,14 +19,21 @@ class AppointmentRepository
     /**
      * Get all the locations
      *
-     * @var string
+     * @return Illuminate\Database\Eloquent\Collection
      **/
     public function get()
     {
         return $this->appointment->get();
     }
 
-    public function getById($id)
+    /**
+     * Find the service for the given id.
+     *
+     * @param int $id
+     * 
+     * @return mixed
+     **/
+    public function find($id)
     {
         return $this->appointment->where('id', $id)->first();
     }

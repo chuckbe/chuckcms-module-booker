@@ -6,7 +6,7 @@
 
 @section('breadcrumbs')
 	<ol class="breadcrumb">
-		<li class="breadcrumb-item active"><a href="{{ route('dashboard.module.booker.locations') }}">Locaties</a></li>
+		{{-- <li class="breadcrumb-item active"><a href="{{ route('dashboard.module.booker.locations.index') }}">Locaties</a></li> --}}
 	</ol>
 @endsection
 
@@ -29,7 +29,8 @@
 				<a class="remove" href="javascript:;"></a>
 			</div>
 			<div class="col-sm-12 text-right">
-				<a href="#" data-target="#newLocationModal" data-toggle="modal" class="btn btn-sm btn-outline-success">Voeg Locatie Toe</a>
+				{{-- <a href="#" data-target="#newLocationModal" data-toggle="modal" class="btn btn-sm btn-outline-success">Voeg Locatie Toe</a> --}}
+				<a href="/dashboard/booker/locations/create" class="btn btn-sm btn-outline-success">Voeg Locatie Toe</a>
 			</div>
 			<div class="col-sm-12 my-3">
 				<div class="table-responsive">
@@ -45,10 +46,13 @@
 									<td>{{$location->id}}</td>
 									<td class="semi-bold">{{ $location->name }}</td>
 									<td>
-										<a 
-											href="{{ route('dashboard.module.booker.location.edit', ['location_id' => $location->id]) }}"
+										<a href="{{ route('dashboard.module.booker.locations.edit', ['location' => $location]) }}"
 											class="btn btn-sm btn-outline-secondary rounded d-inline-block">
 							    			<i class="fa fa-edit"></i> edit
+							    		</a>
+										<a href="{{ route('dashboard.module.booker.locations.detail', ['location' => $location]) }}"
+											class="btn btn-sm btn-outline-secondary rounded d-inline-block">
+							    			<i class="fa fa-info"></i> Detail
 							    		</a>
 										<a href="#" class="btn btn-danger btn-sm btn-rounded m-r-20 location_delete" data-id="{{ $location->id }}">
 							    			<i class="fa fa-trash"></i> 
@@ -62,7 +66,6 @@
 			</div>
 		</div>
     </div>
-	@include('chuckcms-module-booker::backend.locations._modal')
 @endsection
 
 @section('css')
@@ -77,43 +80,41 @@
 <script src="https://cdn.chuck.be/assets/plugins/sweetalert2.all.js"></script>
 <script>
 	$(function() {
-		$('.location_delete').each(function(){
+		$('body').on('click', '.location_delete', function(event){
+			event.preventDefault();
 			let locationId = $(this).data('id');
 			let token = '{{ Session::token() }}';
-			$(this).click(function(event){
-				event.preventDefault();
-				swal({
-					title: 'Are you sure?',
-					text: "This will delete this location. You won't be able to revert this!",
-					type: 'warning',
-					showCancelButton: true,
-					confirmButtonColor: '#3085d6',
-					cancelButtonColor: '#d33',
-					confirmButtonText: 'Yes, delete it!'
-				}).then((result)=>{
-					$.ajax({
-						method: 'POST',
-						url: "{{ route('dashboard.module.booker.deletelocation') }}",
-						data: { 
-							location_id: locationId, 
-							_token: token
-						}
-					}).done(function(data){
-						if(data == 'success'){
-							$("tr[data-id='"+locationId+"']").first().remove();
-							swal(
-								'Deleted!',
-								'The location has been deleted.',
-								'success'
-							)
-						}else{
-							swal(
-								'Oops!',
-								'Something went wrong...',
-								'danger'
-							)
-						}
-					})
+			swal({
+				title: 'Are you sure?',
+				text: "This will delete this location. You won't be able to revert this!",
+				type: 'warning',
+				showCancelButton: true,
+				confirmButtonColor: '#3085d6',
+				cancelButtonColor: '#d33',
+				confirmButtonText: 'Yes, delete it!'
+			}).then((result)=>{
+				$.ajax({
+					method: 'POST',
+					url: "{{ route('dashboard.module.booker.locations.delete') }}",
+					data: { 
+						location_id: locationId, 
+						_token: token
+					}
+				}).done(function(data){
+					if(data == 'success'){
+						$("tr[data-id='"+locationId+"']").first().remove();
+						swal(
+							'Deleted!',
+							'The location has been deleted.',
+							'success'
+						)
+					}else{
+						swal(
+							'Oops!',
+							'Something went wrong...',
+							'danger'
+						)
+					}
 				})
 			})
 		});

@@ -76,7 +76,7 @@ class InstallModuleBooker extends Command
                     'name' => 'Locaties',
                     'icon' => true,
                     'icon_data' => 'map-marked-alt',
-                    'route' => 'dashboard.module.booker.locations',
+                    'route' => 'dashboard.module.booker.locations.index',
                     'has_submenu' => false,
                     'submenu' => null
                 ),
@@ -122,6 +122,5 @@ class InstallModuleBooker extends Command
         $this->info('Module installed: ChuckCMS Booker Module');
         $this->info(' ');
     }
-
-
+    
 }

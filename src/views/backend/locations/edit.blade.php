@@ -6,7 +6,7 @@
 
 @section('breadcrumbs')
 	<ol class="breadcrumb">
-		<li class="breadcrumb-item"><a href="{{ route('dashboard.module.booker.locations') }}">Locaties</a></li>
+		<li class="breadcrumb-item"><a href="{{ route('dashboard.module.booker.locations.index') }}">Locaties</a></li>
         <li class="breadcrumb-item active" aria-current="Locaties">Bewerk locatie "{{ $location->name }}"</li>
 	</ol>
 @endsection
@@ -17,13 +17,13 @@
 			<div class="col-sm-12">
 				<nav aria-label="breadcrumb">
 					<ol class="breadcrumb mt-3">
-						<li class="breadcrumb-item active" aria-current="Locaties"><a href="{{ route('dashboard.module.booker.locations') }}">Locaties</a></li>
+						<li class="breadcrumb-item active" aria-current="Locaties"><a href="{{ route('dashboard.module.booker.locations.index') }}">Locaties</a></li>
                         <li class="breadcrumb-item active" aria-current="Locaties">Bewerk locatie "{{ $location->name }}"</li>
 					</ol>
 				</nav>
 			</div>
 		</div>
-        <form id="locationUpdateForm" action="{{ route('dashboard.module.booker.location.save') }}" method="POST">
+        <form id="locationUpdateForm" action="{{ route('dashboard.module.booker.services.save') }}" method="POST">
             <div class="row bg-light shadow-sm rounded p-3 mb-3 mx-1">
                 <div class="col-sm-12">
                     <div class="my-3">
@@ -61,8 +61,8 @@
                             <input type="hidden" id="location_opening_hours" name="location_opening_hours" value="">
                             <input type="hidden" name="location_id" value="{{ $location->id }}">
                             <input type="hidden" name="_token" value="{{ Session::token() }}">
-                            <button type="submit" name="update" class="btn btn-success btn-cons pull-right m-1" value="1">Opslaan</button>
-                            <a href="{{ route('dashboard.module.booker.locations') }}" class="pull-right m-1"><button type="button" class="btn btn-info btn-cons">Annuleren</button></a>
+                            <button type="submit" class="btn btn-success btn-cons pull-right m-1" value="1">Opslaan</button>
+                            <a href="{{ route('dashboard.module.booker.locations.index') }}" class="pull-right m-1"><button type="button" class="btn btn-info btn-cons">Annuleren</button></a>
                         </p>
                     </div>
                 </div>
@@ -137,15 +137,15 @@
 @include('chuckcms-module-booker::backend.locations.businesshours')
 <script>
     // {{json_encode($location->json['opening-hours']) }}
-    $("#businessHoursContainer").businessHours({
-        operationTime: @json($location->json['opening-hours']);
-    });
-    $('body').on('click', '#locationUpdateForm .btn-success[type=submit]' , function(event){
-        event.preventDefault();
-        let arr = ($("#businessHoursContainer").businessHours()).serialize();
-        $('#location_opening_hours').val(JSON.stringify(arr));
-        $("#locationUpdateForm").submit();
-    });
+    // $("#businessHoursContainer").businessHours({
+    //     operationTime: @json($location->json['opening-hours']),
+    // });
+    // $('body').on('click', '#locationUpdateForm .btn-success[type=submit]' , function(event){
+    //     event.preventDefault();
+    //     let arr = ($("#businessHoursContainer").businessHours()).serialize();
+    //     $('#location_opening_hours').val(JSON.stringify(arr));
+    //     $("#locationUpdateForm").submit();
+    // });
 
 </script>
 @endsection

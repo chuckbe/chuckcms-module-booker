@@ -22,24 +22,39 @@ class BookerFormRepository
     /**
      * Get all the locations
      *
-     * @var string
+     * @return Illuminate\Database\Eloquent\Collection
      **/
     public function getServices()
     {
         return $this->service->get();
     }
 
+    /**
+     * Return form in frontend.
+     *
+     * @return Illuminate/View/View
+     */
     public function render()
     {
         $services = $this->getServices();
     	return view('chuckcms-module-booker::frontend.form', compact('services'))->render();
     }
 
+    /**
+     * Return styles in frontend.
+     *
+     * @return Illuminate/View/View
+     */
     public function styles()
     {
         return view('chuckcms-module-booker::frontend.css')->render();
     }
 
+    /**
+     * Return scripts in frontend.
+     *
+     * @return Illuminate/View/View
+     */
     public function scripts()
     {
         return view('chuckcms-module-booker::frontend.scripts')->render();
