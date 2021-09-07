@@ -65,7 +65,7 @@ class InstallModuleBooker extends Command
             'has_submenu' => true,
             'submenu' => array(
                 'a' => array(
-                    'name' => 'afspraken',
+                    'name' => 'Afspraken',
                     'icon' => true,
                     'icon_data' => 'calendar',
                     'route' => 'dashboard.module.booker.appointments',
@@ -73,10 +73,18 @@ class InstallModuleBooker extends Command
                     'submenu' => null
                 ),
                 'b' => array(
-                    'name' => 'locaties',
+                    'name' => 'Locaties',
                     'icon' => true,
                     'icon_data' => 'map-marked-alt',
                     'route' => 'dashboard.module.booker.locations',
+                    'has_submenu' => false,
+                    'submenu' => null
+                ),
+                'c' => array(
+                    'name' => 'Diensten',
+                    'icon' => true,
+                    'icon_data' => 'map-marked-alt',
+                    'route' => 'dashboard.module.booker.services.index',
                     'has_submenu' => false,
                     'submenu' => null
                 ),

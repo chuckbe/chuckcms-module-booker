@@ -106,6 +106,7 @@ class BookerController extends Controller
         ]);
         return redirect()->back();
     }
+    
     public function deleteLocation(Request $request)
     {
         $this->validate(request(), [
