@@ -6,7 +6,7 @@
 
 @section('breadcrumbs')
 	<ol class="breadcrumb">
-		<li class="breadcrumb-item active"><a href="{{ route('dashboard.module.booker.appointments') }}">Appointments</a></li>
+		<li class="breadcrumb-item active"><a href="{{ route('dashboard.module.booker.appointments.index') }}">Appointments</a></li>
 	</ol>
 @endsection
 
@@ -44,7 +44,7 @@
                                 <td>
                                     <a 
                                     {{-- data-id = "{{$appointment->id}}" --}}
-                                        href="{{ route('dashboard.module.booker.appointment.details', ['appointment' => $appointment->id]) }}" 
+                                        href="{{ route('dashboard.module.booker.appointments.details', ['appointment' => $appointment->id]) }}" 
                                         class="btn btn-sm btn-outline-secondary rounded d-inline-block appointment_detail">
                                         <i class="fa fa-info-circle"></i> Details
                                     </a>

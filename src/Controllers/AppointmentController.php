@@ -29,10 +29,8 @@ class AppointmentController extends Controller
     public function index()
     {   
         $appointments = $this->appointmentRepository->get();
-
         return view('chuckcms-module-booker::backend.appointments.index', compact('appointments'));
     }
-
 
     /**
      * Return the appointments detail page for given appointment.

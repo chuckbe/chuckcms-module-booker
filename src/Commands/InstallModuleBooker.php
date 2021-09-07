@@ -68,7 +68,7 @@ class InstallModuleBooker extends Command
                     'name' => 'Afspraken',
                     'icon' => true,
                     'icon_data' => 'calendar',
-                    'route' => 'dashboard.module.booker.appointments',
+                    'route' => 'dashboard.module.booker.appointments.index',
                     'has_submenu' => false,
                     'submenu' => null
                 ),
