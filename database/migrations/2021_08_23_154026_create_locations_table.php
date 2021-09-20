@@ -15,12 +15,17 @@ class CreateLocationsTable extends Migration
     {
         Schema::create(config('chuckcms-module-booker.locations.table'), function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->integer('order')->nullable();
             $table->string('name');
-            $table->decimal('lat', 8,6);
-            $table->decimal('long', 9,6);
-            $table->string('google_calendar_id')->nullable();
+            $table->longtext('disabled_weekdays')->nullable()->default(null);
+            $table->longtext('disabled_dates')->nullable()->default(null);
+            $table->longtext('opening_hours');
+            $table->decimal('lat', 8,6)->nullable();
+            $table->decimal('long', 9,6)->nullable();
             $table->longtext('json')->nullable()->default(null);
+            $table->string('google_calendar_id')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

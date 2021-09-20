@@ -15,17 +15,23 @@ class CreateServicesTable extends Migration
     {
         Schema::create(config('chuckcms-module-booker.services.table'), function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('type');
+            $table->integer('order')->nullable();
+            
+            $table->string('type')->nullable()->default(null);
+            
             $table->string('name');
-            $table->string('duration');
-            $table->string('min_duration')->nullable()->default(null);
-            $table->string('max_duration')->nullable()->default(null);
+            $table->integer('duration');
+            $table->integer('min_duration')->nullable()->default(null);
+            $table->integer('max_duration')->nullable()->default(null);
             $table->decimal('price', 6,2);
             $table->decimal('deposit', 6,2);
-            $table->longtext('excluded_days');
-            $table->longtext('excluded_dates');
+
+            $table->longtext('disabled_weekdays')->nullable()->default(null);
+            $table->longtext('disabled_dates')->nullable()->default(null);
             $table->longtext('json')->nullable()->default(null);
+            
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

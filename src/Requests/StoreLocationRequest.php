@@ -24,10 +24,39 @@ class StoreLocationRequest extends FormRequest
     public function rules()
     {
         return [
-            'location_name' => 'required',
-            'location_lat' => 'required',
-            'location_long' => 'required',
-            'location_gid' => 'nullable'
+            'name' => 'required|max:185'.$this->has('update') ? '' : '|unique:'.config('chuckcms-module-booker.locations.table').',name',
+
+            'disabled_weekdays' => 'nullable|array',
+            
+            'start_time_monday' => 'sometimes|array',
+            'end_time_monday' => 'sometimes|array',
+
+            'start_time_tuesday' => 'sometimes|array',
+            'end_time_tuesday' => 'sometimes|array',
+
+            'start_time_wednesday' => 'sometimes|array',
+            'end_time_wednesday' => 'sometimes|array',
+
+            'start_time_thursday' => 'sometimes|array',
+            'end_time_thursday' => 'sometimes|array',
+
+            'start_time_friday' => 'sometimes|array',
+            'end_time_friday' => 'sometimes|array',
+
+            'start_time_saturday' => 'sometimes|array',
+            'end_time_saturday' => 'sometimes|array',
+
+            'start_time_sunday' => 'sometimes|array',
+            'end_time_sunday' => 'sometimes|array',
+
+            'disabled_dates' => 'nullable|string',
+
+            'order' => 'numeric|required',
+
+            'services' => 'nullable|array',
+
+            'update' => 'sometimes',
+            'id' => 'required_with:update'
         ];
     }
 }

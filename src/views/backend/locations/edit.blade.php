@@ -4,11 +4,80 @@
 	Edit Location
 @endsection
 
-@section('breadcrumbs')
-	<ol class="breadcrumb">
-		<li class="breadcrumb-item"><a href="{{ route('dashboard.module.booker.locations.index') }}">Locaties</a></li>
-        <li class="breadcrumb-item active" aria-current="Locaties">Bewerk locatie "{{ $location->name }}"</li>
-	</ol>
+@section('css')
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ttskch/select2-bootstrap4-theme@x.x.x/dist/select2-bootstrap4.min.css">
+@endsection
+
+@section('scripts')
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script src="{{ URL::to('vendor/laravel-filemanager/js/lfm.js') }}"></script>
+<script>
+$( document ).ready(function() { 
+	
+	$('select').select2({
+	    theme: 'bootstrap4',
+	    minimumResultsForSearch: -1
+	});
+
+	$('body').on('change', '#edit_location_disabled_weekdays', function (event) {
+		$('.openingshoursRangeInputSection').removeClass('d-none');
+		$('.openingshoursRangeInputSection')
+								.find('input')
+								.prop('required', true)
+								.prop('disabled', false);
+
+		let selectedValues = $(this).find(':selected');
+
+		for (var i = selectedValues.length - 1; i >= 0; i--) {
+			$('.openingshoursRangeInputSection[data-day="'+selectedValues[i].value+'"]').addClass('d-none');
+			$('.openingshoursRangeInputSection[data-day="'+selectedValues[i].value+'"]')
+								.find('input')
+								.prop('required', false)
+								.prop('disabled', true);
+		};
+	});
+
+	$('body').on('click', '.addOpeningshoursRangeInputRowBtn', function (event) {
+		event.preventDefault();
+
+		let dayOfTheWeek = $(this).attr('data-day');
+		
+		firstRangeInputRow = $('.openingshoursRangeInputWrapper[data-day="'+dayOfTheWeek+'"]')
+								.find('.openingshoursRangeInputRow')
+								.first();
+
+		firstRangeInputRow.clone().appendTo('.openingshoursRangeInputWrapper[data-day="'+dayOfTheWeek+'"]');
+
+		$('.openingshoursRangeInputWrapper[data-day="'+dayOfTheWeek+'"]')
+								.find('.removeOpeningshoursRangeInputRowBtn')
+								.removeClass('d-none');
+	});
+
+	$('body').on('click', '.removeOpeningshoursRangeInputRowBtn', function (event) {
+		event.preventDefault();
+
+		rangeInputWrapper = $(this).parents('.openingshoursRangeInputWrapper');
+
+		if (rangeInputWrapper.find('.openingshoursRangeInputRow').length == 1) return;
+
+		$(this).parents('.openingshoursRangeInputRow').remove();
+
+		if (rangeInputWrapper.find('.openingshoursRangeInputRow').length == 1) {
+			rangeInputWrapper.find('.removeOpeningshoursRangeInputRowBtn')
+								.addClass('d-none');
+		}
+	});
+
+
+	init();
+	function init () {
+		//init media manager inputs 
+		var domain = "{{ URL::to('dashboard/media')}}";
+		$('.img_lfm_link').filemanager('image', {prefix: domain});
+	}
+});
+</script>
 @endsection
 
 @section('content')
@@ -23,45 +92,143 @@
 				</nav>
 			</div>
 		</div>
-        <form id="locationUpdateForm" action="{{ route('dashboard.module.booker.services.save') }}" method="POST">
+
+		<form role="form" method="POST" action="{{ route('dashboard.module.booker.locations.update') }}">
+        
             <div class="row bg-light shadow-sm rounded p-3 mb-3 mx-1">
                 <div class="col-sm-12">
-                    <div class="my-3">
-                        <div class="form-group form-group-default required">
-                            <label>Name</label>
-                            <input type="text" class="form-control" id="locationname" name="location_name" aria-describedby="locationname" value="{{ $location->name }}" placeholder="Enter location name">
-                        </div>
-                        <div class="form-group form-group-default required">
-                            <div class="form-row">
-                                <div class="col">
-                                    <label for="locationLatitude">Latitude</label>
-                                    <input type="text" class="form-control" id="locationLatitude" name="location_lat" aria-describedby="locationLatitude" value="{{ $location->lat }}" placeholder="Enter location Latitude">
-                                </div>
-                                <div class="col">
-                                    <label for="locationLongitute">Longitute</label>
-                                    <input type="text" class="form-control" id="locationLongitute" name="location_long" aria-describedby="locationLongitute" value="{{ $location->long }}" placeholder="Enter location Longitute">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="gid">Google Calender ID</label>
-                            <input type="text" class="form-control" id="gid" aria-describedby="gid" name="location_gid" value="{{ $location->google_calendar_id }}" placeholder="Enter Google Calender ID">
-                        </div>
-                        <div class="form-group">
-                            <label for="gid">Opening hours</label>
-                            <div id="businessHoursContainer" class="pt-4"></div>
-                        </div>
-                    </div>
+                    <div class="form-group-attached">
+			            <div class="row">
+			              <div class="col-md-12">
+			                <div class="form-group form-group-default required">
+			                  <label>Naam *</label>
+			                  <input type="text" id="edit_location_name" name="name" class="form-control" value="{{ old('name', $location->name) }}" required>
+			                </div>
+			              </div>
+			            </div>
+			            <div class="row">
+			              <div class="col-sm-12">
+			                <div class="form-group form-group-default">
+			                  <label>Sluitingsdagen</label>
+			                  <select name="disabled_weekdays[]" id="edit_location_disabled_weekdays" class="form-control" multiple="multiple" >
+			                  	@foreach(config('chuckcms-module-booker.locations.weekdays') as $weekdayInt => $weekdayName)
+			                    <option value="{{ $weekdayInt }}" @if(is_array($location->disabled_weekdays) && in_array($weekdayInt, $location->disabled_weekdays)) selected @endif>{{ $weekdayName }}</option>
+			                    @endforeach
+			                  </select>
+			                </div>
+			              </div>
+			            </div>
+			            <div class="row">
+			              <div class="col-sm-12">
+			                <label>Openingsuren *</label>
+			              </div>
+
+			              @foreach(config('chuckcms-module-booker.locations.weekdays') as $weekdayKey => $weekdayName)
+			              {{-- start of day --}}
+			              <div class="col-sm-12 openingshoursRangeInputSection{{ $location->isDisabledOnWeekday($weekdayKey) ? ' d-none' : '' }}" data-day="{{ $weekdayKey }}">
+			                <div>
+			                  <label><small>{{ $weekdayName }}</small></label>
+			                  <span class="badge badge-secondary addOpeningshoursRangeInputRowBtn float-right" type="button" data-day="{{ $weekdayKey }}">+</span>
+			                </div>
+			                <div class="row">
+			                  <div class="col-sm-12 openingshoursRangeInputWrapper" data-day="{{ $weekdayKey }}">
+			                  	@if($location->isDisabledOnWeekday($weekdayKey))
+			                    <div class="row openingshoursRangeInputRow">
+			                      <div class="col-sm-6">
+			                        <div class="input-group">
+			                          <div class="input-group-prepend">
+			                            <button class="btn btn-outline-secondary removeOpeningshoursRangeInputRowBtn d-none" type="button">-</button>
+			                          </div>
+			                          <input type="time" class="form-control" name="start_time_{{ strtolower($weekdayName) }}[]" value="08:00" disabled>
+			                        </div>
+			                      </div>
+			                      <div class="col-sm-6">
+			                        <div class="form-group form-group-default">
+			                          <input type="time" class="form-control" name="end_time_{{ strtolower($weekdayName) }}[]" value="17:00" disabled>
+			                        </div>
+			                      </div>
+			                    </div>
+			                    @else
+			                    @foreach($location->getOpeningHoursSectionsForDay(strtolower($weekdayName)) as $opening_hours_section)
+			                    <div class="row openingshoursRangeInputRow">
+			                      <div class="col-sm-6">
+			                        <div class="input-group">
+			                          <div class="input-group-prepend">
+			                            <button class="btn btn-outline-secondary removeOpeningshoursRangeInputRowBtn{{ count($location->getOpeningHoursSectionsForDay(strtolower($weekdayName))) == 1 ? ' d-none' : '' }}" type="button">-</button>
+			                          </div>
+			                          <input type="time" class="form-control" name="start_time_{{ strtolower($weekdayName) }}[]" value="{{ $opening_hours_section['start'] }}" required>
+			                        </div>
+			                      </div>
+			                      <div class="col-sm-6">
+			                        <div class="form-group form-group-default">
+			                          <input type="time" class="form-control" name="end_time_{{ strtolower($weekdayName) }}[]" value="{{ $opening_hours_section['end'] }}" required>
+			                        </div>
+			                      </div>
+			                    </div>
+			                    @endforeach
+			                    @endif
+			                  </div>
+			                </div>
+			              </div>
+			              {{-- end of day --}}
+			              @endforeach
+			            </div>
+			            
+			            <div class="row">
+			              <div class="col-sm-12">
+			                <div class="form-group form-group-default">
+			                  <label>Uitgesloten Datums (dd/mm/yyyy,dd/mm/yyyy,...)</label>
+			                  <input type="text" id="edit_location_disabled_dates" name="disabled_dates" class="form-control" value="{{ old('disabled_dates', implode(',',$location->disabled_dates ?? [])) }}">
+			                </div>
+			              </div>
+			            </div>
+
+			            <div class="row">
+			              <div class="col-sm-12">
+			                <div class="form-group form-group-default">
+			                  <label>Biedt volgende diensten aan</label>
+			                  <select name="services[]" id="edit_location_services" class="form-control" multiple="multiple">
+			                    @foreach($services as $service)
+			                    <option value="{{ $service->id }}" @if($location->services->where('id', $service->id)->count() > 0) selected @endif>{{ $service->name }}{{ $service->isFree() ? '' : ' ('.$service->formatted_price.')' }}</option>
+			                    @endforeach
+			                  </select>
+			                </div>
+			              </div>
+			            </div>
+
+			            <div class="row">
+			              <div class="col-md-12">
+			                <div class="form-group form-group-default required">
+			                  <label>Volgorde</label>
+			                  <input type="number" min="0" steps="1" max="9999" id="edit_location_order" name="order" class="form-control" value="{{ old('order', $location->order) }}" required>
+			                </div>
+			              </div>
+			            </div>
+			        </div>
                 </div>
             </div>
+            @if ($errors->any())
+		      <div class="row bg-light shadow-sm rounded p-3 mb-3 mx-1">
+		        <div class="col">
+		          <div class="my-3">
+		            <div class="alert alert-danger">
+		              <ul>
+		                @foreach ($errors->all() as $error)
+		                  <li>{{ $error }}</li>
+		                @endforeach
+		              </ul>
+		            </div>
+		          </div>
+		        </div>
+		      </div>
+		    @endif
             <div class="row">
                 <div class="col-sm-12">
                     <div class="my-3">
                         <p class="pull-right">
-                            <input type="hidden" id="location_opening_hours" name="location_opening_hours" value="">
-                            <input type="hidden" name="location_id" value="{{ $location->id }}">
+                            <input type="hidden" name="id" value="{{ $location->id }}">
                             <input type="hidden" name="_token" value="{{ Session::token() }}">
-                            <button type="submit" class="btn btn-success btn-cons pull-right m-1" value="1">Opslaan</button>
+                            <button type="submit" name="update" class="btn btn-success btn-cons pull-right m-1" value="1">Opslaan</button>
                             <a href="{{ route('dashboard.module.booker.locations.index') }}" class="pull-right m-1"><button type="button" class="btn btn-info btn-cons">Annuleren</button></a>
                         </p>
                     </div>
@@ -69,83 +236,4 @@
             </div>
         </form>
     </div>
-@endsection
-
-@section('css')
-<style>
-    #businessHoursContainer .clean {
-        clear: both
-    }
-
-    #businessHoursContainer .dayContainer {
-        float: left;
-        line-height: 20px;
-        margin-right: 8px;
-        width: 65px;
-        font-size: 11px;
-        font-weight: 700
-    }
-
-    #businessHoursContainer .colorBox {
-        cursor: pointer;
-        height: 45px;
-        border: 2px solid #888;
-        -webkit-border-radius: 4px;
-        -moz-border-radius: 4px;
-        border-radius: 4px
-    }
-
-    #businessHoursContainer .colorBox.WorkingDayState {
-        border: 2px solid #4E8059;
-        background-color: #8ade8f
-    }
-
-    #businessHoursContainer .colorBox.RestDayState {
-        border: 2px solid #7a1c44;
-        background-color: #de5962
-    }
-
-    #businessHoursContainer .operationTime .mini-time {
-        width: 40px;
-        padding: 3px;
-        font-size: 12px;
-        font-weight: 400
-    }
-
-    #businessHoursContainer .dayContainer .add-on {
-        padding: 4px 2px
-    }
-
-    #businessHoursContainer .colorBoxLabel {
-        clear: both;
-        font-size: 12px;
-        font-weight: 700
-    }
-
-    #businessHoursContainer .invisible {
-        visibility: hidden
-    }
-
-    #businessHoursContainer .operationTime {
-        margin-top: 5px
-    }
-</style>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-timepicker/1.13.18/jquery.timepicker.css" />
-@endsection
-
-@section('scripts')
-@include('chuckcms-module-booker::backend.locations.businesshours')
-<script>
-    // {{json_encode($location->json['opening-hours']) }}
-    // $("#businessHoursContainer").businessHours({
-    //     operationTime: @json($location->json['opening-hours']),
-    // });
-    // $('body').on('click', '#locationUpdateForm .btn-success[type=submit]' , function(event){
-    //     event.preventDefault();
-    //     let arr = ($("#businessHoursContainer").businessHours()).serialize();
-    //     $('#location_opening_hours').val(JSON.stringify(arr));
-    //     $("#locationUpdateForm").submit();
-    // });
-
-</script>
 @endsection

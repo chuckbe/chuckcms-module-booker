@@ -4,9 +4,10 @@ namespace Chuckbe\ChuckcmsModuleBooker\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Chuckbe\ChuckcmsModuleBooker\Models\Location;
+use Chuckbe\ChuckcmsModuleBooker\Chuck\ServiceRepository;
 use Chuckbe\ChuckcmsModuleBooker\Chuck\LocationRepository;
 use Chuckbe\ChuckcmsModuleBooker\Requests\StoreLocationRequest;
-use Chuckbe\ChuckcmsModuleBooker\Models\Location;
 
 class LocationController extends Controller
 {
@@ -17,9 +18,12 @@ class LocationController extends Controller
      *
      * @return void
      */
-    public function __construct(LocationRepository $locationRepository)
+    public function __construct(
+        LocationRepository $locationRepository,
+        ServiceRepository $serviceRepository)
     {
         $this->locationRepository = $locationRepository;
+        $this->serviceRepository = $serviceRepository;
     }
 
     /**
@@ -28,10 +32,11 @@ class LocationController extends Controller
      * @return Illuminate\View\View
      */
     public function index()
-    {   
+    {
         $locations = $this->locationRepository->get();
+        $services = $this->serviceRepository->get();
 
-        return view('chuckcms-module-booker::backend.locations.index', compact('locations'));
+        return view('chuckcms-module-booker::backend.locations.index', compact('locations', 'services'));
     }
 
     /**
@@ -65,7 +70,9 @@ class LocationController extends Controller
      */
     public function edit(Location $location)
     {
-        return view('chuckcms-module-booker::backend.locations.edit', compact('location'));
+        $services = $this->serviceRepository->get();
+
+        return view('chuckcms-module-booker::backend.locations.edit', compact('location', 'services'));
     }
 
     /**
@@ -107,70 +114,4 @@ class LocationController extends Controller
 
         return response()->json(['status' => 'error'], 404);
     }
-    // public function locations()
-    // {   
-    //     $appointments = $this->appointmentRepository->get();
-    //     $locations = $this->locationRepository->get();
-    //     $services = $this->serviceRepository->get();
-    //     return view('chuckcms-module-booker::backend.locations.index', compact('appointments', 'locations', 'services'));
-    // }
-
-    // public function editLocation($location_id)
-    // {
-    //     $location = $this->location->getById($location_id);
-    //     return view('chuckcms-module-booker::backend.locations.edit', compact('location'));
-    // }
-
-    // public function saveLocation(Request $request)
-    // {
-    //     $location = $this->location->getById($request->get('location_id'));
-    //     $json = [];
-    //     $arr = json_decode( $request->get('location_opening_hours'), true );
-    //     foreach($arr as $key=>$value) {
-    //         switch ($key) {
-    //             case "0":
-    //               $json["opening-hours"]["monday"] = $value;
-    //               break;
-    //             case "1":
-    //             $json["opening-hours"]["tuesday"] = $value;
-    //             break;
-    //             case "2":
-    //                 $json["opening-hours"]["wednesday"] = $value;
-    //                 break;
-    //             case "3":
-    //                 $json["opening-hours"]["thursday"] = $value;
-    //                 break;
-    //             case "4":
-    //                 $json["opening-hours"]["friday"] = $value;
-    //                 break;
-    //             case "5":
-    //                 $json["opening-hours"]["saturday"] = $value;
-    //                 break;
-    //             case "6":
-    //                 $json["opening-hours"]["sunday"] = $value;
-    //                 break;
-    //             default:
-    //         }
-    //     }
-    //     $location->name = $request->get('location_name');
-    //     $location->lat = $request->get('location_lat');
-    //     $location->long = $request->get('location_long');
-    //     $location->google_calendar_id = $request->get('location_gid');
-    //     $location->json = $json;
-    //     $location->save();
-    //     return redirect()->route('dashboard.module.booker.locations');
-    // }
-
-    // public function createLocation(Request $request)
-    // {
-    //     $this->location->create([
-    //         'name' => $request->get('location_name'),
-    //         'lat' => $request->get('location_lat'),
-    //         'long' => $request->get('location_long'),
-    //         'google_calendar_id' => $request->get('location_gid')
-    //     ]);
-    //     return redirect()->back();
-    // }
-    
-    
 }

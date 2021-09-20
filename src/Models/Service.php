@@ -3,9 +3,12 @@
 namespace Chuckbe\ChuckcmsModuleBooker\Models;
 
 use Eloquent;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Service extends Eloquent
 {
+    use SoftDeletes;
+    
     /**
      * The table associated with the model.
      *
@@ -19,37 +22,63 @@ class Service extends Eloquent
      * @var array
      */
     protected $fillable = [
-        'type', 'name', 'duration', 'min_duration', 'max_duration', 'price', 'excluded_days', 'excluded_dates', 'json'
+        'order', 'type', 'name', 'duration', 'min_duration', 'max_duration', 'price', 'deposit', 'disabled_weekdays', 'disabled_dates', 'json'
     ];
 
     protected $casts = [
+        'disabled_weekdays' => 'array',
+        'disabled_dates' => 'array',
         'json' => 'array',
     ];
 
     /**
-     * Dynamically retrieve attributes on the model.
-     *
-     * @param  string  $key
-     * @return mixed
-     */
-    public function __get($key)
-    {
-        return $this->getAttribute($key) ?? $this->getJson($key);
-    }
-
-    public function getById($id)
-    {
-        return $this->where('id', $id)->first();
-    }
-
-     /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
+    * The locations that belong to the service.
+    *
+    * @var array
+    */
     public function locations()
     {
-        return $this->belongsToMany(Location::class, 'location_services', 'location_id', 'service_id');
+        return $this->belongsToMany(Location::class, 'locations_services', 'location_id', 'service_id');
+    }
+
+    /**
+    * Check if the service is free or not.
+    *
+    * @var string
+    */
+    public function isFree()
+    {
+        return $this->price == 0;
+    }
+
+    /**
+    * Check if the service is a paid service or not.
+    *
+    * @var string
+    */
+    public function isPaid()
+    {
+        return $this->price > 0;
+    }
+
+    /**
+    * Return the formatted price.
+    *
+    * @var string
+    */
+    public function getFormattedPriceAttribute()
+    {
+        return '€ '.number_format($this->price, '2', ',', '.');
+    }
+
+    /**
+    * Return the formatted price.
+    *
+    * @var string
+    */
+    public function getFormattedDepositAttribute()
+    {
+        return '€ '.number_format($this->deposit, '2', ',', '.');
     }
 
 }

@@ -31,6 +31,10 @@ class ChuckcmsModuleBookerServiceProvider extends ServiceProvider
                 InstallModuleBooker::class,
             ]);
         }
+
+        $this->mergeConfigFrom(
+            __DIR__ . '/../config/chuckcms-module-booker.php', 'chuckcms-module-booker'
+        );
     }
 
     /**
@@ -48,8 +52,5 @@ class ChuckcmsModuleBookerServiceProvider extends ServiceProvider
 
         $loader = \Illuminate\Foundation\AliasLoader::getInstance();
         $loader->alias('ChuckModuleBooker', 'Chuckbe\ChuckcmsModuleBooker\Facades\ChuckModuleBooker');
-        $this->mergeConfigFrom(
-            __DIR__ . '/../config/chuckcms-module-booker.php', 'chuckcms-module-booker'
-        );
     }
 }

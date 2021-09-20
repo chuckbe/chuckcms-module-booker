@@ -4,6 +4,7 @@ namespace Chuckbe\ChuckcmsModuleBooker\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Chuckbe\ChuckcmsModuleBooker\Models\Service;
 use Chuckbe\ChuckcmsModuleBooker\Chuck\ServiceRepository;
 use Chuckbe\ChuckcmsModuleBooker\Requests\StoreServiceRequest;
 
