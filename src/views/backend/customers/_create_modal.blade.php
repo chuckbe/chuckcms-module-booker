@@ -31,8 +31,8 @@
             <div class="row">
               <div class="col-md-12">
                 <div class="form-group form-group-default required">
-                  <label>Duurtijd *</label>
-                  <input type="number" min="1" max="540" steps="1" id="create_service_duration" name="duration" class="form-control" required>
+                  <label>Email *</label>
+                  <input type="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" id="create_customer_email" name="email" class="form-control" required>
                 </div>
               </div>
             </div>
@@ -40,29 +40,12 @@
             <div class="row">
               <div class="col-md-12">
                 <div class="form-group form-group-default required">
-                  <label>Prijs *</label>
-                  <input type="number" min="0.00" steps="0.01" id="create_service_price" name="price" class="form-control" required>
+                  <label>telefoonnummer *</label>
+                  <input type="tel" id="create_customer_tel" name="tel" class="form-control" required>
                 </div>
               </div>
             </div>
 
-            <div class="row">
-              <div class="col-md-12">
-                <div class="form-group form-group-default required">
-                  <label>Voorschot *</label>
-                  <input type="number" min="0.00" steps="0.01" id="create_service_deposit" name="deposit" class="form-control" required>
-                </div>
-              </div>
-            </div>
-
-            <div class="row">
-              <div class="col-md-12">
-                <div class="form-group form-group-default required">
-                  <label>Volgorde</label>
-                  <input type="number" min="0" steps="1" max="9999" id="create_location_order" name="order" class="form-control" value="{{ ($customers->count() + 1) }}" required>
-                </div>
-              </div>
-            </div>
           </div>
           <div class="row">
             <div class="col-md-12 m-t-10 sm-m-t-10">

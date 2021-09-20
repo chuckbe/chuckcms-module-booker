@@ -26,6 +26,9 @@ Route::group(['middleware' => ['web']], function() {
         //END OF:   LOCATIONS ROUTES
         
 
+        Route::get('/dashboard/booker/settings', 'Chuckbe\ChuckcmsModuleBooker\Controllers\SettingsController@index')->name('dashboard.module.booker.settings.index');
+        Route::get('/dashboard/booker/settings/customer', 'Chuckbe\ChuckcmsModuleBooker\Controllers\SettingsController@customer')->name('dashboard.module.booker.settings.index.customer');
+
 
         Route::get('/dashboard/booker/services', 'Chuckbe\ChuckcmsModuleBooker\Controllers\ServiceController@index')->name('dashboard.module.booker.services.index');
         //Route::get('/dashboard/booker/services/create', 'Chuckbe\ChuckcmsModuleBooker\Controllers\ServiceController@create')->name('dashboard.module.booker.services.create');

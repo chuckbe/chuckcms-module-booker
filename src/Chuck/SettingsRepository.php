@@ -1,6 +1,6 @@
 <?php
 
-namespace Chuckbe\ChuckcmsModuleOrderForm\Chuck;
+namespace Chuckbe\ChuckcmsModuleBooker\Chuck;
 
 use ChuckSite;
 use Illuminate\Http\Request;
