@@ -1,7 +1,7 @@
 @extends('chuckcms::backend.layouts.base')
 
 @section('title')
-	Booking Module
+	Appointments
 @endsection
 
 @section('css')
@@ -25,8 +25,18 @@
 document.addEventListener('DOMContentLoaded', function() {
     var calendarEl = document.getElementById('calendar');
     var calendar = new FullCalendar.Calendar(calendarEl, {
-        initialView: 'dayGridMonth',
-        locale: 'nl'
+        initialView: 'timeGridDay',
+        locale: 'nl',
+        headerToolbar: {
+          start: 'prev,next', 
+          center: 'title',
+          end: 'dayGridMonth,timeGridWeek,timeGridDay'
+        },
+        slotDuration: '00:30:00',
+        slotMinTime: '07:00:00',
+        slotMaxTime: '21:00:00',
+        allDaySlot: false,
+        navLinks: true
     });
     calendar.render();
 });

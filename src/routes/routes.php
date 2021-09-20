@@ -5,6 +5,16 @@ Route::group(['middleware' => ['web']], function() {
         Route::get('/dashboard/booker/appointments', 'Chuckbe\ChuckcmsModuleBooker\Controllers\AppointmentController@index')->name('dashboard.module.booker.appointments.index');
         Route::get('/dashboard/booker/appointment/detail', 'Chuckbe\ChuckcmsModuleBooker\Controllers\AppointmentController@detail')->name('dashboard.module.booker.appointments.details');
         
+        //START OF: CUSTOMERS ROUTES
+        Route::get('/dashboard/booker/customers', 'Chuckbe\ChuckcmsModuleBooker\Controllers\CustomerController@index')->name('dashboard.module.booker.customers.index');
+        //Route::get('/dashboard/booker/customers/create', 'Chuckbe\ChuckcmsModuleBooker\Controllers\CustomerController@create')->name('dashboard.module.booker.customers.create');
+        //Route::get('/dashboard/booker/customers/{location}/detail', 'Chuckbe\ChuckcmsModuleBooker\Controllers\CustomerController@detail')->name('dashboard.module.booker.customers.detail');
+        Route::get('/dashboard/booker/customers/{customer}/edit', 'Chuckbe\ChuckcmsModuleBooker\Controllers\CustomerController@edit')->name('dashboard.module.booker.customers.edit');
+        Route::post('/dashboard/booker/customers/save', 'Chuckbe\ChuckcmsModuleBooker\Controllers\CustomerController@store')->name('dashboard.module.booker.customers.save');
+        Route::post('/dashboard/booker/customers/update', 'Chuckbe\ChuckcmsModuleBooker\Controllers\CustomerController@store')->name('dashboard.module.booker.customers.update');
+        Route::post('/dashboard/booker/customers/delete', 'Chuckbe\ChuckcmsModuleBooker\Controllers\CustomerController@delete')->name('dashboard.module.booker.customers.delete');
+        //END OF:   CUSTOMERS ROUTES
+
         //START OF: LOCATIONS ROUTES
         Route::get('/dashboard/booker/locations', 'Chuckbe\ChuckcmsModuleBooker\Controllers\LocationController@index')->name('dashboard.module.booker.locations.index');
         //Route::get('/dashboard/booker/locations/create', 'Chuckbe\ChuckcmsModuleBooker\Controllers\LocationController@create')->name('dashboard.module.booker.locations.create');

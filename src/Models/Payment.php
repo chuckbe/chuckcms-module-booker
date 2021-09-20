@@ -25,20 +25,4 @@ class Payment extends Eloquent
     protected $casts = [
         'json' => 'array',
     ];
-
-    /**
-     * Dynamically retrieve attributes on the model.
-     *
-     * @param  string  $key
-     * @return mixed
-     */
-    public function __get($key)
-    {
-        return $this->getAttribute($key) ?? $this->getJson($key);
-    }
-    public function getById($id)
-    {
-        return $this->where('id', $id)->first();
-    }
-
 }

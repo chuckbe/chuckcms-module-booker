@@ -12,6 +12,7 @@ use Chuckbe\ChuckcmsModuleBooker\Requests\StoreLocationRequest;
 class LocationController extends Controller
 {
     private $locationRepository;
+    private $serviceRepository;
 
     /**
      * Create a new controller instance.

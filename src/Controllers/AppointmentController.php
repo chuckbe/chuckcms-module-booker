@@ -4,21 +4,30 @@ namespace Chuckbe\ChuckcmsModuleBooker\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Chuckbe\ChuckcmsModuleBooker\Chuck\AppointmentRepository;
 use Chuckbe\ChuckcmsModuleBooker\Models\Appointment;
+use Chuckbe\ChuckcmsModuleBooker\Chuck\ServiceRepository;
+use Chuckbe\ChuckcmsModuleBooker\Chuck\LocationRepository;
+use Chuckbe\ChuckcmsModuleBooker\Chuck\AppointmentRepository;
 
 class AppointmentController extends Controller
 {
     private $appointmentRepository;
+    private $locationRepository;
+    private $serviceRepository;
 
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct(AppointmentRepository $appointmentRepository)
+    public function __construct(
+        AppointmentRepository $appointmentRepository, 
+        LocationRepository $locationRepository,
+        ServiceRepository $serviceRepository)
     {
         $this->appointmentRepository = $appointmentRepository;
+        $this->locationRepository = $locationRepository;
+        $this->serviceRepository = $serviceRepository;
     }
 
     /**

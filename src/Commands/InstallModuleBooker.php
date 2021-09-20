@@ -73,6 +73,14 @@ class InstallModuleBooker extends Command
                     'submenu' => null
                 ),
                 'b' => array(
+                    'name' => 'Klanten',
+                    'icon' => true,
+                    'icon_data' => 'map-marked-alt',
+                    'route' => 'dashboard.module.booker.customers.index',
+                    'has_submenu' => false,
+                    'submenu' => null
+                ),
+                'c' => array(
                     'name' => 'Locaties',
                     'icon' => true,
                     'icon_data' => 'map-marked-alt',
@@ -80,11 +88,19 @@ class InstallModuleBooker extends Command
                     'has_submenu' => false,
                     'submenu' => null
                 ),
-                'c' => array(
+                'd' => array(
                     'name' => 'Diensten',
                     'icon' => true,
                     'icon_data' => 'map-marked-alt',
                     'route' => 'dashboard.module.booker.services.index',
+                    'has_submenu' => false,
+                    'submenu' => null
+                ),
+                'e' => array(
+                    'name' => 'Instellingen',
+                    'icon' => true,
+                    'icon_data' => 'map-marked-alt',
+                    'route' => 'dashboard.module.booker.settings.index',
                     'has_submenu' => false,
                     'submenu' => null
                 ),
