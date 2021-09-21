@@ -26,6 +26,7 @@ class SettingsController extends Controller
     {
         $module = Module::where('slug', 'chuckcms-module-booker')->first();
         $settings = $module->json['admin']['settings'];
+        
         $tab = 'appointments';
         return view('chuckcms-module-booker::backend.settings.index')->with(compact('settings', 'tab'));
     }

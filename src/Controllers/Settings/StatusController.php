@@ -75,7 +75,7 @@ class StatusController extends Controller
         $json['admin']['settings']['appointment']['statuses'][$statusKey]['send_email'] = true;
         $json['admin']['settings']['appointment']['statuses'][$statusKey]['email'][$emailKey]['to'] = $request->get('to');
         $json['admin']['settings']['appointment']['statuses'][$statusKey]['email'][$emailKey]['to_name'] = $request->get('to_name');
-        $json['admin']['settings']['appointment']['statuses']['email'][$emailKey]['cc'] = $request->get('cc');
+        $json['admin']['settings']['appointment']['statuses'][$statusKey]['email'][$emailKey]['cc'] = $request->get('cc');
         $json['admin']['settings']['appointment']['statuses'][$statusKey]['email'][$emailKey]['bcc'] = $request->get('bcc');
         $json['admin']['settings']['appointment']['statuses'][$statusKey]['email'][$emailKey]['template'] = $request->get('template');
         $json['admin']['settings']['appointment']['statuses'][$statusKey]['email'][$emailKey]['logo'] = $request->get('logo') == '1' ? true : false;
@@ -121,14 +121,14 @@ class StatusController extends Controller
 
         foreach ($email_object as $key => $email) {
             if($key !== $emailKey) {
-                $object[$key] = $json['settings']['order']['statuses'][$statusKey]['email'][$key];
+                $object[$key] = $json['admin']['settings']['appointment']['statuses'][$statusKey]['email'][$key];
             }
         }
 
-        $json['settings']['order']['statuses'][$statusKey]['email'] = $object;
+        $json['admin']['settings']['appointment']['statuses'][$statusKey]['email'] = $object;
 
         if(count($object) == 0) {
-            $json['settings']['order']['statuses'][$statusKey]['send_email'] = false;
+            $json['admin']['settings']['appointment']['statuses'][$statusKey]['send_email'] = false;
         }
         $booker->json = $json;
         $booker->update();
