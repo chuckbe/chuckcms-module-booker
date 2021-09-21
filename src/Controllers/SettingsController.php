@@ -38,6 +38,14 @@ class SettingsController extends Controller
         return view('chuckcms-module-booker::backend.settings.index')->with(compact('settings', 'tab'));
     }
 
+    public function integerations()
+    {
+        $module = Module::where('slug', 'chuckcms-module-booker')->first();
+        $settings = $module->json['admin']['settings'];
+        $tab = 'integrations';
+        return view('chuckcms-module-booker::backend.settings.index')->with(compact('settings', 'tab'));
+    }
+
     public function update(Request $request)
     {
 

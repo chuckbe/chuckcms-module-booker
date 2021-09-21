@@ -42,6 +42,9 @@
               <li class="nav-item" role="presentation">
                 <a class="nav-link{{ $tab == 'customer'  ? ' active' : ''  }}" id="s_appointment-tab" href="{{ route('dashboard.module.booker.settings.index.customer') }}">Klanten</a>
               </li>
+              <li class="nav-item" role="presentation">
+                <a class="nav-link{{ $tab == 'integerations'  ? ' active' : ''  }}" id="s_appointment-tab" href="{{ route('dashboard.module.booker.settings.index.integerations') }}">Integerations</a>
+              </li>
           </ul>
         </div>
       </div>
