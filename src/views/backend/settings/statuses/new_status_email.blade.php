@@ -160,10 +160,92 @@ $lang = \LaravelLocalization::getCurrentLocale();
         <div class="row">
             <div class="col-sm-12 text-right">
                 <input type="hidden" name="status_key" value="{{ $statusKey }}">
-                <input type="hidden" name="_token" value="{{ Session::token() }}">
+                <input type="hidden" name="_token" value="{{ Session::token()}}">
                 <button class="btn btn-outline-success" type="submit">Opslaan</button>
             </div>
         </div>
     </form>
 </div>
+@endsection
+
+@section('scripts')
+<script src="{{ URL::to('vendor/laravel-filemanager/js/lfm.js') }}"></script>
+<script>
+$( document ).ready(function() { 
+    $( "#css_input_container" ).sortable({revert: true});
+    $('body').on('change', '.boolean_checkbox_input,.status_required_input,.status_textarea_input', function() {
+        if($(this).is(':checked')) {
+            $(this).val(1);
+            $(this).parent('label').siblings('input').prop('disabled', true);
+        } else {
+            $(this).val(0);
+            $(this).parent('label').siblings('input').prop('disabled', false);
+        }
+    });
+    $('body').on('click', '.remove_line_button', function() {
+        checker = $(this).parents('._input_container').find('._input_line').length;
+        if(checker > 1) {
+            $(this).parents('._input_line').remove();
+        } else {
+            $(this).parents('._input_line').addClass('d-none');
+            $(this).parents('._input_line').find('input').prop('disabled', true);
+        }
+    });
+    $('body').on('click', '#new_status_button', function() {
+        $('#new_status_error').addClass('d-none');
+        if($('#new_status_slug').val().length == 0) {
+            $('#new_status_error').removeClass('d-none');
+            return;
+        }
+        new_slug = $('#new_status_slug').val();
+        new_required = $('#new_status_required').is(':checked');
+        new_textarea = $('#new_status_textarea').is(':checked');
+        if($('.status_input_line').length > 1 || ($('.status_input_line').length == 1 && !$('.status_input_line').hasClass('d-none'))) {
+            $('.status_input_line:first').clone().appendTo('.status_input_container');
+            $('.status_input_container').append('<hr>');
+        } else if($('.status_input_line').length == 1 && $('.status_input_line').hasClass('d-none') ) {
+            $('.status_input_line:first').removeClass('d-none');
+            $('.status_input_line:first').find('input').prop('disabled', false);
+        }
+        $('.status_input_line:last').find('.status_slug_input').attr('id', 'status_slug_'+new_slug);
+        $('.status_input_line:last').find('.status_slug_input').val(new_slug);
+        $('.status_input_line:last').find('.status_slug_input').siblings('label').attr('for', 'status_slug_'+new_slug);
+        $('.status_input_line:last').find('.status_required_input').attr('id', 'status_required_'+new_slug);
+        $('.status_input_line:last').find('.status_required_input').parent('label').attr('for', 'status_required_'+new_slug);
+        if(new_required == true) {
+            $('.status_input_line:last').find('.status_required_input').prop('checked', true);
+            $('.status_input_line:last').find('.status_required_input').val(1);
+            $('.status_input_line:last').find('.status_required_input').parent('label').siblings('input').prop('disabled', true);
+        } else {
+            $('.status_input_line:last').find('.status_required_input').prop('checked', false);
+            $('.status_input_line:last').find('.status_required_input').val(0);
+            $('.status_input_line:last').find('.status_required_input').parent('label').siblings('input').prop('disabled', false);
+        }
+        $('.status_input_line:last').find('.status_textarea_input').attr('id', 'status_textarea_'+new_slug);
+        $('.status_input_line:last').find('.status_textarea_input').parent('label').attr('for', 'status_textarea_'+new_slug);
+        if(new_textarea == true) {
+            $('.status_input_line:last').find('.status_textarea_input').prop('checked', true);
+            $('.status_input_line:last').find('.status_textarea_input').val(1);
+            $('.status_input_line:last').find('.status_textarea_input').parent('label').siblings('input').prop('disabled', true);
+        } else {
+            $('.status_input_line:last').find('.status_textarea_input').prop('checked', false);
+            $('.status_input_line:last').find('.status_textarea_input').val(0);
+            $('.status_input_line:last').find('.status_textarea_input').parent('label').siblings('input').prop('disabled', false);
+        }
+        $('#new_status_slug').val('');
+        $('#new_status_required').prop('checked', false);
+        $('#new_status_textarea').prop('checked', false);
+    });
+    init();
+    function init () {
+        //init media manager inputs 
+        var domain = "{{ URL::to('dashboard/media')}}";
+        $('#lfm').filemanager('image', {prefix: domain});
+        $('.autonumeric').autoNumeric('init');
+    }
+});
+</script>
+  @if (session('notification'))
+      @include('chuckcms::backend.includes.notification')
+  @endif
 @endsection
