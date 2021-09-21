@@ -191,3 +191,56 @@ Bewerk status
         </form>
     </div>
 @endsection
+
+@section('scripts')
+<script src="{{ URL::to('vendor/laravel-filemanager/js/lfm.js') }}"></script>
+<script>
+var a_token = "{{ Session::token() }}";
+var remove_email_from_status_url = "{{ route('dashboard.module.booker.settings.index.statuses.email.delete') }}";
+$( document ).ready(function() {
+    $('body').on('change', '.boolean_checkbox_input', function() {
+        if($(this).is(':checked')) {
+            $(this).val(1);
+            $(this).parent('label').siblings('input').prop('disabled', true);
+        } else {
+            $(this).val(0);
+            $(this).parent('label').siblings('input').prop('disabled', false);
+        }
+    });
+    $('body').on('click', '.delete_email', function(event) {
+        event.preventDefault();
+        r = confirm("Are you sure you want to delete this email?");
+        if (r == true) {
+            status_key = $(this).attr('data-status-key');
+            email_key = $(this).attr('data-email-key');
+            $.ajax({
+                method: 'POST',
+                url: remove_email_from_status_url,
+                data: { 
+                    status_key: status_key,
+                    email_key: email_key, 
+                    _token: a_token
+                }
+            }).done(function(data) {
+                if(data.status == 'success') {
+                    $('.status_email_row_'+email_key).remove();
+                    if($('.delete_email').length == 0){
+                        $('input[name=_has_email]').val('0');
+                    }
+                }
+            });
+        } 
+        return;
+    });
+    init();
+    function init () {
+        //init media manager inputs 
+        var domain = "{{ URL::to('dashboard/media')}}";
+        $('#lfm').filemanager('image', {prefix: domain});
+    }
+});
+</script>
+@if (session('notification'))
+    @include('chuckcms::backend.includes.notification')
+@endif
+@endsection

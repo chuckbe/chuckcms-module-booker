@@ -98,4 +98,40 @@ class StatusController extends Controller
 
         return redirect()->route('dashboard.module.booker.settings.index.statuses.edit', ['status' => $statusKey])->with('notification', 'Instellingen opgeslagen!');
     }
+
+    public function emailDelete(Request $request)
+    {
+        $emailKey = $request->get('email_key');
+        $statusKey = $request->get('status_key');
+
+
+        $booker = $this->module->where('slug', 'chuckcms-module-booker')->first();
+        $json = $booker->json;
+
+        $email_key_strings = implode(',', array_keys($json['admin']['settings']['appointment']['statuses'][$statusKey]['email']));
+
+        $this->validate($request, [
+            'status_key' => 'required',
+            'email_key' => 'required|in:'.$email_key_strings,
+        ]);
+
+        $email_object = $json['admin']['settings']['appointment']['statuses'][$statusKey]['email'];
+
+        $object = [];
+
+        foreach ($email_object as $key => $email) {
+            if($key !== $emailKey) {
+                $object[$key] = $json['settings']['order']['statuses'][$statusKey]['email'][$key];
+            }
+        }
+
+        $json['settings']['order']['statuses'][$statusKey]['email'] = $object;
+
+        if(count($object) == 0) {
+            $json['settings']['order']['statuses'][$statusKey]['send_email'] = false;
+        }
+        $booker->json = $json;
+        $booker->update();
+        return response()->json(['status' => 'success']);
+    }
 }
