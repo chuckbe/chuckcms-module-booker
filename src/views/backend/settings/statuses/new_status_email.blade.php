@@ -166,3 +166,4 @@ $lang = \LaravelLocalization::getCurrentLocale();
         </div>
     </form>
 </div>
+@endsection
