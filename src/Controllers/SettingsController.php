@@ -1,8 +1,8 @@
 <?php
 
-namespace Chuckbe\ChuckcmsModuleOrderForm\Controllers;
+namespace Chuckbe\ChuckcmsModuleBooker\Controllers;
 
-use Chuckbe\ChuckcmsModuleOrderForm\Chuck\SettingsRepository;
+use Chuckbe\ChuckcmsModuleBooker\Chuck\SettingsRepository;
 
 use Illuminate\Http\Request;
 use App\Http\Requests;
@@ -24,10 +24,26 @@ class SettingsController extends Controller
 
     public function index()
     {
-        $module = Module::where('slug', 'chuckcms-module-order-form')->first();
+        $module = Module::where('slug', 'chuckcms-module-booker')->first();
         $settings = $module->json['admin']['settings'];
+        $tab = 'appointments';
+        return view('chuckcms-module-booker::backend.settings.index')->with(compact('settings', 'tab'));
+    }
 
-        return view('chuckcms-module-order-form::backend.settings.index')->with(compact('settings'));
+    public function customer()
+    {
+        $module = Module::where('slug', 'chuckcms-module-booker')->first();
+        $settings = $module->json['admin']['settings'];
+        $tab = 'customer';
+        return view('chuckcms-module-booker::backend.settings.index')->with(compact('settings', 'tab'));
+    }
+
+    public function integerations()
+    {
+        $module = Module::where('slug', 'chuckcms-module-booker')->first();
+        $settings = $module->json['admin']['settings'];
+        $tab = 'integrations';
+        return view('chuckcms-module-booker::backend.settings.index')->with(compact('settings', 'tab'));
     }
 
     public function update(Request $request)
