@@ -33,6 +33,16 @@ class Location extends Eloquent
     ];
 
     /**
+    * A location may have many appointments.
+    *
+    * @var array
+    */
+    public function appointments()
+    {
+        return $this->hasMany(Appointment::class);
+    }
+
+    /**
     * The services that belong to the location.
     *
     * @var array

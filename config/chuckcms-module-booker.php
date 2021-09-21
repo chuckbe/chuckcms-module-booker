@@ -26,7 +26,12 @@ return [
 		'table' => 'cmb_payments'
 	],
 	
-	'clients' => [
-		'table' => 'cmb_clients'
+	'customers' => [
+		'table' => 'cmb_customers'
+	],
+
+	'users' => [
+		'table' => 'users',
+		'model' => Chuckbe\Chuckcms\Models\User::class
 	],
 ];

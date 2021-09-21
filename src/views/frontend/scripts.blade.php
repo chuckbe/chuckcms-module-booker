@@ -2,6 +2,24 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
+
+<script>
+$(document).ready(function (event) {
+    $('form.cmb_booker_app select').select2({
+        theme: 'bootstrap4',
+        minimumResultsForSearch: Infinity
+    });
+
+    $('body').on('change', 'form.cmb_booker_app select[name="location"]', function (event) {
+        
+    });
+});
+</script>
+
+
+
+
+
 <script>
     $('#datepicker').datepicker({
         format: 'dd/mm/yyyy'
@@ -18,6 +36,8 @@
     $('.date-data #day').html(moment($('#datepicker').data('date'), "DD-MM-YYYY").format('dddd'));
     $('.date-data #date').html(moment($('#datepicker').data('date'), "DD-MM-YYYY").format('DD MMMM yyyy'));
     $('#datepicker_date_hidden').val($('#datepicker').data('date'));
+    
+
     $("#soortafspraak").select2({
         ajax: {
             url: '/dashboard/booker/getservices',

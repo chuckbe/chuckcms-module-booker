@@ -217,7 +217,7 @@
               {{-- end of saturday --}}
 
               {{-- start of sunday --}}
-              <div class="col-sm-12 openingshoursRangeInputSection" data-day="">
+              <div class="col-sm-12 openingshoursRangeInputSection" data-day="0">
                 <div>
                   <label><small>Zondag</small></label>
                   <span class="badge badge-secondary addOpeningshoursRangeInputRowBtn float-right" type="button" data-day="0">+</span>

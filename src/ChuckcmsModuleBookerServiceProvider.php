@@ -16,17 +16,14 @@ class ChuckcmsModuleBookerServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        $this->mergeConfigFrom(
+            __DIR__ . '/../config/chuckcms-module-booker.php', 'chuckcms-module-booker'
+        );
+
         $this->loadRoutesFrom(__DIR__.'/routes/routes.php');
 
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
 
-        $this->publishes([
-            __DIR__.'/../assets' => public_path('chuckbe/chuckcms-module-booker'),
-        ], 'chuckcms-module-booker-public');
-
-        // $this->publishes([
-        //     __DIR__ . '/../config/chuckcms-module-booker.php' => config_path('chuckcms-module-booker.php'),
-        // ], 'chuckcms-module-booker-config');
         $this->doPublishing();
 
         if ($this->app->runningInConsole()) {
@@ -34,10 +31,6 @@ class ChuckcmsModuleBookerServiceProvider extends ServiceProvider
                 InstallModuleBooker::class,
             ]);
         }
-
-        $this->mergeConfigFrom(
-            __DIR__ . '/../config/chuckcms-module-booker.php', 'chuckcms-module-booker'
-        );
     }
 
     /**
@@ -70,7 +63,7 @@ class ChuckcmsModuleBookerServiceProvider extends ServiceProvider
 
         $this->publishes([
             __DIR__.'/../database/migrations/create_appointments_table.php.stub' => $this->getMigrationFileName('create_appointments_table.php'),
-            __DIR__.'/../database/migrations/create_clients_table.php.stub' => $this->getMigrationFileName('create_clients_table.php'),
+            __DIR__.'/../database/migrations/create_customers_table.php.stub' => $this->getMigrationFileName('create_customers_table.php'),
             __DIR__.'/../database/migrations/create_locations_table.php.stub' => $this->getMigrationFileName('create_locations_table.php'),
             __DIR__.'/../database/migrations/create_payments_table.php.stub' => $this->getMigrationFileName('create_payments_table.php'),
             __DIR__.'/../database/migrations/create_services_table.php.stub' => $this->getMigrationFileName('create_services_table.php'),

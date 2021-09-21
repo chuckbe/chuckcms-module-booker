@@ -25,4 +25,14 @@ class Payment extends Eloquent
     protected $casts = [
         'json' => 'array',
     ];
+
+    /**
+    * A payment belongs to many appointments.
+    *
+    * @var array
+    */
+    public function appointments()
+    {
+        return $this->belongsToMany(Appointment::class, 'appointments_payments', 'payment_id', 'appointment_id');
+    }
 }

@@ -27,40 +27,43 @@ class Appointment extends Eloquent
     ];
 
     /**
-     * Dynamically retrieve attributes on the model.
-     *
-     * @param  string  $key
-     * @return mixed
-     */
-    public function __get($key)
-    {
-        return $this->getAttribute($key) ?? $this->getJson($key);
-    }
-
-     /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
+    * An appointment belongs to a location.
+    *
+    * @var array
+    */
     public function location()
     {
-        return $this->belongsTo(location::class);
+        return $this->belongsTo(Location::class);
     } 
 
+    /**
+    * An appointment belongs to many services.
+    *
+    * @var array
+    */
     public function services()
     {
         return $this->belongsToMany(Service::class, 'appointments_services', 'appointment_id', 'service_id');
     }
 
-    public function payment()
+    /**
+    * An appointment belongs to many payments.
+    *
+    * @var array
+    */
+    public function payments()
     {
-        return $this->belongsToMany(Payment::class, 'appointments_services', 'appointment_id', 'payment_id');
+        return $this->belongsToMany(Payment::class, 'appointments_payments', 'appointment_id', 'payment_id');
     }
 
-    public function client()
+    /**
+    * An appointment belongs to a customer.
+    *
+    * @var array
+    */
+    public function customer()
     {
-        return $this->belongsTo(Client::class);
+        return $this->belongsTo(Customer::class);
     }
-
 
 }

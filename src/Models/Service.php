@@ -32,13 +32,23 @@ class Service extends Eloquent
     ];
 
     /**
+    * A service belongs to many appointments.
+    *
+    * @var array
+    */
+    public function appointments()
+    {
+        return $this->belongsToMany(Appointment::class, 'appointments_services', 'service_id', 'appointment_id');
+    }
+
+    /**
     * The locations that belong to the service.
     *
     * @var array
     */
     public function locations()
     {
-        return $this->belongsToMany(Location::class, 'locations_services', 'location_id', 'service_id');
+        return $this->belongsToMany(Location::class, 'locations_services', 'service_id', 'location_id');
     }
 
     /**

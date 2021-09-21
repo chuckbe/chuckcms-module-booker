@@ -2,6 +2,7 @@
 
 namespace Chuckbe\ChuckcmsModuleBooker\Chuck;
 
+use Chuckbe\ChuckcmsModuleBooker\Chuck\LocationRepository;
 use Chuckbe\ChuckcmsModuleBooker\Models\Appointment;
 use Chuckbe\ChuckcmsModuleBooker\Models\Location;
 use Chuckbe\ChuckcmsModuleBooker\Models\Service;
@@ -11,10 +12,15 @@ use Carbon\Carbon;
 
 class BookerFormRepository
 {
+    private $locationRepository;
     private $appointment;
 
-    public function __construct(Appointment $appointment, Service $service)
+    public function __construct(
+        LocationRepository $locationRepository, 
+        Appointment $appointment, 
+        Service $service)
     {
+        $this->locationRepository = $locationRepository;
         $this->appointment = $appointment;
         $this->service = $service;
     }
@@ -36,8 +42,10 @@ class BookerFormRepository
      */
     public function render()
     {
+        $locations = $this->locationRepository->get();
         $services = $this->getServices();
-    	return view('chuckcms-module-booker::frontend.form', compact('services'))->render();
+
+    	return view('chuckcms-module-booker::frontend.form', compact('locations', 'services'))->render();
     }
 
     /**

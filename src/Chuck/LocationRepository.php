@@ -63,7 +63,7 @@ class LocationRepository
     {
         $opening_hours = $this->formatOpeningHours($request);
 
-        $this->location->create([
+        $location = $this->location->create([
             'name' => $request->get('name'),
             'disabled_weekdays' => $request->get('disabled_weekdays'),
             'disabled_dates' => explode(',', $request->get('disabled_dates')),
@@ -90,9 +90,8 @@ class LocationRepository
      **/
     public function update(StoreLocationRequest $request)
     {
-        //dd($request->get('disabled_weekdays'));
         $opening_hours = $this->formatOpeningHours($request);
-//dd($request->get('name'));
+
         $location = $this->location->where('id', $request->get('id'))->first();
 
         $location->update([
