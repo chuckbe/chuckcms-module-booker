@@ -28,6 +28,12 @@ Route::group(['middleware' => ['web']], function() {
 
         Route::get('/dashboard/booker/settings', 'Chuckbe\ChuckcmsModuleBooker\Controllers\SettingsController@index')->name('dashboard.module.booker.settings.index');
         Route::post('/dashboard/booker/settings/update', 'Chuckbe\ChuckcmsModuleBooker\Controllers\Settings\AppointmentController@update')->name('dashboard.module.booker.settings.index.appointment.update');
+        Route::get('/dashboard/booker/settings/statuses/edit/{status}', 'Chuckbe\ChuckcmsModuleBooker\Controllers\Settings\StatusController@edit')->name('dashboard.module.booker.settings.index.statuses.edit');
+        Route::get('/dashboard/booker/settings/statuses/{status}/emails/new', 'Chuckbe\ChuckcmsModuleBooker\Controllers\Settings\StatusController@email')->name('dashboard.module.booker.settings.index.statuses.email.new');
+        Route::post('/dashboard/booker/settings/statuses/update', 'Chuckbe\ChuckcmsModuleBooker\Controllers\Settings\StatusController@update')->name('dashboard.module.booker.settings.index.statuses.update');
+        Route::post('/dashboard/booker/settings/statuses/emails/save', 'Chuckbe\ChuckcmsModuleBooker\Controllers\Settings\StatusController@emailSave')->name('dashboard.module.booker.settings.index.statuses.email.save');
+		Route::post('/dashboard/booker/settings/statuses/emails/delete', 'Chuckbe\ChuckcmsModuleBooker\Controllers\Settings\StatusController@emailDelete')->name('dashboard.module.booker.settings.index.statuses.email.delete');
+			
         Route::get('/dashboard/booker/settings/customer', 'Chuckbe\ChuckcmsModuleBooker\Controllers\SettingsController@customer')->name('dashboard.module.booker.settings.index.customer');
         Route::post('/dashboard/booker/settings/customer/update', 'Chuckbe\ChuckcmsModuleBooker\Controllers\\Settings\CustomerController@update')->name('dashboard.module.booker.settings.index.customer.update');
         Route::get('/dashboard/booker/settings/integerations', 'Chuckbe\ChuckcmsModuleBooker\Controllers\SettingsController@integerations')->name('dashboard.module.booker.settings.index.integerations');
