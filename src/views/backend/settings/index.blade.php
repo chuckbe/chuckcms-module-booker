@@ -40,10 +40,10 @@
                 <a class="nav-link{{ $tab == 'appointments'  ? ' active' : ''  }}" id="s_appointment-tab" href="{{ route('dashboard.module.booker.settings.index') }}">Appointments</a>
               </li>
               <li class="nav-item" role="presentation">
-                <a class="nav-link{{ $tab == 'customer'  ? ' active' : ''  }}" id="s_appointment-tab" href="{{ route('dashboard.module.booker.settings.index.customer') }}">Klanten</a>
+                <a class="nav-link{{ $tab == 'customer'  ? ' active' : ''  }}" id="s_customer-tab" href="{{ route('dashboard.module.booker.settings.index.customer') }}">Klanten</a>
               </li>
               <li class="nav-item" role="presentation">
-                <a class="nav-link{{ $tab == 'integerations'  ? ' active' : ''  }}" id="s_appointment-tab" href="{{ route('dashboard.module.booker.settings.index.integerations') }}">Integerations</a>
+                <a class="nav-link{{ $tab == 'integrations'  ? ' active' : ''  }}" id="s_integration-tab" href="{{ route('dashboard.module.booker.settings.index.integerations') }}">Integerations</a>
               </li>
           </ul>
         </div>
@@ -55,6 +55,9 @@
       </div>
       <div class="col-sm-12 tab-pane fade{{ $tab == 'customer'  ? '  show active' : ''  }}" id="s_customer" role="tabpanel" aria-labelledby="s_customer-tab">
         @include('chuckcms-module-booker::backend.settings.index._tab_customers')
+      </div>
+      <div class="col-sm-12 tab-pane fade{{ $tab == 'integrations'  ? '  show active' : ''  }}" id="s_integration" role="tabpanel" aria-labelledby="s_integration-tab">
+        @include('chuckcms-module-booker::backend.settings.index._tab_integrations')
       </div>
     </div>
     
