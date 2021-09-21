@@ -23,7 +23,7 @@
                                 <td><span class="badge badge-{{ $status['invoice'] ? 'success' : 'danger' }} badge-pill">{{ $status['invoice'] ? '✓' : '✕' }}</span></td>
                                 <td>
                                     @can('edit forms')
-                                    <a href="#" class="btn btn-sm btn-outline-secondary rounded d-inline-block">
+                                    <a href="{{ route('dashboard.module.booker.settings.index.statuses.edit', ['status' => $statusKey]) }}" class="btn btn-sm btn-outline-secondary rounded d-inline-block">
                                         <i class="fa fa-pen"></i> edit 
                                     </a>
                                     @endcan
