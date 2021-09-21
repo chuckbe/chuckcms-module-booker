@@ -27,7 +27,9 @@ Route::group(['middleware' => ['web']], function() {
         
 
         Route::get('/dashboard/booker/settings', 'Chuckbe\ChuckcmsModuleBooker\Controllers\SettingsController@index')->name('dashboard.module.booker.settings.index');
+        Route::post('/dashboard/booker/settings/update', 'Chuckbe\ChuckcmsModuleBooker\Controllers\Settings\AppointmentController@update')->name('dashboard.module.booker.settings.index.appointment.update');
         Route::get('/dashboard/booker/settings/customer', 'Chuckbe\ChuckcmsModuleBooker\Controllers\SettingsController@customer')->name('dashboard.module.booker.settings.index.customer');
+        Route::post('/dashboard/booker/settings/customer/update', 'Chuckbe\ChuckcmsModuleBooker\Controllers\\Settings\CustomerController@update')->name('dashboard.module.booker.settings.index.customer.update');
 
 
         Route::get('/dashboard/booker/services', 'Chuckbe\ChuckcmsModuleBooker\Controllers\ServiceController@index')->name('dashboard.module.booker.services.index');

@@ -54,12 +54,7 @@
         @include('chuckcms-module-booker::backend.settings.index._tab_customers')
       </div>
     </div>
-    <div class="row">
-      <div class="col-sm-12 text-right">
-        <input type="hidden" name="_token" value="{{ Session::token() }}">
-        <button class="btn btn-outline-success" type="submit">Opslaan</button>
-      </div>
-    </div>
+    
 </div>
 @endsection
 
