@@ -36,6 +36,64 @@ class StatusController extends Controller
         // return view('chuckcms-module-ecommerce::backend.settings.orders.edit_status', ['module' => $ecommerce, 'templates' => $templates, 'status' => $status, 'statusKey' => $statusKey]);
     }
 
+    public function update(Request $request)
+    {
+        $this->validate($request, [
+            'is_paid' => 'required|in:0,1',
+            'is_delivered' => 'required|in:0,1',
+            'has_invoice' => 'required|in:0,1',
+            'display_name' => 'required|array',
+            'short' => 'required|array',
+            'to' => 'required|array',
+            'to_name' => 'required|array',
+            'cc' => 'nullable',
+            'bcc' => 'nullable',
+            'template' => 'required|array',
+            'logo' => 'required|array',
+            'send_delivery_note' => 'required|array',
+            'email.*' => 'required|array',
+            'email_key' => 'required|array',
+            'status_key' => 'required',
+            '_has_email' => 'required|in:0,1'
+        ]);
+
+        $statusKey = $request->get('status_key');
+        $booker = $this->module->where('slug', 'chuckcms-module-booker')->first();
+        $json = $booker->json;
+        $langs = ChuckSite::getSupportedLocales();
+        foreach ($langs as $langKey => $langValue) {
+            $json['admin']['settings']['appointment']['statuses'][$statusKey]['display_name'][$langKey] = $request->get('display_name')[$langKey];
+            $json['admin']['settings']['appointment']['statuses'][$statusKey]['short'][$langKey] = $request->get('short')[$langKey];
+        }
+
+        if($request->get('_has_email') == '1') {
+            $json['admin']['settings']['appointment']['statuses'][$statusKey]['send_email'] = true;
+
+            foreach( $request->get('email_key') as $emailKey) {
+                $json['admin']['settings']['appointment']['statuses'][$statusKey]['email'][$emailKey]['to'] = $request->get('to')[$emailKey];
+                $json['admin']['settings']['appointment']['statuses'][$statusKey]['email'][$emailKey]['to_name'] = $request->get('to_name')[$emailKey];
+                $json['admin']['settings']['appointment']['statuses'][$statusKey]['email'][$emailKey]['bcc'] = $request->get('bcc')[$emailKey];
+                $json['admin']['settings']['appointment']['statuses'][$statusKey]['email'][$emailKey]['template'] = $request->get('template')[$emailKey];
+                $json['admin']['settings']['appointment']['statuses'][$statusKey]['email'][$emailKey]['logo'] = $request->get('logo')[$emailKey] == '1' ? true : false;
+                $json['admin']['settings']['appointment']['statuses'][$statusKey]['email'][$emailKey]['send_delivery_note'] = $request->get('send_delivery_note')[$emailKey] == '1' ? true : false;
+            }
+            foreach($json['admin']['settings']['appointment']['statuses'][$statusKey]['email'][$emailKey]['data'] as $fieldKey => $field){
+                foreach ($langs as $langKey => $langValue) {
+                    $json['admin']['settings']['appointment']['statuses'][$statusKey]['email'][$emailKey]['data'][$fieldKey]['value'][$langKey] = $request->get('email')[$emailKey]['data'][$fieldKey][$langKey];
+                }
+            }
+        }
+        $json['admin']['settings']['appointment']['statuses'][$statusKey]['invoice'] = $request->get('has_invoice') == '1' ? true : false;
+        $json['admin']['settings']['appointment']['statuses'][$statusKey]['delivery'] = $request->get('is_delivered') == '1' ? true : false;
+        $json['admin']['settings']['appointment']['statuses'][$statusKey]['paid'] = $request->get('is_paid') == '1' ? true : false;
+
+        $booker->json = $json;
+        $booker->update();
+
+        return redirect()->route('dashboard.module.booker.settings.index')->with('notification', 'Instellingen opgeslagen!');
+
+    }
+
     public function email($status)
     {
         $booker = $this->module->where('slug', 'chuckcms-module-booker')->first();
