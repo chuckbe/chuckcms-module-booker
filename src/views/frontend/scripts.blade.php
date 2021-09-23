@@ -2,19 +2,98 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@splidejs/splide@latest/dist/js/splide.min.js"></script>
+
 
 <script>
+document.addEventListener( 'DOMContentLoaded', function () {
+    //new Splide( '.splide' ).mount();
+
+    new Splide( '.splide', {
+        perPage: 6,
+        perMove: 1,
+        // padding: {
+        //     right: '1.5rem',
+        //     left : '1.5rem',
+        // },
+        rewind : true,
+        pagination: false,
+    } ).mount();
+});
+
 $(document).ready(function (event) {
+    var a_token = "{{Session::token()}}";
+    var get_available_dates_url = "{{route('module.booker.get_available_dates')}}";
+
     $('form.cmb_booker_app select').select2({
         theme: 'bootstrap4',
         minimumResultsForSearch: Infinity
     });
 
     $('body').on('change', 'form.cmb_booker_app select[name="location"]', function (event) {
-        
+
     });
+
+    $('body').on('change', 'form.cmb_booker_app select[name="cmb_services"]', function (event) {
+        if ($(this).find('option:selected:not(:disabled)').length == 0) {
+            return;
+        }
+
+        showDatepicker();
+    });
+
+    function showDatepicker() {
+        console.log('show datepicker');
+        
+        //show 'Loading...' style message
+        $('.cmb_services_loading_message').removeClass('d-none');
+
+        //Get available dates for service/location(s)
+        getAvailableDates().done(function (response) {
+            if (response.status == "success"){
+                //
+            } else {
+                //
+            }
+        });
+
+        //Disable unavailable dates in the datepicker
+        //hide 'Loading...' msg
+        //show the actual datepicker
+
+        //$('.cmb_datepicker_wrapper').removeClass('d-none');
+    }
+
+    function getAvailableDates() {
+        return $.ajax({
+            method: 'POST',
+            url: get_available_dates_url,
+            data: { 
+                location: $('input[name=location]:checked').val(), 
+                services: $('input[name=order_date]').val(), 
+                _token: a_token
+            }
+        });
+    }
 });
 </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

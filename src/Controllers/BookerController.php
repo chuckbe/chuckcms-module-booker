@@ -42,5 +42,13 @@ class BookerController extends Controller
         return view('chuckcms-module-booker::backend.appointments.detail', compact('appointment'));
     }
 
+    public function getAvailableDates(Request $request)
+    {
+        $this->validate($request, [
+            'location' => 'required',
+            'services' => 'required'
+        ]);
 
+        return response()->json(['status' => 'success'], 200);
+    }
 }

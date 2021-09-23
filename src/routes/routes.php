@@ -49,6 +49,8 @@ Route::group(['middleware' => ['web']], function() {
         Route::get('/dashboard/booker/settings', 'Chuckbe\ChuckcmsModuleBooker\Controllers\SettingsController@index')->name('dashboard.module.booker.settings.index');
     });
 
+    Route::post('/module/booker/get-available-dates', 'Chuckbe\ChuckcmsModuleBooker\Controllers\BookerController@getAvailableDates')->name('module.booker.get_available_dates');
+
     // Route::post('/dashboard/booker/getavailabletimeslots', 'Chuckbe\ChuckcmsModuleBooker\Controllers\BookerController@getAvailableTimeslots')->name('dashboard.module.booker.gettimeslots');
     // Route::post('/dashboard/booker/formhandle', 'Chuckbe\ChuckcmsModuleBooker\Controllers\BookerController@formHandle')->name('dashboard.module.booker.formhandle');
     

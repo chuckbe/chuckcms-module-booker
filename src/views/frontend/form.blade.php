@@ -1,8 +1,9 @@
-<div class="container">
+<div class="container" style="min-height:450px">
     <div class="row">
-        <div class="col-12">
+        <div class="col-sm-8 offset-sm-2">
             <form class="cmb_booker_app" action="">
                 @include('chuckcms-module-booker::frontend.includes._steps')
+                @include('chuckcms-module-booker::frontend.includes._buttons')
             </form>
             {{-- <div class="date-data">
                 <span class="text-muted font-weight-bold" id="day"></span><br>
@@ -12,9 +13,9 @@
                 @include('chuckcms-module-booker::frontend.includes.afspraakform')
             </div> --}}
         </div>
-        <div class="col-12 mt-5 border-top">
+        {{-- <div class="col-12 mt-5 border-top">
             @include('chuckcms-module-booker::frontend.includes.datepicker')
-        </div>
+        </div> --}}
     </div>
 </div>
 
