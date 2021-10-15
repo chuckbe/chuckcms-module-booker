@@ -199,6 +199,24 @@ $( document ).ready(function() {
 			            <div class="row">
 			              <div class="col-md-12">
 			                <div class="form-group form-group-default required">
+			                  <label>Max. gewicht</label>
+			                  <input type="number" min="0" steps="1" max="9999" id="edit_location_max_weight" name="max_weight" class="form-control" value="{{ old('max_weight', $location->max_weight) }}" required>
+			                </div>
+			              </div>
+			            </div>
+
+			            <div class="row">
+			              <div class="col-md-12">
+			                <div class="form-group form-group-default required">
+			                  <label>Interval</label>
+			                  <input type="number" min="0" steps="1" max="9999" id="edit_location_interval" name="interval" class="form-control" value="{{ old('interval', $location->interval) }}" required>
+			                </div>
+			              </div>
+			            </div>
+
+			            <div class="row">
+			              <div class="col-md-12">
+			                <div class="form-group form-group-default required">
 			                  <label>Volgorde</label>
 			                  <input type="number" min="0" steps="1" max="9999" id="edit_location_order" name="order" class="form-control" value="{{ old('order', $location->order) }}" required>
 			                </div>

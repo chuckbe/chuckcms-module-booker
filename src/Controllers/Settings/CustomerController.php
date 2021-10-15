@@ -28,8 +28,8 @@ class CustomerController extends Controller
     {
         $booker = $this->module->where('slug', 'chuckcms-module-booker')->first();
         $json = $booker->json;
-        $json['admin']['settings']['customer']['is_tel_required'] = $request->get('is_tel_required') == '1' ? true : false;
-        $json['admin']['settings']['customer']['title'] = $request->get('title');
+        $json['settings']['customer']['is_tel_required'] = $request->get('is_tel_required') == '1' ? true : false;
+        $json['settings']['customer']['title'] = $request->get('title');
         $booker->json = $json;
         $booker->update();
         return redirect()->route('dashboard.module.booker.settings.index.customer')->with('notification', 'Instellingen opgeslagen!');

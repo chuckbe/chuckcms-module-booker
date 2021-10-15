@@ -8,7 +8,7 @@
                             <th scope="col">Titel</th>
                             <th scope="col">E-mail?</th>
                             <th scope="col">Betaald?</th>
-                            <th scope="col">Geleverd?</th>
+                            <th scope="col">Voorschot?</th>
                             <th scope="col">Factuur?</th>
                             <th scope="col" style="min-width:170px">Acties</th>
                         </tr>
@@ -19,7 +19,7 @@
                                 <td>{{ $status['display_name'][ChuckSite::getFeaturedLocale()] }} <span class="badge badge-secondary badge-pill">{{ $status['short'][ChuckSite::getFeaturedLocale()] }}</span></td>
                                 <td><span class="badge badge-{{ $status['send_email'] ? 'success' : 'danger' }} badge-pill">{{ $status['send_email'] ? '✓' : '✕' }}</span></td>
                                 <td><span class="badge badge-{{ $status['paid'] ? 'success' : 'danger' }} badge-pill">{{ $status['paid'] ? '✓' : '✕' }}</span></td>
-                                <td><span class="badge badge-{{ $status['delivery'] ? 'success' : 'danger' }} badge-pill">{{ $status['delivery'] ? '✓' : '✕' }}</span></td>
+                                <td><span class="badge badge-{{ $status['deposit_paid'] ? 'success' : 'danger' }} badge-pill">{{ $status['deposit_paid'] ? '✓' : '✕' }}</span></td>
                                 <td><span class="badge badge-{{ $status['invoice'] ? 'success' : 'danger' }} badge-pill">{{ $status['invoice'] ? '✓' : '✕' }}</span></td>
                                 <td>
                                     @can('edit forms')
@@ -39,7 +39,7 @@
         </div>
     </div>
 </div>
-<form action="{{ route('dashboard.module.booker.settings.index.appointment.update') }}" method="POST">
+<form action="{{ route('dashboard.module.booker.settings.index.appointments.update') }}" method="POST">
     <div class="row column-seperation">
         <div class="col-lg-12">
             <div class="form-group form-group-default required ">

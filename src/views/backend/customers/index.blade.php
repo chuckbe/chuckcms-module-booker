@@ -81,20 +81,31 @@ $(function() {
 					<thead>
 						<th scope="col">ID</th>
 						<th scope="col">Naam</th>
-						<th scope="col">Prijs</th>
-						<th scope="col">Voorschot</th>
+						<th scope="col">Account?</th>
+						<th scope="col">Actief?</th>
 						<th scope="col">Acties</th>
 					</thead>
 					<tbody>
 						@foreach ($customers as $customer)
 							<tr data-id="{{$customer->id}}">
 								<td>{{$customer->id}}</td>
-								<td class="semi-bold">{{ $customer->name }}</td>
-								<td class="semi-bold"></td>
-								<td class="semi-bold"></td>
+								<td class="semi-bold">
+									{{ $customer->first_name . ' ' . $customer->last_name }} <br> 
+									<small>{{ $customer->email }} <br>{{ $customer->tel }}</small>
+								</td>
+								<td class="semi-bold">
+									<span class="badge badge-{{ !is_null($customer->user_id) ? 'success' : 'danger' }}">
+										{!! !is_null($customer->user_id) ? '✓' : '✕'!!}
+									</span>
+								</td>
+								<td class="semi-bold">
+									<span class="badge badge-{{ !is_null($customer->user_id) && $customer->user->active ? 'success' : 'danger' }}">
+										{!! !is_null($customer->user_id) && $customer->user->active ? '✓' : '✕'!!}
+									</span>
+								</td>
 								<td>
-									<a href="{{ route('dashboard.module.booker.customers.edit', ['customer' => $customer->id]) }}" class="btn btn-sm btn-outline-secondary rounded d-inline-block">
-						    			<i class="fa fa-edit"></i> edit
+									<a href="{{ route('dashboard.module.booker.customers.detail', ['customer' => $customer->id]) }}" class="btn btn-sm btn-outline-secondary rounded d-inline-block">
+						    			<i class="fa fa-search"></i> 
 						    		</a>
 									<a href="#" class="btn btn-danger btn-sm btn-rounded m-r-20 customer_delete" data-id="{{ $customer->id }}">
 						    			<i class="fa fa-trash"></i> 

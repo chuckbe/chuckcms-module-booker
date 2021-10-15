@@ -22,7 +22,7 @@ class Location extends Eloquent
      * @var array
      */
     protected $fillable = [
-        'order', 'name', 'disabled_weekdays', 'disabled_dates', 'lat', 'long', 'opening_hours', 'json', 'google_calendar_id'
+        'order', 'name', 'disabled_weekdays', 'disabled_dates', 'lat', 'long', 'opening_hours', 'max_weight', 'interval', 'json', 'google_calendar_id'
     ];
 
     protected $casts = [

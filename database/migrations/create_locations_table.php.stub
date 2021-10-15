@@ -20,6 +20,8 @@ class CreateLocationsTable extends Migration
             $table->longtext('disabled_weekdays')->nullable()->default(null);
             $table->longtext('disabled_dates')->nullable()->default(null);
             $table->longtext('opening_hours');
+            $table->integer('max_weight')->default(1);
+            $table->integer('interval')->default(15);
             $table->decimal('lat', 8,6)->nullable();
             $table->decimal('long', 9,6)->nullable();
             $table->longtext('json')->nullable()->default(null);

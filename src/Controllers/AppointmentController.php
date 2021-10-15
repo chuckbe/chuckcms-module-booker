@@ -2,6 +2,7 @@
 
 namespace Chuckbe\ChuckcmsModuleBooker\Controllers;
 
+use DateTime;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Chuckbe\ChuckcmsModuleBooker\Models\Appointment;
@@ -39,6 +40,20 @@ class AppointmentController extends Controller
     {   
         $appointments = $this->appointmentRepository->get();
         return view('chuckcms-module-booker::backend.appointments.index', compact('appointments'));
+    }
+
+    /**
+     * Return the appointments json feed.
+     *
+     * @param Request $request
+     *
+     * @return Illuminate\Response\Json
+     */
+    public function json(Request $request)
+    {
+        $appointments = $this->appointmentRepository->betweenDates(new DateTime($request->start), new DateTime($request->end), 'asc', ['id', 'title', 'start', 'end', 'time', 'duration', 'status', 'weight', 'price']);
+
+        return response()->json($appointments);
     }
 
     /**

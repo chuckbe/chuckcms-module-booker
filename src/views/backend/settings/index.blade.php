@@ -37,25 +37,34 @@
         <div class="my-3">
           <ul class="nav nav-tabs justify-content-start" id="pageTab" role="tablist">
               <li class="nav-item" role="presentation">
-                <a class="nav-link{{ $tab == 'appointments'  ? ' active' : ''  }}" id="s_appointment-tab" href="{{ route('dashboard.module.booker.settings.index') }}">Appointments</a>
+                <a class="nav-link{{ $tab == 'general'  ? ' active' : ''  }}" id="s_general-tab" href="{{ route('dashboard.module.booker.settings.index') }}">Algemeen</a>
+              </li>
+              <li class="nav-item" role="presentation">
+                <a class="nav-link{{ $tab == 'appointments'  ? ' active' : ''  }}" id="s_appointment-tab" href="{{ route('dashboard.module.booker.settings.index.appointments') }}">Afspraken</a>
               </li>
               <li class="nav-item" role="presentation">
                 <a class="nav-link{{ $tab == 'customer'  ? ' active' : ''  }}" id="s_customer-tab" href="{{ route('dashboard.module.booker.settings.index.customer') }}">Klanten</a>
               </li>
               <li class="nav-item" role="presentation">
-                <a class="nav-link{{ $tab == 'integrations'  ? ' active' : ''  }}" id="s_integration-tab" href="{{ route('dashboard.module.booker.settings.index.integerations') }}">Integerations</a>
+                <a class="nav-link{{ $tab == 'integrations'  ? ' active' : ''  }}" id="s_integration-tab" href="{{ route('dashboard.module.booker.settings.index.integrations') }}">Integraties</a>
               </li>
           </ul>
         </div>
       </div>
     </div>
     <div class="row tab-content bg-light shadow-sm rounded p-3 mb-3 mx-1" id="instellingenTabContent">
+      <div class="col-sm-12 tab-pane fade{{ $tab == 'general'  ? '  show active' : ''  }}" id="s_general" role="tabpanel" aria-labelledby="s_general-tab">
+        @include('chuckcms-module-booker::backend.settings.index._tab_general')
+      </div>
+
       <div class="col-sm-12 tab-pane fade{{ $tab == 'appointments'  ? '  show active' : ''  }}" id="s_appointments" role="tabpanel" aria-labelledby="s_appointments-tab">
         @include('chuckcms-module-booker::backend.settings.index._tab_appointments')
       </div>
+
       <div class="col-sm-12 tab-pane fade{{ $tab == 'customer'  ? '  show active' : ''  }}" id="s_customer" role="tabpanel" aria-labelledby="s_customer-tab">
         @include('chuckcms-module-booker::backend.settings.index._tab_customers')
       </div>
+
       <div class="col-sm-12 tab-pane fade{{ $tab == 'integrations'  ? '  show active' : ''  }}" id="s_integration" role="tabpanel" aria-labelledby="s_integration-tab">
         @include('chuckcms-module-booker::backend.settings.index._tab_integrations')
       </div>
@@ -141,4 +150,8 @@ $( document ).ready(function() {
   
 });
 </script>
+
+@if (session('notification'))
+@include('chuckcms::backend.includes.notification')
+@endif
 @endsection

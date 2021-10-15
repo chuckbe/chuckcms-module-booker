@@ -2,8 +2,12 @@
 
 namespace Chuckbe\ChuckcmsModuleBooker\Controllers;
 
+use Auth;
 use Illuminate\Http\Request;
+use Chuckbe\Chuckcms\Models\User;
 use App\Http\Controllers\Controller;
+use Chuckbe\Chuckcms\Models\Template;
+use Chuckbe\Chuckcms\Chuck\UserRepository;
 use Chuckbe\ChuckcmsModuleBooker\Models\Customer;
 use Chuckbe\ChuckcmsModuleBooker\Chuck\CustomerRepository;
 use Chuckbe\ChuckcmsModuleBooker\Requests\StoreCustomerRequest;
@@ -17,9 +21,10 @@ class CustomerController extends Controller
      *
      * @return void
      */
-    public function __construct(CustomerRepository $customerRepository)
+    public function __construct(CustomerRepository $customerRepository, UserRepository $userRepository)
     {
         $this->customerRepository = $customerRepository;
+        $this->userRepository = $userRepository;
     }
 
     /**
@@ -53,7 +58,7 @@ class CustomerController extends Controller
      */
     public function detail(Customer $customer)
     {
-        return view('chuckcms-module-booker::backend.customers.detail', compact('location'));
+        return view('chuckcms-module-booker::backend.customers.detail', compact('customer'));
     }
 
     /**
@@ -106,5 +111,67 @@ class CustomerController extends Controller
         }
 
         return response()->json(['status' => 'error'], 404);
+    }
+
+    /**
+     * Activate the user/customer per token.
+     *
+     * @param $user_token
+     * 
+     * @return mixed
+     **/
+    public function activate($user_token)
+    {
+        if (Auth::check()) {
+            return redirect()->to('/');
+        }
+
+        $user = User::where('token', $user_token)->where('active', 0)->first();
+
+        $templateHintpath = config('chuckcms-module-booker.auth.template.hintpath');
+        $template = Template::where('active', 1)->where('hintpath', $templateHintpath)->first();
+        $blade = $templateHintpath . '::templates.' . $template->slug .'.'. config('chuckcms-module-booker.auth.template.activation_blade');
+
+        if (view()->exists($blade)) {
+            $activated = false;
+
+            return view($blade, compact('template', 'user', 'activated'));
+        }
+
+        echo 'Something went wrong, please contact the webmaster.';
+        return false;
+    }
+
+    /**
+     * Activate the user/customer per token.
+     *
+     * @param Request $request
+     * 
+     * @return bool
+     **/
+    public function activateAccount(Request $request)
+    {
+        $this->validate($request, [
+            'user_token' => 'required|string',
+            'password' => 'required|string|min:8|confirmed',
+        ]);
+
+        $user = User::where('token', $request->user_token)->where('active', 0)->first();
+        $user->password = bcrypt($request->password);
+        $user->token = $this->userRepository->createToken();
+        $user->active = 1;
+        $user->update();
+
+        $templateHintpath = config('chuckcms-module-booker.auth.template.hintpath');
+        $template = Template::where('active', 1)->where('hintpath', $templateHintpath)->first();
+        $blade = $templateHintpath . '::templates.' . $template->slug .'.'. config('chuckcms-module-booker.auth.template.activation_blade');
+
+        if (view()->exists($blade)) {
+            $activated = true;
+            return view($blade, compact('template', 'user', 'activated'));
+        }
+
+        echo 'Something went wrong, please contact the webmaster.';
+        return false;
     }
 }

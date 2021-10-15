@@ -27,6 +27,7 @@ class StoreServiceRequest extends FormRequest
             'type' => 'nullable',
             'name' => 'required',
             'duration' => 'numeric|required',
+            'weight' => 'numeric|required',
             'min_duration' => 'nullable|numeric',
             'max_duration' => 'nullable|numeric',
             'price' => 'required|min:0',

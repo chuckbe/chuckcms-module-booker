@@ -4,12 +4,13 @@ namespace Chuckbe\ChuckcmsModuleBooker\Chuck;
 
 use Chuckbe\ChuckcmsModuleBooker\Chuck\LocationRepository;
 use Chuckbe\ChuckcmsModuleBooker\Chuck\ServiceRepository;
-use Chuckbe\ChuckcmsModuleBooker\Models\Appointment;
 use Chuckbe\ChuckcmsModuleBooker\Models\Location;
-use Chuckbe\ChuckcmsModuleBooker\Models\Service;
 use Chuckbe\ChuckcmsModuleBooker\Models\Payment;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use DateTime;
+use DateInterval;
+use DatePeriod;
 
 class BookerFormRepository
 {
@@ -18,24 +19,10 @@ class BookerFormRepository
 
     public function __construct(
         LocationRepository $locationRepository, 
-        ServiceRepository $serviceRepository, 
-        Appointment $appointment, 
-        Service $service)
+        ServiceRepository $serviceRepository)
     {
         $this->locationRepository = $locationRepository;
         $this->serviceRepository = $serviceRepository;
-        $this->appointment = $appointment;
-        $this->service = $service;
-    }
-
-    /**
-     * Get all the locations
-     *
-     * @return Illuminate\Database\Eloquent\Collection
-     **/
-    public function getServices()
-    {
-        return $this->service->get();
     }
 
     /**
@@ -69,6 +56,36 @@ class BookerFormRepository
     public function scripts()
     {
         return view('chuckcms-module-booker::frontend.scripts')->render();
+    }
+
+    /**
+     * Get all dates between two dates.
+     *
+     * @return \DatePeriod
+     */
+    public function getDatesBetween($start, $end)
+    {
+        return $this->getPeriodBetween($start, $end, '1 day');
+    }
+
+    /**
+     * Get period between two datetimes by given interval.
+     *
+     * @param $start
+     * @param $end
+     * @param $interval
+     *
+     * @return DatePeriod
+     */
+    public function getPeriodBetween($start, $end, $interval)
+    {
+        $startDate = new DateTime($start);
+        $endDate = new DateTime($end);
+
+        $interval = DateInterval::createFromDateString($interval);
+        $period = new DatePeriod($startDate, $interval, $endDate);
+
+        return $period;
     }
     
 }

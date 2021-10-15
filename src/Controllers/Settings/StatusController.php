@@ -29,7 +29,7 @@ class StatusController extends Controller
         $booker = $this->module->where('slug', 'chuckcms-module-booker')->first();
         $statusKey = $status;
         $json = $booker->json;
-        $status = $json['admin']['settings']['appointment']['statuses'][$statusKey];
+        $status = $json['settings']['appointment']['statuses'][$statusKey];
         
         return view('chuckcms-module-booker::backend.settings.statuses.edit_status', compact('status', 'statusKey'));
 
@@ -40,7 +40,7 @@ class StatusController extends Controller
     {
         $this->validate($request, [
             'is_paid' => 'required|in:0,1',
-            'is_delivered' => 'required|in:0,1',
+            'is_deposit_paid' => 'required|in:0,1',
             'has_invoice' => 'required|in:0,1',
             'display_name' => 'required|array',
             'short' => 'required|array',
@@ -50,7 +50,7 @@ class StatusController extends Controller
             'bcc' => 'nullable',
             'template' => 'required|array',
             'logo' => 'required|array',
-            'send_delivery_note' => 'required|array',
+            'ics' => 'required|array',
             'email.*' => 'required|array',
             'email_key' => 'required|array',
             'status_key' => 'required',
@@ -62,36 +62,35 @@ class StatusController extends Controller
         $json = $booker->json;
         $langs = ChuckSite::getSupportedLocales();
         foreach ($langs as $langKey => $langValue) {
-            $json['admin']['settings']['appointment']['statuses'][$statusKey]['display_name'][$langKey] = $request->get('display_name')[$langKey];
-            $json['admin']['settings']['appointment']['statuses'][$statusKey]['short'][$langKey] = $request->get('short')[$langKey];
+            $json['settings']['appointment']['statuses'][$statusKey]['display_name'][$langKey] = $request->get('display_name')[$langKey];
+            $json['settings']['appointment']['statuses'][$statusKey]['short'][$langKey] = $request->get('short')[$langKey];
         }
 
         if($request->get('_has_email') == '1') {
-            $json['admin']['settings']['appointment']['statuses'][$statusKey]['send_email'] = true;
+            $json['settings']['appointment']['statuses'][$statusKey]['send_email'] = true;
 
             foreach( $request->get('email_key') as $emailKey) {
-                $json['admin']['settings']['appointment']['statuses'][$statusKey]['email'][$emailKey]['to'] = $request->get('to')[$emailKey];
-                $json['admin']['settings']['appointment']['statuses'][$statusKey]['email'][$emailKey]['to_name'] = $request->get('to_name')[$emailKey];
-                $json['admin']['settings']['appointment']['statuses'][$statusKey]['email'][$emailKey]['bcc'] = $request->get('bcc')[$emailKey];
-                $json['admin']['settings']['appointment']['statuses'][$statusKey]['email'][$emailKey]['template'] = $request->get('template')[$emailKey];
-                $json['admin']['settings']['appointment']['statuses'][$statusKey]['email'][$emailKey]['logo'] = $request->get('logo')[$emailKey] == '1' ? true : false;
-                $json['admin']['settings']['appointment']['statuses'][$statusKey]['email'][$emailKey]['send_delivery_note'] = $request->get('send_delivery_note')[$emailKey] == '1' ? true : false;
+                $json['settings']['appointment']['statuses'][$statusKey]['email'][$emailKey]['to'] = $request->get('to')[$emailKey];
+                $json['settings']['appointment']['statuses'][$statusKey]['email'][$emailKey]['to_name'] = $request->get('to_name')[$emailKey];
+                $json['settings']['appointment']['statuses'][$statusKey]['email'][$emailKey]['bcc'] = $request->get('bcc')[$emailKey];
+                $json['settings']['appointment']['statuses'][$statusKey]['email'][$emailKey]['template'] = $request->get('template')[$emailKey];
+                $json['settings']['appointment']['statuses'][$statusKey]['email'][$emailKey]['logo'] = $request->get('logo')[$emailKey] == '1' ? true : false;
+                $json['settings']['appointment']['statuses'][$statusKey]['email'][$emailKey]['ics'] = $request->get('ics')[$emailKey] == '1' ? true : false;
             }
-            foreach($json['admin']['settings']['appointment']['statuses'][$statusKey]['email'][$emailKey]['data'] as $fieldKey => $field){
+            foreach($json['settings']['appointment']['statuses'][$statusKey]['email'][$emailKey]['data'] as $fieldKey => $field){
                 foreach ($langs as $langKey => $langValue) {
-                    $json['admin']['settings']['appointment']['statuses'][$statusKey]['email'][$emailKey]['data'][$fieldKey]['value'][$langKey] = $request->get('email')[$emailKey]['data'][$fieldKey][$langKey];
+                    $json['settings']['appointment']['statuses'][$statusKey]['email'][$emailKey]['data'][$fieldKey]['value'][$langKey] = $request->get('email')[$emailKey]['data'][$fieldKey][$langKey];
                 }
             }
         }
-        $json['admin']['settings']['appointment']['statuses'][$statusKey]['invoice'] = $request->get('has_invoice') == '1' ? true : false;
-        $json['admin']['settings']['appointment']['statuses'][$statusKey]['delivery'] = $request->get('is_delivered') == '1' ? true : false;
-        $json['admin']['settings']['appointment']['statuses'][$statusKey]['paid'] = $request->get('is_paid') == '1' ? true : false;
+        $json['settings']['appointment']['statuses'][$statusKey]['invoice'] = $request->get('has_invoice') == '1' ? true : false;
+        $json['settings']['appointment']['statuses'][$statusKey]['deposit_paid'] = $request->get('is_deposit_paid') == '1' ? true : false;
+        $json['settings']['appointment']['statuses'][$statusKey]['paid'] = $request->get('is_paid') == '1' ? true : false;
 
         $booker->json = $json;
         $booker->update();
 
         return redirect()->route('dashboard.module.booker.settings.index')->with('notification', 'Instellingen opgeslagen!');
-
     }
 
     public function email($status)
@@ -99,10 +98,11 @@ class StatusController extends Controller
         $booker = $this->module->where('slug', 'chuckcms-module-booker')->first();
         $statusKey = $status;
         $json = $booker->json;
-        $status = $json['admin']['settings']['appointment']['statuses'][$statusKey];
+        $status = $json['settings']['appointment']['statuses'][$statusKey];
 
         return view('chuckcms-module-booker::backend.settings.statuses.new_status_email', compact('status', 'statusKey'));
     }
+
     public function emailSave(Request $request)
     {
         $emailKey = $request->get('email_key');
@@ -111,8 +111,7 @@ class StatusController extends Controller
         $booker = $this->module->where('slug', 'chuckcms-module-booker')->first();
         $json = $booker->json;
 
-        $email_key_strings = implode(',', array_keys($json['admin']['settings']['appointment']['statuses'][$statusKey]['email']));
-
+        $email_key_strings = implode(',', array_keys($json['settings']['appointment']['statuses'][$statusKey]['email']));
 
         $this->validate($request, [
             'status_key' => 'required',
@@ -123,31 +122,31 @@ class StatusController extends Controller
             'bcc' => 'nullable',
             'template' => 'required',
             'logo' => 'required|in:0,1',
-            'send_delivery_note' => 'required|in:0,1',
+            'ics' => 'required|in:0,1',
             'status_slug' => 'required|array',
             'status_required' => 'required|array',
             'status_textarea' => 'required|array',
         ]);
         $langs = ChuckSite::getSupportedLocales();
 
-        $json['admin']['settings']['appointment']['statuses'][$statusKey]['send_email'] = true;
-        $json['admin']['settings']['appointment']['statuses'][$statusKey]['email'][$emailKey]['to'] = $request->get('to');
-        $json['admin']['settings']['appointment']['statuses'][$statusKey]['email'][$emailKey]['to_name'] = $request->get('to_name');
-        $json['admin']['settings']['appointment']['statuses'][$statusKey]['email'][$emailKey]['cc'] = $request->get('cc');
-        $json['admin']['settings']['appointment']['statuses'][$statusKey]['email'][$emailKey]['bcc'] = $request->get('bcc');
-        $json['admin']['settings']['appointment']['statuses'][$statusKey]['email'][$emailKey]['template'] = $request->get('template');
-        $json['admin']['settings']['appointment']['statuses'][$statusKey]['email'][$emailKey]['logo'] = $request->get('logo') == '1' ? true : false;
-        $json['admin']['settings']['appointment']['statuses'][$statusKey]['email'][$emailKey]['send_delivery_note'] = $request->get('send_delivery_note') == '1' ? true : false;
+        $json['settings']['appointment']['statuses'][$statusKey]['send_email'] = true;
+        $json['settings']['appointment']['statuses'][$statusKey]['email'][$emailKey]['to'] = $request->get('to');
+        $json['settings']['appointment']['statuses'][$statusKey]['email'][$emailKey]['to_name'] = $request->get('to_name');
+        $json['settings']['appointment']['statuses'][$statusKey]['email'][$emailKey]['cc'] = $request->get('cc');
+        $json['settings']['appointment']['statuses'][$statusKey]['email'][$emailKey]['bcc'] = $request->get('bcc');
+        $json['settings']['appointment']['statuses'][$statusKey]['email'][$emailKey]['template'] = $request->get('template');
+        $json['settings']['appointment']['statuses'][$statusKey]['email'][$emailKey]['logo'] = $request->get('logo') == '1' ? true : false;
+        $json['settings']['appointment']['statuses'][$statusKey]['email'][$emailKey]['ics'] = $request->get('ics') == '1' ? true : false;
         
         $loop = 0;
 
         foreach ($request->get('status_slug') as $slug) {
-            $json['admin']['settings']['appointment']['statuses'][$statusKey]['email'][$emailKey]['data'][$slug]['type'] = $request->get('status_textarea')[$loop] == '1' ? 'textarea' : 'text';
+            $json['settings']['appointment']['statuses'][$statusKey]['email'][$emailKey]['data'][$slug]['type'] = $request->get('status_textarea')[$loop] == '1' ? 'textarea' : 'text';
             foreach ($langs as $langKey => $langValue) {
-                $json['admin']['settings']['appointment']['statuses'][$statusKey]['email'][$emailKey]['data'][$slug]['value'][$langKey] = '';
+                $json['settings']['appointment']['statuses'][$statusKey]['email'][$emailKey]['data'][$slug]['value'][$langKey] = '';
             }
-            $json['admin']['settings']['appointment']['statuses'][$statusKey]['email'][$emailKey]['data'][$slug]['required'] = $request->get('status_required')[$loop] == '1' ? true : false;
-            $json['admin']['settings']['appointment']['statuses'][$statusKey]['email'][$emailKey]['data'][$slug]['validation'] = $request->get('status_required')[$loop] == '1' ? 'required' : 'nullable';
+            $json['settings']['appointment']['statuses'][$statusKey]['email'][$emailKey]['data'][$slug]['required'] = $request->get('status_required')[$loop] == '1' ? true : false;
+            $json['settings']['appointment']['statuses'][$statusKey]['email'][$emailKey]['data'][$slug]['validation'] = $request->get('status_required')[$loop] == '1' ? 'required' : 'nullable';
             $loop++;
         }
 
@@ -166,27 +165,27 @@ class StatusController extends Controller
         $booker = $this->module->where('slug', 'chuckcms-module-booker')->first();
         $json = $booker->json;
 
-        $email_key_strings = implode(',', array_keys($json['admin']['settings']['appointment']['statuses'][$statusKey]['email']));
+        $email_key_strings = implode(',', array_keys($json['settings']['appointment']['statuses'][$statusKey]['email']));
 
         $this->validate($request, [
             'status_key' => 'required',
             'email_key' => 'required|in:'.$email_key_strings,
         ]);
 
-        $email_object = $json['admin']['settings']['appointment']['statuses'][$statusKey]['email'];
+        $email_object = $json['settings']['appointment']['statuses'][$statusKey]['email'];
 
         $object = [];
 
         foreach ($email_object as $key => $email) {
             if($key !== $emailKey) {
-                $object[$key] = $json['admin']['settings']['appointment']['statuses'][$statusKey]['email'][$key];
+                $object[$key] = $json['settings']['appointment']['statuses'][$statusKey]['email'][$key];
             }
         }
 
-        $json['admin']['settings']['appointment']['statuses'][$statusKey]['email'] = $object;
+        $json['settings']['appointment']['statuses'][$statusKey]['email'] = $object;
 
         if(count($object) == 0) {
-            $json['admin']['settings']['appointment']['statuses'][$statusKey]['send_email'] = false;
+            $json['settings']['appointment']['statuses'][$statusKey]['send_email'] = false;
         }
         $booker->json = $json;
         $booker->update();

@@ -6,6 +6,9 @@
     "require": {
         "php": ">=7.2.5",
         "laravel/framework": "^6.0||^7.0||^8.0",
+        "barryvdh/laravel-dompdf": "^0.8.1",
+        "mollie/laravel-mollie": "^2.0",
+        "jsvrcek/ics": "^0.7.0",
         "chuckbe/chuckcms": "*"
     },
     "authors": [

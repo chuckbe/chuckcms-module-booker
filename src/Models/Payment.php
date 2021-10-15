@@ -3,6 +3,7 @@
 namespace Chuckbe\ChuckcmsModuleBooker\Models;
 
 use Eloquent;
+use Mollie;
 
 class Payment extends Eloquent
 {
@@ -19,20 +20,40 @@ class Payment extends Eloquent
      * @var array
      */
     protected $fillable = [
-        'external_id', 'type', 'status', 'amount', 'log', 'json'
+        'appointment_id', 'external_id', 'type', 'status', 'amount', 'log', 'json'
     ];
 
     protected $casts = [
+        'log' => 'array',
         'json' => 'array',
     ];
 
     /**
-    * A payment belongs to many appointments.
+    * A payment belongs to an appointment.
     *
     * @var array
     */
-    public function appointments()
+    public function appointment()
     {
-        return $this->belongsToMany(Appointment::class, 'appointments_payments', 'payment_id', 'appointment_id');
+        return $this->belongsTo(Appointment::class);
+    }
+
+    public function getPaymentUrl()
+    {
+        $mollie = Mollie::api()->payments()->get($this->external_id);
+        return $mollie->getCheckoutUrl();
+    }
+
+    public function verify()
+    {
+        return $this->isPaid();
+    }
+
+    public function isPaid()
+    {
+        $mollie = Mollie::api()->payments()->get($this->external_id);
+        if ($mollie->isPaid()) {
+            return true;
+        }
     }
 }

@@ -25,15 +25,19 @@ class LocationRepository
     }
 
     /**
-     * Find the location for the given id.
+     * Find the location for the given id(s).
      *
-     * @param int $id
+     * @param string|array $id
      * 
      * @return mixed
      **/
     public function find($id)
     {
-        return $this->location->where('id', $id)->first();
+        if (!is_array($id)) {
+            return $this->location->where('id', $id)->first();
+        }
+        
+        return $this->location->whereIn('id', $id)->get();
     }
 
     /**
@@ -69,6 +73,8 @@ class LocationRepository
             'disabled_dates' => explode(',', $request->get('disabled_dates')),
             'opening_hours' => $opening_hours,
             'order' => (int)$request->get('order'),
+            'max_weight' => (int)$request->get('max_weight'),
+            'interval' => (int)$request->get('interval'),
             'json' => array()
         ]);
 
@@ -100,6 +106,8 @@ class LocationRepository
             'disabled_dates' => explode(',', $request->get('disabled_dates')),
             'opening_hours' => $opening_hours,
             'order' => (int)$request->get('order'),
+            'max_weight' => (int)$request->get('max_weight'),
+            'interval' => (int)$request->get('interval'),
             'json' => array()
         ]);
 
@@ -173,5 +181,26 @@ class LocationRepository
         }
 
         return $opening_hours;
+    }
+
+    /**
+     * See if the given date is available for the location.
+     *
+     * @param Location $location
+     * @param \DateTime   $date
+     * 
+     * @return bool
+     **/
+    public function isDateAvailable(Location $location, \DateTime $date)
+    {
+        if (in_array($date->format('w'), $location->disabled_weekdays)) {
+            return false;
+        }
+
+        if (in_array($date->format('d/m/Y'), $location->disabled_dates)) {
+            return false;
+        }
+
+        return true;
     }
 }

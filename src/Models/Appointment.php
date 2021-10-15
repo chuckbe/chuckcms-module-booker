@@ -2,6 +2,7 @@
 
 namespace Chuckbe\ChuckcmsModuleBooker\Models;
 
+use ChuckModuleBooker;
 use Eloquent;
 
 class Appointment extends Eloquent
@@ -19,10 +20,13 @@ class Appointment extends Eloquent
      * @var array
      */
     protected $fillable = [
-        'location_id', 'date', 'time', 'duration', 'status', 'is_cancelled', 'price', 'json'
+        'location_id', 'customer_id', 'title', 'start', 'end', 'date', 'time', 'duration', 'status', 'is_cancelled', 'price', 'json'
     ];
 
     protected $casts = [
+        'start' => 'datetime',
+        'end' => 'datetime',
+        'date' => 'datetime:Y-m-d',
         'json' => 'array',
     ];
 
@@ -47,13 +51,13 @@ class Appointment extends Eloquent
     }
 
     /**
-    * An appointment belongs to many payments.
+    * An appointment may have many payments.
     *
     * @var array
     */
     public function payments()
     {
-        return $this->belongsToMany(Payment::class, 'appointments_payments', 'appointment_id', 'payment_id');
+        return $this->hasMany(Payment::class);
     }
 
     /**
@@ -66,4 +70,33 @@ class Appointment extends Eloquent
         return $this->belongsTo(Customer::class);
     }
 
+    public function getInvoiceFileNameAttribute()
+    {
+        return 'factuur_' . ChuckModuleBooker::getSetting('invoice.prefix') . str_pad($this->json['invoice_number'], 4, '0', STR_PAD_LEFT) . '.pdf';
+    }
+
+    public function getStatusLabelAttribute()
+    {
+        return ChuckModuleBooker::getSetting('appointment.statuses.'.$this->status.'.display_name.'.app()->getLocale());
+    }
+
+    public function getStatusShortLabelAttribute()
+    {
+        return ChuckModuleBooker::getSetting('appointment.statuses.'.$this->status.'.short.'.app()->getLocale());
+    }
+
+    public function getIsPaidAttribute()
+    {
+        return ChuckModuleBooker::getSetting('appointment.statuses.'.$this->status.'.paid');
+    }
+
+    public function getIsDepositPaidAttribute()
+    {
+        return ChuckModuleBooker::getSetting('appointment.statuses.'.$this->status.'.deposit_paid');
+    }
+
+    public function getHasInvoiceAttribute()
+    {
+        return ChuckModuleBooker::getSetting('appointment.statuses.'.$this->status.'.invoice');
+    }
 }

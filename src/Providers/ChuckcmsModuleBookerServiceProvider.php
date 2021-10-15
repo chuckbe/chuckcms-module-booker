@@ -3,6 +3,7 @@
 namespace Chuckbe\ChuckcmsModuleBooker\Providers;
 
 use Chuckbe\ChuckcmsModuleBooker\Chuck\BookerFormRepository;
+use Chuckbe\Chuckcms\Models\Module;
 use Exception;
 use Illuminate\Support\ServiceProvider;
 
@@ -26,7 +27,13 @@ class ChuckcmsModuleBookerServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->singleton('ChuckModuleBooker',function(){
-            return new \Chuckbe\ChuckcmsModuleBooker\Chuck\Accessors\ChuckModuleBooker(\App::make(BookerFormRepository::class));
+            $module = Module::where('slug', 'chuckcms-module-booker')->first();
+            
+            if ($module == null) {
+                throw new Exception('Whoops! ChuckCMS Booker Module Not Installed...');
+            }
+
+            return new \Chuckbe\ChuckcmsModuleBooker\Chuck\Accessors\ChuckModuleBooker($module, \App::make(BookerFormRepository::class));
         });
     }
 }

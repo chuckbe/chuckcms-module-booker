@@ -45,19 +45,19 @@ Bewerk status
                 <div class="col-sm-12 tab-pane fade show active" id="s_general" role="tabpanel" aria-labelledby="s_general-tab">
                     <div class="form-group row required">
                         <div class="col-sm-4">
+                            <label class="sr-only" for="">Voorschot betaald?</label>
+                            <div class="w-100 d-block mb-lg-1"></div>
+                            <input type="hidden" class="boolean_checkbox_input_hidden" value="0" name="is_deposit_paid" @if($status['deposit_paid'] == true) disabled @endif>
+                            <label for="is_deposit_paid">
+                                <input type="checkbox" class="boolean_checkbox_input" id="is_deposit_paid" value="{{ $status['deposit_paid'] == true ? 1 : 0 }}" name="is_deposit_paid" @if($status['deposit_paid'] == true) checked @endif /> Voorschot betaald?
+                            </label>
+                        </div>
+                        <div class="col-sm-4">
                             <label class="sr-only" for="">Betaald?</label>
                             <div class="w-100 d-block mb-lg-1"></div>
                             <input type="hidden" class="boolean_checkbox_input_hidden" value="0" name="is_paid" @if($status['paid'] == true) disabled @endif>
                             <label for="is_paid">
                                 <input type="checkbox" class="boolean_checkbox_input" id="is_paid" value="{{ $status['paid'] == true ? 1 : 0 }}" name="is_paid" @if($status['paid'] == true) checked @endif /> Betaald?
-                            </label>
-                        </div>
-                        <div class="col-sm-4">
-                            <label class="sr-only" for="">Geleverd?</label>
-                            <div class="w-100 d-block mb-lg-1"></div>
-                            <input type="hidden" class="boolean_checkbox_input_hidden" value="0" name="is_delivered" @if($status['delivery'] == true) disabled @endif>
-                            <label for="is_delivered">
-                                <input type="checkbox" class="boolean_checkbox_input" id="is_delivered" value="{{ $status['delivery'] == true ? 1 : 0 }}" name="is_delivered" @if($status['delivery'] == true) checked @endif /> Geleverd?
                             </label>
                         </div>
                         <div class="col-sm-4">
@@ -143,11 +143,11 @@ Bewerk status
                                     </label>
                                 </div>
                                 <div class="col-sm-3 pt-3">
-                                    <label class="sr-only" for="">Pakbon?</label>
+                                    <label class="sr-only" for="">iCal bestand toevoegen?</label>
                                     <div class="w-100 d-block mb-lg-1"></div>
-                                    <input type="hidden" class="boolean_checkbox_input_hidden" value="0" name="send_delivery_note[{{ $emailKey }}]" @if(array_key_exists('send_delivery_note', $email) && $email['send_delivery_note'] == true) disabled @endif>
-                                    <label for="send_delivery_note{{ $emailKey }}">
-                                        <input type="checkbox" class="boolean_checkbox_input" id="send_delivery_note{{ $emailKey }}" value="{{ array_key_exists('send_delivery_note', $email) && $email['send_delivery_note'] == true ? 1 : 0 }}" name="send_delivery_note[{{ $emailKey }}]" @if(array_key_exists('send_delivery_note', $email) && $email['send_delivery_note'] == true) checked @endif /> Pakbon?
+                                    <input type="hidden" class="boolean_checkbox_input_hidden" value="0" name="ics[{{ $emailKey }}]" @if(array_key_exists('ics', $email) && $email['ics'] == true) disabled @endif>
+                                    <label for="ics{{ $emailKey }}">
+                                        <input type="checkbox" class="boolean_checkbox_input" id="ics{{ $emailKey }}" value="{{ array_key_exists('ics', $email) && $email['ics'] == true ? 1 : 0 }}" name="ics[{{ $emailKey }}]" @if(array_key_exists('ics', $email) && $email['ics'] == true) checked @endif /> iCal bestand toevoegen?
                                     </label>
                                 </div>
                             </div>

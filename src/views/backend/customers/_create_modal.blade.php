@@ -31,7 +31,7 @@
             <div class="row">
               <div class="col-md-12">
                 <div class="form-group form-group-default required">
-                  <label>Email *</label>
+                  <label>E-mailadres *</label>
                   <input type="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" id="create_customer_email" name="email" class="form-control" required>
                 </div>
               </div>
@@ -40,7 +40,7 @@
             <div class="row">
               <div class="col-md-12">
                 <div class="form-group form-group-default required">
-                  <label>telefoonnummer *</label>
+                  <label>Telefoonnummer *</label>
                   <input type="tel" id="create_customer_tel" name="tel" class="form-control" required>
                 </div>
               </div>

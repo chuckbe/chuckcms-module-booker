@@ -73,6 +73,15 @@
 			            <div class="row">
 			              <div class="col-md-12">
 			                <div class="form-group form-group-default required">
+			                  <label>Gewicht</label>
+			                  <input type="number" min="0" steps="1" max="9999" id="edit_service_weight" name="weight" class="form-control" value="{{ old('weight', $service->weight) }}" required>
+			                </div>
+			              </div>
+			            </div>
+
+			            <div class="row">
+			              <div class="col-md-12">
+			                <div class="form-group form-group-default required">
 			                  <label>Volgorde</label>
 			                  <input type="number" min="0" steps="1" max="9999" id="edit_service_order" name="order" class="form-control" value="{{ old('order', $service->order) }}" required>
 			                </div>

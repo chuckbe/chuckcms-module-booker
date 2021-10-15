@@ -2,15 +2,24 @@
 
 namespace Chuckbe\ChuckcmsModuleBooker\Chuck;
 
+use Mail;
+use ChuckSite;
+use Illuminate\Http\Request;
+use Chuckbe\Chuckcms\Models\User;
 use Chuckbe\ChuckcmsModuleBooker\Requests\StoreCustomerRequest;
 use Chuckbe\ChuckcmsModuleBooker\Models\Customer;
+use Chuckbe\Chuckcms\Chuck\UserRepository;
 
 class CustomerRepository
 {
+    private $user;
+    private $userRepository;
     private $customer;
 
-    public function __construct(Customer $customer)
+    public function __construct(User $user, UserRepository $userRepository, Customer $customer)
     {
+        $this->user = $user;
+        $this->userRepository = $userRepository;
         $this->customer = $customer;
     }
 
@@ -72,6 +81,115 @@ class CustomerRepository
     }
 
     /**
+     * Make a customer based on the request
+     *
+     * @param Illuminate\Http\Request $request
+     * 
+     * @return mixed
+     **/
+    public function makeFromRequest(Request $request)
+    {
+        //see if user/customer exists with this email
+        $customer = $this->customer->where('email', $request->email)->where('user_id', '!=', null)->first();
+
+        if (!is_null($customer)) {
+            return 'customer_exists';
+        }
+
+        $user = $this->user->where('email', $request->email)->first();
+
+        if (!is_null($user)) {
+            return 'user_exists';
+        }
+
+        $user = User::create([
+            'name' => $request->first_name.' '.$request->last_name,
+            'email' => $request->email,
+            'password' => '',
+            'token' => $this->userRepository->createToken(),
+            'active' => 0,
+        ]);
+        $user->assignRole('customer');
+
+        if ($this->customer->where('email', $request->email)->where('user_id', null)->first() !== null) {
+            $customer = $this->customer->where('email', $request->email)->where('user_id', null)->first();
+        } else {
+            $customer = new Customer;
+        }
+        
+        $customer->user_id = $user->id;
+        $customer->first_name = $request->first_name;
+        $customer->last_name = $request->last_name;
+        $customer->email = $request->email;
+        $customer->tel = $request->tel;
+
+        $json = [];
+        $json['general_conditions'] = true;
+        $json['medical_declaration'] = true;
+
+        $customer->json = $json;
+        $customer->save();
+        $customer->refresh();
+
+        $this->sendActivationEmailForCustomer($customer, $user);
+
+        return $customer;
+    }
+
+    /**
+     * Make a customer based on the request
+     *
+     * @param Illuminate\Http\Request $request
+     * 
+     * @return mixed
+     **/
+    public function makeGuestFromRequest(Request $request)
+    {
+        if (!is_null($request->customer) && $request->customer !== 0) {
+            $customer = $this->customer->where('id', $request->customer)->first();
+
+            if (!is_null($customer)) {
+                return $customer;
+            }
+        }
+        //see if user/customer exists with this email
+        $customer = $this->customer->where('email', $request->email)->where('user_id', '!=', null)->first();
+
+        if (!is_null($customer)) {
+            return 'customer_exists';
+        }
+
+        $customer = $this->customer->where('email', $request->email)->where('user_id', '=', null)->first();
+
+        if (!is_null($customer)) {
+            return $customer;
+        }
+
+        $user = $this->user->where('email', $request->email)->first();
+
+        if (!is_null($user)) {
+            return 'user_exists';
+        }
+
+        $customer = new Customer;
+        $customer->user_id = null;
+        $customer->first_name = $request->first_name;
+        $customer->last_name = $request->last_name;
+        $customer->email = $request->email;
+        $customer->tel = $request->tel;
+
+        $json = [];
+        $json['general_conditions'] = true;
+        $json['medical_declaration'] = true;
+
+        $customer->json = $json;
+        $customer->save();
+        $customer->refresh();
+
+        return $customer;
+    }
+
+    /**
      * Create a new customer.
      *
      * @param StoreCustomerRequest $request
@@ -82,14 +200,14 @@ class CustomerRepository
     {
         $customer = $this->customer->where('id', $request->get('id'))->first();
 
-        $customer = $customer->update([
-            'name' => $request->get('name'),
-            'duration' => (int)$request->get('duration'),
-            'price' => $request->get('price'),
-            'deposit' => $request->get('deposit'),
-            'order' => (int)$request->get('order'),
-            'json' => array()
-        ]);
+        // $customer = $customer->update([
+        //     'name' => $request->get('name'),
+        //     'duration' => (int)$request->get('duration'),
+        //     'price' => $request->get('price'),
+        //     'deposit' => $request->get('deposit'),
+        //     'order' => (int)$request->get('order'),
+        //     'json' => array()
+        // ]);
 
         return $customer;
     }
@@ -104,5 +222,25 @@ class CustomerRepository
     public function delete(Customer $customer)
     {
         return $customer->delete();
+    }
+
+    /**
+     * Send an activation email for the given customer.
+     *
+     * @param Customer $customer
+     * @param User $user
+     * 
+     * @return void
+     **/
+    public function sendActivationEmailForCustomer(Customer $customer, User $user)
+    {
+        try {
+            Mail::send('chuckcms-module-booker::frontend.emails.activation', ['customer' => $customer, 'user' => $user], function ($m) use ($user) {
+                $m->from(ChuckSite::module('chuckcms-module-order-form')->getSetting('emails.from_email'), ChuckSite::module('chuckcms-module-order-form')->getSetting('emails.from_name'));
+                $m->to($user->email, $user->name)->subject('Bevestiging van uw account bij '.ChuckSite::getSite('name'));
+            });
+        } catch (\Exception $e) {
+            dd('test 2', $e);
+        }
     }
 }

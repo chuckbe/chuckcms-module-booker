@@ -25,15 +25,19 @@ class ServiceRepository
     }
 
     /**
-     * Find the service for the given id.
+     * Find the service for the given id(s).
      *
-     * @param int $id
+     * @param string|array $id
      * 
      * @return mixed
      **/
     public function find($id)
     {
-        return $this->service->where('id', $id)->first();
+        if (!is_array($id)) {
+            return $this->service->where('id', $id)->first();
+        }
+        
+        return $this->service->whereIn('id', $id)->get();
     }
 
     /**
@@ -67,6 +71,7 @@ class ServiceRepository
             'price' => $request->get('price'),
             'deposit' => $request->get('deposit'),
             'order' => (int)$request->get('order'),
+            'weight' => (int)$request->get('weight'),
             'json' => array()
         ]);
 
@@ -90,10 +95,23 @@ class ServiceRepository
             'price' => $request->get('price'),
             'deposit' => $request->get('deposit'),
             'order' => (int)$request->get('order'),
+            'weight' => (int)$request->get('weight'),
             'json' => array()
         ]);
 
         return $service;
+    }
+
+    /**
+     * Get the weight of the services for the given id(s).
+     *
+     * @param array $ids
+     * 
+     * @return mixed
+     **/
+    public function getWeightForIds(array $ids)
+    {
+        return $this->service->whereIn('id', $ids)->sum('weight');
     }
 
     /**

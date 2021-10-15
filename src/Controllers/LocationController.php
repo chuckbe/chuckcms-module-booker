@@ -41,28 +41,6 @@ class LocationController extends Controller
     }
 
     /**
-     * Return the locations create page.
-     *
-     * @return Illuminate\View\View
-     */
-    public function create()
-    {
-        return view('chuckcms-module-booker::backend.locations.create');
-    }
-
-    /**
-     * Return the locations detail page for given location.
-     *
-     * @param Location $location
-     * 
-     * @return Illuminate\View\View
-     */
-    public function detail(Location $location)
-    {
-        return view('chuckcms-module-booker::backend.locations.detail', compact('location'));
-    }
-
-    /**
      * Return the locations edit page for given location.
      *
      * @param Location $location

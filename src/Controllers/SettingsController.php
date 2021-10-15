@@ -25,7 +25,16 @@ class SettingsController extends Controller
     public function index()
     {
         $module = Module::where('slug', 'chuckcms-module-booker')->first();
-        $settings = $module->json['admin']['settings'];
+        $settings = $module->settings;
+        
+        $tab = 'general';
+        return view('chuckcms-module-booker::backend.settings.index')->with(compact('settings', 'tab'));
+    }
+
+    public function appointments()
+    {
+        $module = Module::where('slug', 'chuckcms-module-booker')->first();
+        $settings = $module->settings;
         
         $tab = 'appointments';
         return view('chuckcms-module-booker::backend.settings.index')->with(compact('settings', 'tab'));
@@ -34,15 +43,15 @@ class SettingsController extends Controller
     public function customer()
     {
         $module = Module::where('slug', 'chuckcms-module-booker')->first();
-        $settings = $module->json['admin']['settings'];
+        $settings = $module->settings;
         $tab = 'customer';
         return view('chuckcms-module-booker::backend.settings.index')->with(compact('settings', 'tab'));
     }
 
-    public function integerations()
+    public function integrations()
     {
         $module = Module::where('slug', 'chuckcms-module-booker')->first();
-        $settings = $module->json['admin']['settings'];
+        $settings = $module->settings;
         $tab = 'integrations';
         return view('chuckcms-module-booker::backend.settings.index')->with(compact('settings', 'tab'));
     }

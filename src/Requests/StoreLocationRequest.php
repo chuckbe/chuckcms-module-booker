@@ -53,6 +53,8 @@ class StoreLocationRequest extends FormRequest
 
             'order' => 'numeric|required',
 
+            'max_weight' => 'numeric|required',
+
             'services' => 'nullable|array',
 
             'update' => 'sometimes',

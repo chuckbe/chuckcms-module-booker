@@ -62,15 +62,23 @@ class ChuckcmsModuleBookerServiceProvider extends ServiceProvider
         ], 'config');
 
         $this->publishes([
-            __DIR__.'/../database/migrations/create_appointments_table.php.stub' => $this->getMigrationFileName('create_appointments_table.php'),
-            __DIR__.'/../database/migrations/create_customers_table.php.stub' => $this->getMigrationFileName('create_customers_table.php'),
-            __DIR__.'/../database/migrations/create_locations_table.php.stub' => $this->getMigrationFileName('create_locations_table.php'),
-            __DIR__.'/../database/migrations/create_payments_table.php.stub' => $this->getMigrationFileName('create_payments_table.php'),
+            __DIR__.'/../assets' => public_path('module-booker'),
+        ], 'assets');
+
+        $this->publishes([
             __DIR__.'/../database/migrations/create_services_table.php.stub' => $this->getMigrationFileName('create_services_table.php'),
-            __DIR__.'/../database/migrations/create_appointments_payments_table.php.stub' => $this->getMigrationFileName('create_appointments_payments_table.php'),
+            __DIR__.'/../database/migrations/create_locations_table.php.stub' => $this->getMigrationFileName('create_locations_table.php'),
+            __DIR__.'/../database/migrations/create_customers_table.php.stub' => $this->getMigrationFileName('create_customers_table.php'),
+        ], 'migrations');
+
+        sleep(1);
+
+        $this->publishes([
+            __DIR__.'/../database/migrations/create_appointments_table.php.stub' => $this->getMigrationFileName('create_appointments_table.php'),
+            __DIR__.'/../database/migrations/create_payments_table.php.stub' => $this->getMigrationFileName('create_payments_table.php'),
             __DIR__.'/../database/migrations/create_appointments_services_table.php.stub' => $this->getMigrationFileName('create_appointments_services_table.php'),
             __DIR__.'/../database/migrations/create_locations_services_table.php.stub' => $this->getMigrationFileName('create_locations_services_table.php'),
-        ], 'migrations');
+        ], 'after_migrations');
 
     }
 

@@ -76,11 +76,11 @@ $lang = \LaravelLocalization::getCurrentLocale();
                         </label>
                     </div>
                     <div class="col-sm-3 pt-3">
-                        <label class="sr-only" for="">Pakbon?</label>
+                        <label class="sr-only" for="">iCal bestand?</label>
                         <div class="w-100 d-block mb-lg-1"></div>
-                        <input type="hidden" class="boolean_checkbox_input_hidden" value="0" name="send_delivery_note" disabled>
-                        <label for="send_delivery_note">
-                            <input type="checkbox" class="boolean_checkbox_input" id="send_delivery_note" value="1" name="send_delivery_note" checked /> Pakbon?
+                        <input type="hidden" class="boolean_checkbox_input_hidden" value="0" name="ics" disabled>
+                        <label for="ics">
+                            <input type="checkbox" class="boolean_checkbox_input" id="ics" value="1" name="ics" checked /> iCal bestand?
                         </label>
                     </div>
                 </div>
