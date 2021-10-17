@@ -65,6 +65,11 @@ class ServiceRepository
      **/
     public function create(StoreServiceRequest $request)
     {
+        $json = [];
+        if ($request->has('description') && !is_null($request->description)) {
+            $json['description'] = $request->description;
+        }
+
         $service = $this->service->create([
             'name' => $request->get('name'),
             'duration' => (int)$request->get('duration'),
@@ -72,7 +77,7 @@ class ServiceRepository
             'deposit' => $request->get('deposit'),
             'order' => (int)$request->get('order'),
             'weight' => (int)$request->get('weight'),
-            'json' => array()
+            'json' => $json
         ]);
 
         return $service;
@@ -89,6 +94,11 @@ class ServiceRepository
     {
         $service = $this->service->where('id', $request->get('id'))->first();
 
+        $json = $service->json;
+        if ($request->has('description') && !is_null($request->description)) {
+            $json['description'] = $request->description;
+        }
+
         $service = $service->update([
             'name' => $request->get('name'),
             'duration' => (int)$request->get('duration'),
@@ -96,7 +106,7 @@ class ServiceRepository
             'deposit' => $request->get('deposit'),
             'order' => (int)$request->get('order'),
             'weight' => (int)$request->get('weight'),
-            'json' => array()
+            'json' => $json
         ]);
 
         return $service;

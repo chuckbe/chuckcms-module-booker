@@ -1,0 +1,59 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+class CreateSubscriptionsTable extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create(config('chuckcms-module-booker.subscriptions.table'), function (Blueprint $table) {
+            $table->bigIncrements('id');
+            
+            $table->bigInteger('subscription_plan_id')->unsigned()->index();
+            $table->foreign('subscription_plan_id')
+                  ->references('id')
+                  ->on(config('chuckcms-module-booker.subscription_plans.table'));
+
+            $table->bigInteger('customer_id')->unsigned()->index();
+            $table->foreign('customer_id')
+                  ->references('id')
+                  ->on(config('chuckcms-module-booker.customers.table'));
+            
+            $table->string('type')->nullable()->default(null);
+            
+            $table->integer('weight')->default(1); //-1 == unlimited
+            $table->decimal('price', 6,2);
+
+            $table->dateTime('expires_at');
+            $table->integer('is_expired')->default(0);
+
+            $table->integer('is_active')->default(0);
+            $table->integer('usage')->default(0);
+
+            $table->boolean('has_invoice')->default(false);
+            $table->boolean('will_renew')->default(false);
+            
+            $table->longtext('json')->nullable()->default(null);
+            
+            $table->timestamps();
+            $table->softDeletes();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::dropIfExists(config('chuckcms-module-booker.subscriptions.table'));
+    }
+}

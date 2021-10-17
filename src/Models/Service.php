@@ -76,6 +76,16 @@ class Service extends Eloquent
     *
     * @var string
     */
+    public function getDescriptionAttribute()
+    {
+        return array_key_exists('description', $this->json) ? $this->json['description'] : '';
+    }
+
+    /**
+    * Return the formatted price.
+    *
+    * @var string
+    */
     public function getFormattedPriceAttribute()
     {
         return '€ '.number_format($this->price, '2', ',', '.');

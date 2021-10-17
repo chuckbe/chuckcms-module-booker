@@ -10,6 +10,17 @@ $(document).ready(function (event) {
     var make_appointment_url = "{{route('module.booker.book')}}";
     var make_login_url = "{{route('login.post')}}";
     var auth_check = ("{{ Auth::check() }}" == 1) ? true : false;
+
+@if(Auth::check() && Auth::user()->hasRole('customer'))
+@php
+$customer = \Chuckbe\ChuckcmsModuleBooker\Models\Customer::where('user_id', Auth::user()->id)->first();
+@endphp
+    var auth_available_weight = parseInt("{{ $customer->getAvailableWeight() }}");
+    var auth_available_weight_not_on_days = ("{{ $customer->getDatesWhenAvailableWeightNotAvailable() }}").split(',');
+@else
+    var auth_available_weight = 0;
+@endif
+    
     var datePickerSlider = new Splide( '#splide', {
         perPage: 7,
         perMove: 6,
@@ -381,7 +392,19 @@ $(document).ready(function (event) {
         fillConfirmationServices();
 
         $('.cmb_confirmation_duration_text').text(getSelectedServicesDuration()+' minuten');
-        $('.cmb_confirmation_price_text').text(getSelectedServicesPrice()+' EUR');
+        
+        if ( isSubscriptionValidForSelection() ) {
+            $('.cmb_confirmation_price_text').html('<span style="text-decoration: line-through;">'+getSelectedServicesPrice()+' EUR</span> (Actief Abonnement)');
+        } else {
+            $('.cmb_confirmation_price_text').text(getSelectedServicesPrice()+' EUR');
+        }
+    }
+
+    function isSubscriptionValidForSelection() {
+        let date = new Date(getSelectedDate());
+        date = date.getFullYear()+'-'+(parseInt(date.getMonth()) + 1)+'-'+(String(date.getDate()).padStart(2, '0'));
+
+        return (auth_check && auth_available_weight >= getSelectedServicesWeight() && !auth_available_weight_not_on_days.includes(date)) || (auth_check && auth_available_weight == -1 && !auth_available_weight_not_on_days.includes(date));
     }
 
     function fillConfirmationServices() {
@@ -666,6 +689,9 @@ $(document).ready(function (event) {
             $('#cmb_login_modal').modal('hide');
 
             auth_check = true;
+            auth_available_weight = parseInt(data.available_weight);
+            auth_available_weight_not_on_days = data.available_weight_not_on_days.split(',');
+            fillConfirmation();
             session_token = data.token
         }
 

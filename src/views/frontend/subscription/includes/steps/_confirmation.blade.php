@@ -1,11 +1,12 @@
 <div class="cmb_confirmation_wrapper d-none">
 	<div class="form-group mb-2">
-		<small class="d-inline-block"><a href="#" class="cmb_back_to_datepicker_btn text-dark"><i class="fa fa-arrow-left"></i> Terug</a></small>
 		@guest
-		<small class="float-right text-muted"><a href="#" class="cmb_open_login_modal text-muted">Klik om aan te melden</a></small>
+		<small class="d-block text-center text-muted"><a href="#" class="cmb_open_login_modal text-muted">Klik om aan te melden</a></small>
 		@endguest
-		<span class="d-block lead text-black font-weight-bold">Jouw gegevens </span>
+		<span class="d-block lead text-black font-weight-bold">Gegevens </span>
 	</div>
+	
+
 	@guest
 	<div class="row">
 		<div class="form-group mb-2 col-6 pr-1">
@@ -47,13 +48,14 @@
 			<div class="w-100 d-block"></div>
 			<label class="mb-0" for="cmb_create_customer">
 				<small>
-					<input type="checkbox" class="mr-2" name="create_customer" id="cmb_create_customer"> Ik wil een account aanmaken
+					<input type="checkbox" class="mr-2" name="create_customer" id="cmb_create_customer" checked disabled> Ik wil een account aanmaken
 				</small>
 			</label>
 		</div>
 	</div>
 	@endguest
 	
+
 	@auth
 	@role('customer')
 	@php
@@ -98,27 +100,19 @@
 	</div>
 	@endrole
 	@endauth
+
+
 	<div class="form-group mb-2">
 		<span class="d-block lead text-black font-weight-bold">Overzicht</span>
 	</div>
 	<div class="cmb_confirmation_overview_section py-2 px-3 border rounded row no-gutters mb-2">
 		<div class="col-sm-12 mb-2">
-			<span class="font-weight-bold d-block"><span class="cmb_confirmation_date_text">10 oktober 2021</span> om <span class="cmb_confirmation_time_text">10:00</span></span>
-			<small class="mr-2"><i class="fa fa-clock"></i> <span class="cmb_confirmation_duration_text">30 minuten</span></small>
+			<span class="font-weight-bold d-block"><span class="cmb_confirmation_sub_plan_text">Subscription Plan</span></span>
+			<small class="mr-2"><i class="fa fa-calendar"></i> <span class="cmb_confirmation_type_text">Maandelijks</span></small>
 			<small><i class="fa fa-wallet"></i> <span class="cmb_confirmation_price_text">29 EUR</span></small>
-		</div>
-		<div class="col-sm-12 cmb_confirmation_overview_services mb-2">
-			<div class="py-2 px-3 border rounded row no-gutters">
-				<div class="form-check col-sm-11">
-				  <label class="form-check-label row">
-				    <span class="col-md-12 cmb_confirmation_overview_services_name_text font-weight-bold">Cryosessie <small>(30 min)</small></span>
-				  </label>
-				</div>
-				<span class="col-sm-1 cmb_confirmation_overview_services_dd_btn text-right collapsed" type="button" data-toggle="collapse" data-target="#service_description0" aria-expanded="false" aria-controls="service_description0"><i class="fa fa-chevron-down"></i></span>
-			    <div class="collapse col-md-12 cmb_confirmation_overview_services_dd_text" id="service_description0">
-			    	<p class="mb-0 pb-2 pt-2 description">Mollit tempor veniam ut fugiat amet deserunt do sunt labore sed tempor anim esse incididunt.</p>
-				</div>
-			</div>
+			<span class="d-block cmb_confirmation_recurring_text d-none">
+				<small>Het bedrag zal de eerstvolgende vernieuwing automatisch gedomiciliëerd worden. Je kan dit abonnement ten alle tijden stopzetten in uw account onder 'Mijn abonnementen'.</small>
+			</span>
 		</div>
 	</div>
 	<div class="form-group">
@@ -134,6 +128,7 @@
 		@guest
 		<input type="hidden" name="customer_id" value="">
 		@endguest
-		<button class="btn btn-dark btn-large btn-block" id="cmb_confirmation_booker_btn">Bevestigen</button>
+
+		<button class="btn btn-dark btn-large btn-block" id="cmb_confirmation_booker_btn">Betalen & Bevestigen</button>
 	</div>
 </div>

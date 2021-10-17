@@ -31,7 +31,8 @@ class CreateAppointmentsTable extends Migration
             $table->string('duration');
             $table->integer('weight')->default(1);
             $table->string('status');
-            $table->string('is_cancelled');
+            $table->boolean('is_cancelled')->default(false);
+            $table->boolean('has_invoice')->default(false);
             $table->decimal('price', 6,2);
             $table->longtext('json')->nullable()->default(null);
             $table->timestamps();

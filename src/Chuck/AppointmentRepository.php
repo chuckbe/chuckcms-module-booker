@@ -94,7 +94,7 @@ class AppointmentRepository
             'duration' => $request->duration,
             'weight' => $weight,
             'status' => 'awaiting',
-            'is_cancelled' => false,
+            'is_canceled' => false,
             'price' => 0
         ]);
 
@@ -204,6 +204,11 @@ class AppointmentRepository
             $appointment->update();
 
             $payment = $this->makePayment($appointment);
+
+            if ($payment === false) {
+                $appointment->status = 'confirmed';
+                $appointment->update();
+            }
         } else {
             $appointment->status = 'confirmed';
             $appointment->update();
@@ -228,6 +233,25 @@ class AppointmentRepository
      **/
     public function makePayment(Appointment $appointment)
     {
+        if ( ($appointment->customer->getAvailableWeight() == -1 || $appointment->customer->getAvailableWeight() >= $appointment->weight) && !in_array($appointment->start->format('Y-m-d'), explode(',', $appointment->customer->getDatesWhenAvailableWeightNotAvailable())) ) {
+            $subscription = $appointment->customer->getSubscriptionForWeight($appointment->weight);
+            
+            if ($subscription->expires_at->format('YmdHi') > $appointment->start->format('YmdHi')) {
+                $json = $appointment->json;
+                $json['subscription'] = $subscription->id;
+                $appointment->json = $json;
+                $appointment->save();
+
+                if ($subscription->weight > 0) {
+                    $subscription->decrement('weight');
+                }
+
+                $subscription->increment('usage');
+
+                return false;
+            }
+        }
+
         config(['mollie.key' => ChuckSite::module('chuckcms-module-booker')->getSetting('integrations.mollie.key')]);
 
         $mollie = Mollie::api()->payments()->create([
@@ -245,7 +269,7 @@ class AppointmentRepository
                 )
         ]);
 
-        $payment = $this->payment->create(['appointment_id' => $appointment->id, 'external_id' => $mollie->id, 'type' => 'first', 'status' => 'awaiting', 'amount' => $appointment->price, 'log' => array(), 'json' => array()]);
+        $payment = $this->payment->create(['appointment_id' => $appointment->id, 'external_id' => $mollie->id, 'type' => 'one-off', 'status' => 'awaiting', 'amount' => $appointment->price, 'log' => array(), 'json' => array()]);
 
         $mollie = Mollie::api()->payments()->get($mollie->id);
 
@@ -312,7 +336,7 @@ class AppointmentRepository
         }
         
         $futureDates = $this->bookerFormRepository->getDatesBetween($now, $futureUntil);
-        $appointments = $this->forLocationAndBetweenDates($location, new DateTime($now), new DateTime($futureUntil));
+        $appointments = $this->forLocationAndBetweenDates($location, new DateTime($now), new DateTime($futureUntil))->where('is_canceled', 0)->where('status', '!=', 'awaiting')->where('status', '!=', 'canceled')->where('status', '!=', 'failed');
 
         $availableDates = [];
         $availableDatesCount = 0;
@@ -363,7 +387,23 @@ class AppointmentRepository
         $timeslots = [];
 
         foreach($openingHoursSections as $openingHourSection) {
+            if (now()->format('Ymd') == $date->format('Ymd')) {
+                $oHSEnd = new DateTime($openingHourSection['end']);
+                if (now()->format('Hi') >= $oHSEnd->format('Hi')) {
+                    continue;
+                }
+            }
+
             $sectionStart = $openingHourSection['start'];
+            $oHSStart = new DateTime($openingHourSection['start']);
+
+            if (now()->format('Ymd') == $date->format('Ymd')) {
+                if (now()->format('Hi') >= $oHSStart->format('Hi')) {
+                    $sectionStart = now()->ceilUnit('minute', 15)->format('H:i');
+                }
+            } 
+
+            
             $sectionEnd = $openingHourSection['end'];
 
             $sectionStartDT = new DateTime($sectionStart);
@@ -553,14 +593,16 @@ class AppointmentRepository
         $appointment->status = $status;
         $json = is_null($appointment->json) ? [] : $appointment->json; 
         
-        if($status_object['invoice'] && !array_key_exists('invoice_number', $json)) {
+        if($status_object['invoice'] && !array_key_exists('invoice_number', $json) && !array_key_exists('subscription', $json)) {
             $json['invoice_number'] = $this->generateInvoiceNumber();
             $appointment->json = $json;
-            $appointment->update();
+            $appointment->has_invoice == true;
         }
 
+        $appointment->update();
+
         if($status_object['send_email']) {
-            if($status_object['invoice']) {
+            if($status_object['invoice'] && $appointment->has_invoice) {
                 $pdf = $this->generatePDF($appointment);
             } else {
                 $pdf = null;
@@ -575,7 +617,7 @@ class AppointmentRepository
 
     private function sendMail(Appointment $appointment, array $status, string $emailKey, array $email, $pdf = null)
     {
-        $invoice = $status['invoice'];
+        $invoice = $appointment->has_invoice;
         $template = $email['template'];
         $to = $this->replaceEmailVariables($appointment, is_null($email['to']) ? '' : $email['to']);
         $to_name = $this->replaceEmailVariables($appointment, is_null($email['to_name']) ? '' : $email['to_name']);

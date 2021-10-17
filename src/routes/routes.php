@@ -12,7 +12,13 @@ Route::group(['middleware' => ['web']], function() {
 
         //START OF: SUBSCRIPTIONS ROUTES
         Route::get('/dashboard/booker/subscriptions', 'Chuckbe\ChuckcmsModuleBooker\Controllers\SubscriptionController@index')->name('dashboard.module.booker.subscriptions.index');
-        //END OF:   SUBSCRIPTION ROUTES
+        //END OF:   SUBSCRIPTIONS ROUTES
+        
+        //START OF: SUBSCRIPTION PLANS ROUTES
+        Route::get('/dashboard/booker/subscription/plans', 'Chuckbe\ChuckcmsModuleBooker\Controllers\SubscriptionPlanController@index')->name('dashboard.module.booker.subscription_plans.index');
+        Route::get('/dashboard/booker/subscription/plans/{subscription_plan}/edit', 'Chuckbe\ChuckcmsModuleBooker\Controllers\SubscriptionPlanController@edit')->name('dashboard.module.booker.subscription_plans.edit');
+        Route::post('/dashboard/booker/subscription/plans/save', 'Chuckbe\ChuckcmsModuleBooker\Controllers\SubscriptionPlanController@store')->name('dashboard.module.booker.subscription_plans.save');
+        //END OF:   SUBSCRIPTION PLANS ROUTES
         
         //START OF: INVOICES ROUTES
         Route::get('/dashboard/booker/invoices', 'Chuckbe\ChuckcmsModuleBooker\Controllers\InvoiceController@index')->name('dashboard.module.booker.invoices.index');
@@ -58,6 +64,14 @@ Route::group(['middleware' => ['web']], function() {
         Route::post('/dashboard/booker/settings/statuses/update', 'Chuckbe\ChuckcmsModuleBooker\Controllers\Settings\StatusController@update')->name('dashboard.module.booker.settings.index.statuses.update');
         Route::post('/dashboard/booker/settings/statuses/emails/save', 'Chuckbe\ChuckcmsModuleBooker\Controllers\Settings\StatusController@emailSave')->name('dashboard.module.booker.settings.index.statuses.email.save');
 		Route::post('/dashboard/booker/settings/statuses/emails/delete', 'Chuckbe\ChuckcmsModuleBooker\Controllers\Settings\StatusController@emailDelete')->name('dashboard.module.booker.settings.index.statuses.email.delete');
+
+        Route::get('/dashboard/booker/settings/subscriptions', 'Chuckbe\ChuckcmsModuleBooker\Controllers\SettingsController@subscriptions')->name('dashboard.module.booker.settings.index.subscriptions');
+        
+        Route::get('/dashboard/booker/settings/subscriptions/statuses/edit/{status}', 'Chuckbe\ChuckcmsModuleBooker\Controllers\Settings\SubscriptionStatusController@edit')->name('dashboard.module.booker.settings.index.subscriptions.statuses.edit');
+        Route::get('/dashboard/booker/settings/subscriptions/statuses/{status}/emails/new', 'Chuckbe\ChuckcmsModuleBooker\Controllers\Settings\SubscriptionStatusController@email')->name('dashboard.module.booker.settings.index.subscriptions.statuses.email.new');
+        Route::post('/dashboard/booker/settings/subscriptions/statuses/update', 'Chuckbe\ChuckcmsModuleBooker\Controllers\Settings\SubscriptionStatusController@update')->name('dashboard.module.booker.settings.index.subscriptions.statuses.update');
+        Route::post('/dashboard/booker/settings/subscriptions/statuses/emails/save', 'Chuckbe\ChuckcmsModuleBooker\Controllers\Settings\SubscriptionStatusController@emailSave')->name('dashboard.module.booker.settings.index.subscriptions.statuses.email.save');
+        Route::post('/dashboard/booker/settings/subscriptions/statuses/emails/delete', 'Chuckbe\ChuckcmsModuleBooker\Controllers\Settings\SubscriptionStatusController@emailDelete')->name('dashboard.module.booker.settings.index.subscriptions.statuses.email.delete');
 			
         Route::get('/dashboard/booker/settings/customer', 'Chuckbe\ChuckcmsModuleBooker\Controllers\SettingsController@customer')->name('dashboard.module.booker.settings.index.customer');
         Route::post('/dashboard/booker/settings/customer/update', 'Chuckbe\ChuckcmsModuleBooker\Controllers\\Settings\CustomerController@update')->name('dashboard.module.booker.settings.index.customer.update');
@@ -70,12 +84,8 @@ Route::group(['middleware' => ['web']], function() {
     Route::post('/module/booker/get-available-dates', 'Chuckbe\ChuckcmsModuleBooker\Controllers\BookerController@getAvailableDates')->name('module.booker.get_available_dates');
     Route::post('/module/booker/book', 'Chuckbe\ChuckcmsModuleBooker\Controllers\BookerController@makeAppointment')->name('module.booker.book');
 
+    Route::post('/module/booker/subscribe', 'Chuckbe\ChuckcmsModuleBooker\Controllers\BookerController@makeSubscription')->name('module.booker.subscribe');
+
     Route::get('/cmb/follow-up/{appointment}/redirect', 'Chuckbe\ChuckcmsModuleBooker\Controllers\BookerController@followup')->name('module.booker.checkout.followup');
-    
-
-    // Route::post('/dashboard/booker/getavailabletimeslots', 'Chuckbe\ChuckcmsModuleBooker\Controllers\BookerController@getAvailableTimeslots')->name('dashboard.module.booker.gettimeslots');
-    // Route::post('/dashboard/booker/formhandle', 'Chuckbe\ChuckcmsModuleBooker\Controllers\BookerController@formHandle')->name('dashboard.module.booker.formhandle');
-    
+    Route::get('/cmb/subscription/follow-up/{subscription}/redirect', 'Chuckbe\ChuckcmsModuleBooker\Controllers\BookerController@subscriptionFollowup')->name('module.booker.checkout.subscription.followup');
 });
-
-

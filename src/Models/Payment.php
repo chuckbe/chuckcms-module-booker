@@ -20,7 +20,7 @@ class Payment extends Eloquent
      * @var array
      */
     protected $fillable = [
-        'appointment_id', 'external_id', 'type', 'status', 'amount', 'log', 'json'
+        'appointment_id', 'subscription_id', 'external_id', 'type', 'status', 'amount', 'log', 'json'
     ];
 
     protected $casts = [
@@ -29,13 +29,23 @@ class Payment extends Eloquent
     ];
 
     /**
-    * A payment belongs to an appointment.
+    * A payment may belong to an appointment.
     *
     * @var array
     */
     public function appointment()
     {
         return $this->belongsTo(Appointment::class);
+    }
+
+    /**
+    * A payment may belong to an subscription.
+    *
+    * @var array
+    */
+    public function subscription()
+    {
+        return $this->belongsTo(Subscription::class);
     }
 
     public function getPaymentUrl()
@@ -52,7 +62,38 @@ class Payment extends Eloquent
     public function isPaid()
     {
         $mollie = Mollie::api()->payments()->get($this->external_id);
+
+        if ($mollie->isOpen()) {
+            return false;
+        }
+
+        if ($mollie->isCanceled()) {
+            $this->status = 'canceled';
+            $this->save();
+            return false;
+        }
+
+        if ($mollie->isExpired()) {
+            $this->status = 'expired';
+            $this->save();
+            return false;
+        }
+
+        if ($mollie->isFailed()) {
+            $this->status = 'failed';
+            $this->save();
+            return false;
+        }
+
+        if ($mollie->isPending()) {
+            $this->status = 'pending';
+            $this->save();
+            return false;
+        }
+        
         if ($mollie->isPaid()) {
+            $this->status = 'paid';
+            $this->save();
             return true;
         }
     }

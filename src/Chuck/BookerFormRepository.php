@@ -2,25 +2,29 @@
 
 namespace Chuckbe\ChuckcmsModuleBooker\Chuck;
 
+use Chuckbe\ChuckcmsModuleBooker\Chuck\SubscriptionPlanRepository;
 use Chuckbe\ChuckcmsModuleBooker\Chuck\LocationRepository;
 use Chuckbe\ChuckcmsModuleBooker\Chuck\ServiceRepository;
 use Chuckbe\ChuckcmsModuleBooker\Models\Location;
 use Chuckbe\ChuckcmsModuleBooker\Models\Payment;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
-use DateTime;
 use DateInterval;
 use DatePeriod;
+use DateTime;
 
 class BookerFormRepository
 {
+    private $subscriptionPlanRepository;
     private $locationRepository;
     private $appointment;
 
     public function __construct(
+        SubscriptionPlanRepository $subscriptionPlanRepository, 
         LocationRepository $locationRepository, 
         ServiceRepository $serviceRepository)
     {
+        $this->subscriptionPlanRepository = $subscriptionPlanRepository;
         $this->locationRepository = $locationRepository;
         $this->serviceRepository = $serviceRepository;
     }
@@ -33,7 +37,11 @@ class BookerFormRepository
     public function render()
     {
         $locations = $this->locationRepository->get();
-        $services = $this->serviceRepository->get();
+        if (count($locations) == 1) {
+            $services = $locations->first()->services()->get();
+        } else {
+            $services = $this->serviceRepository->get();
+        }
 
     	return view('chuckcms-module-booker::frontend.form', compact('locations', 'services'))->render();
     }
@@ -56,6 +64,39 @@ class BookerFormRepository
     public function scripts()
     {
         return view('chuckcms-module-booker::frontend.scripts')->render();
+    }
+
+    /**
+     * Return subscription form in frontend.
+     *
+     * @return Illuminate/View/View
+     */
+    public function subscriptionRender()
+    {
+        $locations = $this->locationRepository->get();
+        $subscription_plans = $this->subscriptionPlanRepository->get();
+
+        return view('chuckcms-module-booker::frontend.subscription.form', compact('locations', 'subscription_plans'))->render();
+    }
+
+    /**
+     * Return subscription styles in frontend.
+     *
+     * @return Illuminate/View/View
+     */
+    public function subscriptionStyles()
+    {
+        return view('chuckcms-module-booker::frontend.subscription.css')->render();
+    }
+
+    /**
+     * Return subscription scripts in frontend.
+     *
+     * @return Illuminate/View/View
+     */
+    public function subscriptionScripts()
+    {
+        return view('chuckcms-module-booker::frontend.subscription.scripts')->render();
     }
 
     /**

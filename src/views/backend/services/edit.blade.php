@@ -87,6 +87,15 @@
 			                </div>
 			              </div>
 			            </div>
+
+			            <div class="row">
+			              <div class="col-md-12">
+			                <div class="form-group form-group-default">
+			                  <label>Beschrijving</label>
+			                  <textarea id="edit_service_description" name="description" class="form-control">{{ old('description', $service->description) }}</textarea>
+			                </div>
+			              </div>
+			            </div>
 			        </div>
                 </div>
             </div>

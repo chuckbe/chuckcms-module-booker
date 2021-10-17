@@ -37,6 +37,21 @@ class ChuckModuleBooker
         return $this->bookerFormRepository->scripts();
     }
 
+    public function renderSubscriptionStyles()
+    {
+        return $this->bookerFormRepository->subscriptionStyles();
+    }
+
+    public function renderSubscriptionForm()
+    {
+        return $this->bookerFormRepository->subscriptionRender();
+    }
+
+    public function renderSubscriptionScripts()
+    {
+        return $this->bookerFormRepository->subscriptionScripts();
+    }
+
     /**
      * Return the module object
      *

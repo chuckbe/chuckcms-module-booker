@@ -4,7 +4,7 @@ namespace Chuckbe\ChuckcmsModuleBooker\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreServiceRequest extends FormRequest
+class StoreSubscriptionPlanRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,15 +24,22 @@ class StoreServiceRequest extends FormRequest
     public function rules()
     {
         return [
-            'type' => 'nullable',
+            'type' => 'required|in:one-off,weekly,monthly,quarterly,yearly',
+            'is_active' => 'required|in:0,1',
             'name' => 'required',
-            'duration' => 'numeric|required',
+
+            'months_valid' => 'numeric|required',
+            'days_valid' => 'numeric|required',
+
+            'usage_per_day' => 'numeric|required',
+
             'weight' => 'numeric|required',
-            'min_duration' => 'nullable|numeric',
-            'max_duration' => 'nullable|numeric',
             'price' => 'required|min:0',
-            'deposit' => 'required|min:0',
-            'description' => 'nullable'
+
+            'disabled_weekdays' => 'nullable|array',
+            'disabled_dates' => 'nullable|string',
+
+            'order' => 'numeric|required'
         ];
     }
 }

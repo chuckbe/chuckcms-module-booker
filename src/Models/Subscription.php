@@ -3,6 +3,7 @@
 namespace Chuckbe\ChuckcmsModuleBooker\Models;
 
 use Eloquent;
+use ChuckModuleBooker;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Subscription extends Eloquent
@@ -22,53 +23,53 @@ class Subscription extends Eloquent
      * @var array
      */
     protected $fillable = [
-        'order', 'type', 'name', 'duration', 'weight', 'min_duration', 'max_duration', 'price', 'deposit', 'disabled_weekdays', 'disabled_dates', 'json'
+        'is_expired', 'subscription_plan_id', 'customer_id', 'expires_at', 'usage', 'weight', 'type', 'price', 'has_invoice', 'will_renew', 'json'
     ];
 
     protected $casts = [
-        'disabled_weekdays' => 'array',
-        'disabled_dates' => 'array',
+        'is_expired' => 'boolean',
+        'expires_at' => 'datetime',
         'json' => 'array',
     ];
 
     /**
-    * A service belongs to many appointments.
+    * A subscription belongs to a subscription plan.
     *
     * @var array
     */
-    public function appointments()
+    public function subscriptionPlan()
     {
-        return $this->belongsToMany(Appointment::class, 'appointments_services', 'service_id', 'appointment_id');
+        return $this->belongsTo(SubscriptionPlan::class);
     }
 
     /**
-    * The locations that belong to the service.
+    * A subscription belongs to a subscription plan.
     *
     * @var array
     */
-    public function locations()
+    public function subscription_plan()
     {
-        return $this->belongsToMany(Location::class, 'locations_services', 'service_id', 'location_id');
+        return $this->belongsTo(SubscriptionPlan::class);
+    } 
+
+    /**
+    * A subscription belongs to a customer.
+    *
+    * @var array
+    */
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class);
     }
 
     /**
-    * Check if the service is free or not.
+    * A subscription may have many payments.
     *
-    * @var string
+    * @var array
     */
-    public function isFree()
+    public function payments()
     {
-        return $this->price == 0;
-    }
-
-    /**
-    * Check if the service is a paid service or not.
-    *
-    * @var string
-    */
-    public function isPaid()
-    {
-        return $this->price > 0;
+        return $this->hasMany(Payment::class);
     }
 
     /**
@@ -82,13 +83,12 @@ class Subscription extends Eloquent
     }
 
     /**
-    * Return the formatted price.
+    * Return the invoice file name.
     *
     * @var string
     */
-    public function getFormattedDepositAttribute()
+    public function getInvoiceFileNameAttribute()
     {
-        return '€ '.number_format($this->deposit, '2', ',', '.');
+        return 'factuur_' . ChuckModuleBooker::getSetting('invoice.prefix') . str_pad( array_key_exists('invoice_number', $this->json) ? $this->json['invoice_number'] : 'XXXX', 4, '0', STR_PAD_LEFT) . '.pdf';
     }
-
 }

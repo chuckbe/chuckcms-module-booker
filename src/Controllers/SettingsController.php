@@ -40,6 +40,15 @@ class SettingsController extends Controller
         return view('chuckcms-module-booker::backend.settings.index')->with(compact('settings', 'tab'));
     }
 
+    public function subscriptions()
+    {
+        $module = Module::where('slug', 'chuckcms-module-booker')->first();
+        $settings = $module->settings;
+        
+        $tab = 'subscriptions';
+        return view('chuckcms-module-booker::backend.settings.index')->with(compact('settings', 'tab'));
+    }
+
     public function customer()
     {
         $module = Module::where('slug', 'chuckcms-module-booker')->first();

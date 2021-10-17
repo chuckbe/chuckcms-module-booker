@@ -43,6 +43,9 @@
                 <a class="nav-link{{ $tab == 'appointments'  ? ' active' : ''  }}" id="s_appointment-tab" href="{{ route('dashboard.module.booker.settings.index.appointments') }}">Afspraken</a>
               </li>
               <li class="nav-item" role="presentation">
+                <a class="nav-link{{ $tab == 'subscriptions'  ? ' active' : ''  }}" id="s_subscriptions-tab" href="{{ route('dashboard.module.booker.settings.index.subscriptions') }}">Abonnementen</a>
+              </li>
+              <li class="nav-item" role="presentation">
                 <a class="nav-link{{ $tab == 'customer'  ? ' active' : ''  }}" id="s_customer-tab" href="{{ route('dashboard.module.booker.settings.index.customer') }}">Klanten</a>
               </li>
               <li class="nav-item" role="presentation">
@@ -59,6 +62,10 @@
 
       <div class="col-sm-12 tab-pane fade{{ $tab == 'appointments'  ? '  show active' : ''  }}" id="s_appointments" role="tabpanel" aria-labelledby="s_appointments-tab">
         @include('chuckcms-module-booker::backend.settings.index._tab_appointments')
+      </div>
+
+      <div class="col-sm-12 tab-pane fade{{ $tab == 'subscriptions'  ? '  show active' : ''  }}" id="s_subscriptions" role="tabpanel" aria-labelledby="s_subscriptions-tab">
+        @include('chuckcms-module-booker::backend.settings.index._tab_subscriptions')
       </div>
 
       <div class="col-sm-12 tab-pane fade{{ $tab == 'customer'  ? '  show active' : ''  }}" id="s_customer" role="tabpanel" aria-labelledby="s_customer-tab">

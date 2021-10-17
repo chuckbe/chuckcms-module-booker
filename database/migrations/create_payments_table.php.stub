@@ -15,14 +15,18 @@ class CreatePaymentsTable extends Migration
     {
         Schema::create(config('chuckcms-module-booker.payments.table'), function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->bigInteger('appointment_id')->unsigned()->index();
+            $table->bigInteger('appointment_id')->unsigned()->nullable()->index();
             $table->foreign('appointment_id')
                   ->references('id')
                   ->on(config('chuckcms-module-booker.appointments.table'));
+            $table->bigInteger('subscription_id')->unsigned()->nullable()->index();
+            $table->foreign('subscription_id')
+                  ->references('id')
+                  ->on(config('chuckcms-module-booker.subscriptions.table'));
             $table->string('external_id');
             $table->string('type');
             $table->string('status');
-            $table->bigInteger('amount');
+            $table->decimal('amount', 6,2);
             $table->longtext('log');
             $table->longtext('json')->nullable()->default(null);
             $table->timestamps();

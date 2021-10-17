@@ -98,6 +98,8 @@ class LoginController extends Controller
                 'auth' => auth()->check(),
                 'user' => $user,
                 'customer' => $customer,
+                'available_weight' => $customer->getAvailableWeight(),
+                'available_weight_not_on_days' => $customer->getDatesWhenAvailableWeightNotAvailable(),
                 'intended' => $this->redirectPath(),
                 'token' => csrf_token()
             ]);

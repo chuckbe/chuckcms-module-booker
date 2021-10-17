@@ -1,4 +1,4 @@
-<div class="modal fade stick-up disable-scroll" id="createServiceModal" tabindex="-1" role="dialog" aria-hidden="false">
+<div class="modal fade stick-up disable-scroll" id="createSubscriptionModal" tabindex="-1" role="dialog" aria-hidden="false">
 <div class="modal-dialog modal-lg">
   <div class="modal-content-wrapper">
     <div class="modal-content">
@@ -68,16 +68,7 @@
               <div class="col-md-12">
                 <div class="form-group form-group-default required">
                   <label>Volgorde</label>
-                  <input type="number" min="0" steps="1" max="9999" id="create_service_order" name="order" class="form-control" value="{{ ($services->count() + 1) }}" required>
-                </div>
-              </div>
-            </div>
-
-            <div class="row">
-              <div class="col-md-12">
-                <div class="form-group form-group-default">
-                  <label>Beschrijving</label>
-                  <textarea id="create_service_description" name="description" class="form-control"></textarea>
+                  <input type="number" min="0" steps="1" max="9999" id="create_service_order" name="order" class="form-control" value="{{ ($subscriptions->count() + 1) }}" required>
                 </div>
               </div>
             </div>

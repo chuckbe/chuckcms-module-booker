@@ -18,6 +18,14 @@ return [
 		'table' => 'cmb_services'
 	],
 
+    'subscription_plans' => [
+        'table' => 'cmb_subscription_plans'
+    ],
+
+    'subscriptions' => [
+        'table' => 'cmb_subscriptions'
+    ],
+
     'appointments' => [
 		'table' => 'cmb_appointments'
 	],
@@ -43,6 +51,11 @@ return [
             'activation_blade' => 'account.activate',
 		],
 	],
+
+    'followup' => [
+        'appointment' => '/bedankt-afspraak',
+        'subscription' => '/bedankt-abo'
+    ],
 
     'emails' => [
         'from_email' => 'hello@chuck.be',

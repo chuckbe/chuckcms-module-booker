@@ -3,12 +3,13 @@
 namespace Chuckbe\ChuckcmsModuleBooker\Chuck;
 
 use Mail;
+use Mollie;
 use ChuckSite;
 use Illuminate\Http\Request;
 use Chuckbe\Chuckcms\Models\User;
-use Chuckbe\ChuckcmsModuleBooker\Requests\StoreCustomerRequest;
-use Chuckbe\ChuckcmsModuleBooker\Models\Customer;
 use Chuckbe\Chuckcms\Chuck\UserRepository;
+use Chuckbe\ChuckcmsModuleBooker\Models\Customer;
+use Chuckbe\ChuckcmsModuleBooker\Requests\StoreCustomerRequest;
 
 class CustomerRepository
 {
@@ -185,6 +186,31 @@ class CustomerRepository
         $customer->json = $json;
         $customer->save();
         $customer->refresh();
+
+        return $customer;
+    }
+
+    /**
+     * Find the customer for the given id.
+     *
+     * @param Customer $customer
+     * 
+     * @return Customer $customer
+     **/
+    public function createMollieId(Customer $customer)
+    {
+        $mollieId = Mollie::api()->customers()->create([
+            "name" => $customer->first_name.' '.$customer->last_name,
+            "email" => $customer->email,
+            "metadata" => array(
+                'customer_id' => $customer->id
+            )
+        ]);
+
+        $json = $customer->json;
+        $json['mollie_id'] = $mollieId->id;
+        $customer->json = $json;
+        $customer->save();
 
         return $customer;
     }

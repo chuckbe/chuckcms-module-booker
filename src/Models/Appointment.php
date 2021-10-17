@@ -20,10 +20,12 @@ class Appointment extends Eloquent
      * @var array
      */
     protected $fillable = [
-        'location_id', 'customer_id', 'title', 'start', 'end', 'date', 'time', 'duration', 'status', 'is_cancelled', 'price', 'json'
+        'location_id', 'customer_id', 'title', 'start', 'end', 'date', 'time', 'duration', 'status', 'is_canceled', 'has_invoice', 'price', 'json'
     ];
 
     protected $casts = [
+        'has_invoice' => 'boolean',
+        'is_canceled' => 'boolean',
         'start' => 'datetime',
         'end' => 'datetime',
         'date' => 'datetime:Y-m-d',
@@ -93,10 +95,5 @@ class Appointment extends Eloquent
     public function getIsDepositPaidAttribute()
     {
         return ChuckModuleBooker::getSetting('appointment.statuses.'.$this->status.'.deposit_paid');
-    }
-
-    public function getHasInvoiceAttribute()
-    {
-        return ChuckModuleBooker::getSetting('appointment.statuses.'.$this->status.'.invoice');
     }
 }

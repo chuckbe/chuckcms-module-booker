@@ -2,6 +2,7 @@
 
 namespace Chuckbe\ChuckcmsModuleBooker\Commands;
 
+use ChuckSite;
 use Chuckbe\Chuckcms\Chuck\ModuleRepository;
 use Illuminate\Console\Command;
 
@@ -72,15 +73,22 @@ class InstallModuleBooker extends Command
                 ),
                 'aa' => array(
                     'name' => 'Abonnementen',
-                    'route' => 'dashboard.module.booker.subscriptions.index',
-                    'has_submenu' => false,
-                    'submenu' => null
-                ),
-                'aaa' => array(
-                    'name' => 'Facturen',
-                    'route' => 'dashboard.module.booker.invoices.index',
-                    'has_submenu' => false,
-                    'submenu' => null
+                    'route' => '#',
+                    'has_submenu' => true,
+                    'submenu' => array(
+                        'aaa' => array(
+                            'name' => 'Overzicht',
+                            'route' => 'dashboard.module.booker.subscriptions.index',
+                            'has_submenu' => false,
+                            'submenu' => null
+                        ),
+                        'aab' => array(
+                            'name' => 'Formules',
+                            'route' => 'dashboard.module.booker.subscription_plans.index',
+                            'has_submenu' => false,
+                            'submenu' => null
+                        )
+                    )
                 ),
                 'b' => array(
                     'name' => 'Klanten',
@@ -97,6 +105,12 @@ class InstallModuleBooker extends Command
                 'd' => array(
                     'name' => 'Diensten',
                     'route' => 'dashboard.module.booker.services.index',
+                    'has_submenu' => false,
+                    'submenu' => null
+                ),
+                'dd' => array(
+                    'name' => 'Facturen',
+                    'route' => 'dashboard.module.booker.invoices.index',
                     'has_submenu' => false,
                     'submenu' => null
                 ),
@@ -371,8 +385,8 @@ Als je een klacht hebt over de wijze van verwerking van jouw persoonsgegevens ku
                             'footer' => [
                                 'type' => 'textarea',
                                 'value' => [
-                                    'nl' => 'Heeft u vragen over uw afspraak? U kan ons steeds contacteren.<br><br><a href="mailto:' . config('chuckcms-module-ecommerce.company.email') . '">' . config('chuckcms-module-ecommerce.company.email') . '</a><br><br>' . config('chuckcms-module-ecommerce.company.name'),
-                                    'en' => 'Do you have any other questions about this order? You can always reach us.<br><br><a href="mailto:' . config('chuckcms-module-ecommerce.company.email') . '">' . config('chuckcms-module-ecommerce.company.email') . '</a><br><br>' . config('chuckcms-module-ecommerce.company.name')
+                                    'nl' => 'Heeft u vragen over uw afspraak? U kan ons steeds contacteren.<br><br><a href="mailto:' . ChuckSite::getSetting('company.email') . '">' . ChuckSite::getSetting('company.email') . '</a><br><br>' . ChuckSite::getSetting('company.name'),
+                                    'en' => 'Do you have any other questions about this order? You can always reach us.<br><br><a href="mailto:' . ChuckSite::getSetting('company.email') . '">' . ChuckSite::getSetting('company.email') . '</a><br><br>' . ChuckSite::getSetting('company.name')
                                 ],
                                 'required' => true,
                                 'validation' => 'required'
@@ -446,7 +460,7 @@ Als je een klacht hebt over de wijze van verwerking van jouw persoonsgegevens ku
                             'footer' => [
                                 'type' => 'textarea',
                                 'value' => [
-                                    'nl' => 'Heeft u vragen over uw afspraak? U kan ons steeds contacteren.<br><br><a href="mailto:' . config('chuckcms-module-ecommerce.company.email') . '">' . config('chuckcms-module-ecommerce.company.email') . '</a><br><br>' . config('chuckcms-module-ecommerce.company.name'),
+                                    'nl' => 'Heeft u vragen over uw afspraak? U kan ons steeds contacteren.<br><br><a href="mailto:' . ChuckSite::getSetting('company.email') . '">' . ChuckSite::getSetting('company.email') . '</a><br><br>' . ChuckSite::getSetting('company.name'),
                                     'en' => 'Your appointment is shipped and on its way to you.'
                                 ],
                                 'required' => true,
@@ -521,7 +535,7 @@ Als je een klacht hebt over de wijze van verwerking van jouw persoonsgegevens ku
                             'footer' => [
                                 'type' => 'textarea',
                                 'value' => [
-                                    'nl' => 'Heeft u vragen over uw afspraak? U kan ons steeds contacteren.<br><br><a href="mailto:' . config('chuckcms-module-ecommerce.company.email') . '">' . config('chuckcms-module-ecommerce.company.email') . '</a><br><br>' . config('chuckcms-module-ecommerce.company.name'),
+                                    'nl' => 'Heeft u vragen over uw afspraak? U kan ons steeds contacteren.<br><br><a href="mailto:' . ChuckSite::getSetting('company.email') . '">' . ChuckSite::getSetting('company.email') . '</a><br><br>' . ChuckSite::getSetting('company.name'),
                                     'en' => 'Your appointment is shipped and on its way to you.'
                                 ],
                                 'required' => true,
@@ -596,7 +610,7 @@ Als je een klacht hebt over de wijze van verwerking van jouw persoonsgegevens ku
                             'footer' => [
                                 'type' => 'textarea',
                                 'value' => [
-                                    'nl' => 'Heeft u vragen over uw afspraak? U kan ons steeds contacteren.<br><br><a href="mailto:' . config('chuckcms-module-ecommerce.company.email') . '">' . config('chuckcms-module-ecommerce.company.email') . '</a><br><br>' . config('chuckcms-module-ecommerce.company.name'),
+                                    'nl' => 'Heeft u vragen over uw afspraak? U kan ons steeds contacteren.<br><br><a href="mailto:' . ChuckSite::getSetting('company.email') . '">' . ChuckSite::getSetting('company.email') . '</a><br><br>' . ChuckSite::getSetting('company.name'),
                                     'en' => 'Your appointment is shipped and on its way to you.'
                                 ],
                                 'required' => true,
@@ -610,6 +624,262 @@ Als je een klacht hebt over de wijze van verwerking van jouw persoonsgegevens ku
                 'deposit_paid' => true
             ]
         ];
+
+
+
+
+
+
+
+
+
+        $json['settings']['subscription']['statuses'] = [
+            'new' => [
+                'display_name' => ['nl' => 'Nieuw abonnement', 'en' => 'New subscription'],
+                'short' => ['nl' => 'Nieuw', 'en' => 'New'],
+                'send_email' => false,
+                'email' => [],
+                'invoice' => false,
+                'paid' => false
+            ],
+            'awaiting' => [
+                'display_name' => ['nl' => 'In afwachting van betaling', 'en' => 'Awaiting payment'],
+                'short' => ['nl' => 'Afwachting', 'en' => 'Awaiting'],
+                'send_email' => false,
+                'email' => [],
+                'invoice' => false,
+                'paid' => false
+            ],
+            'canceled' => [
+                'display_name' => ['nl' => 'Abonnement betaling geannuleerd', 'en' => 'Subscription payment canceled'],
+                'short' => ['nl' => 'Geannuleerd', 'en' => 'Canceled'],
+                'send_email' => true,
+                'email' => [],
+                'invoice' => false,
+                'paid' => false
+            ],
+            'failed' => [
+                'display_name' => ['nl' => 'Betalingsfout', 'en' => 'Payment Error'],
+                'short' => ['nl' => 'Betalingsfout', 'en' => 'Payment Error'],
+                'send_email' => true,
+                'email' => [
+                    'customer' => [
+                        'to' => '[%SUBSCRIPTION_EMAIL%]',
+                        'to_name' => '[%SUBSCRIPTION_FIRST_NAME%] [%SUBSCRIPTION_LAST_NAME%]',
+                        'cc' => null,
+                        'bcc' => null,
+                        'template' => 'chuckcms-module-ecommerce::emails.default',
+                        'logo' => true,
+                        'data' => [
+                            'subject' => [
+                                'type' => 'text',
+                                'value' => [
+                                    'nl' => 'Uw afspraak #[%SUBSCRIPTION_NUMBER%] is mislukt',
+                                    'en' => 'Your appointment #[%SUBSCRIPTION_NUMBER%] has failed'
+                                ],
+                                'required' => true,
+                                'validation' => 'required'
+                            ],
+                            'hidden_preheader' => [
+                                'type' => 'text',
+                                'value' => [
+                                    'nl' => 'Uw afspraak met bestelnummer #[%SUBSCRIPTION_NUMBER%] is mislukt. In deze mail vindt u meer informatie over uw afspraak terug.',
+                                    'en' => 'Your appointment #[%SUBSCRIPTION_NUMBER%] has failed. In this e-mail you will find more information on your appointment.'
+                                ],
+                                'required' => true,
+                                'validation' => 'required'
+                            ],
+                            'intro' => [
+                                'type' => 'textarea',
+                                'value' => [
+                                    'nl' => 'Beste [%SUBSCRIPTION_FIRST_NAME%] [%SUBSCRIPTION_LAST_NAME%]<br><br>Uw afspraak is mislukt. Helaas is er iets misgegaan met de betaling. Heeft u nog vragen? Neem gerust contact met ons op.',
+                                    'en' => 'Dear [%SUBSCRIPTION_FIRST_NAME%] [%SUBSCRIPTION_LAST_NAME%]<br><br>Your appointment has failed. Unfortunately something went wrong with your payment. Do you have any other questions? Please don\'t hesitate to contact us.'
+                                ],
+                                'required' => true,
+                                'validation' => 'required'
+                            ],
+                            'body_title' => [
+                                'type' => 'text',
+                                'value' => [
+                                    'nl' => 'Uw afspraak',
+                                    'en' => 'Your appointment'
+                                ],
+                                'required' => true,
+                                'validation' => 'required'
+                            ],
+                            'body' => [
+                                'type' => 'textarea',
+                                'value' => [
+                                    'nl' => 'Hieronder vind je nogmaals een overzicht terug van jouw afspraak. <br><br> [%SUBSCRIPTION_SERVICES%] <br> <b>Verzendkosten</b>: [%APPOINTMENT_SHIPPING_TOTAL%] <br><br> <b>Totaal</b>: [%APPOINTMENT_FINAL%] <br><br> <b>Facturatie adres: </b> <br> Naam: [%SUBSCRIPTION_FIRST_NAME%] [%SUBSCRIPTION_LAST_NAME%] <br> E-mail: [%SUBSCRIPTION_EMAIL%] <br> Tel: [%SUBSCRIPTION_TELEPHONE%] <br> Bedrijf: [%SUBSCRIPTION_COMPANY%] <br> BTW: [%SUBSCRIPTION_COMPANY_VAT%] <br> Adres: <br>[%APPOINTMENT_BILLING_STREET%] [%APPOINTMENT_BILLING_HOUSENUMBER%], <br>[%APPOINTMENT_BILLING_POSTALCODE%] [%APPOINTMENT_BILLING_CITY%], [%APPOINTMENT_BILLING_COUNTRY%] <br><br> <b>Verzendadres:</b><br>Naam: [%APPOINTMENT_FIRST_NAME%] [%APPOINTMENT_LAST_NAME%] <br>Adres:<br>[%APPOINTMENT_SHIPPING_STREET%] [%APPOINTMENT_SHIPPING_HOUSENUMBER%], <br>[%APPOINTMENT_SHIPPING_POSTALCODE%] [%APPOINTMENT_SHIPPING_CITY%], [%APPOINTMENT_SHIPPING_COUNTRY%]',
+                                    'en' => 'Below you will find an overview of your appointment. <br><br> [%SUBSCRIPTION_SERVICES%] <br> <b>Shipping costs</b>: [%APPOINTMENT_SHIPPING_TOTAL%] <br><br> <b>Total</b>: [%APPOINTMENT_FINAL%] <br><br> <b>Invoice address: </b> <br> Name: [%SUBSCRIPTION_FIRST_NAME%] [%SUBSCRIPTION_LAST_NAME%] <br> E-mail: [%SUBSCRIPTION_EMAIL%] <br> Tel: [%SUBSCRIPTION_TELEPHONE%] <br> Company: [%SUBSCRIPTION_COMPANY%] <br> VAT: [%SUBSCRIPTION_COMPANY_VAT%] <br> Address: <br>[%APPOINTMENT_BILLING_STREET%] [%APPOINTMENT_BILLING_HOUSENUMBER%], <br>[%APPOINTMENT_BILLING_POSTALCODE%] [%APPOINTMENT_BILLING_CITY%], [%APPOINTMENT_BILLING_COUNTRY%] <br><br> <b>Shipping address:</b><br>Name: [%APPOINTMENT_FIRST_NAME%] [%APPOINTMENT_LAST_NAME%] <br>Address:<br>[%APPOINTMENT_SHIPPING_STREET%] [%APPOINTMENT_SHIPPING_HOUSENUMBER%], <br>[%APPOINTMENT_SHIPPING_POSTALCODE%] [%APPOINTMENT_SHIPPING_CITY%], [%APPOINTMENT_SHIPPING_COUNTRY%]'
+                                ],
+                                'required' => true,
+                                'validation' => 'required'
+                            ],
+                            'footer' => [
+                                'type' => 'textarea',
+                                'value' => [
+                                    'nl' => 'Heeft u vragen over uw afspraak? U kan ons steeds contacteren.<br><br><a href="mailto:' . ChuckSite::getSetting('company.email') . '">' . ChuckSite::getSetting('company.email') . '</a><br><br>' . ChuckSite::getSetting('company.name'),
+                                    'en' => 'Your appointment is shipped and on its way to you.'
+                                ],
+                                'required' => true,
+                                'validation' => 'required'
+                            ],
+                        ]
+                    ]
+                ],
+                'invoice' => false,
+                'paid' => false
+            ],
+            'confirmed' => [
+                'display_name' => ['nl' => 'Bevestigd', 'en' => 'Confirmed'],
+                'short' => ['nl' => 'Bevestigd', 'en' => 'Confirmed'],
+                'send_email' => true,
+                'email' => [
+                    'customer' => [
+                        'to' => '[%ASUBSCRIPTIONEMAIL%]',
+                        'to_name' => '[%SUBSCRIPTION_FIRST_NAME%] [%SUBSCRIPTION_LAST_NAME%]',
+                        'cc' => null,
+                        'bcc' => null,
+                        'template' => 'chuckcms-module-booker::emails.default',
+                        'logo' => true,
+                        'data' => [
+                            'subject' => [
+                                'type' => 'text',
+                                'value' => [
+                                    'nl' => 'Uw afspraak #[%SUBSCRIPTION_NUMBER%] is verzonden',
+                                    'en' => 'Your appointment #[%SUBSCRIPTION_NUMBER%] was shipped'
+                                ],
+                                'required' => true,
+                                'validation' => 'required'
+                            ],
+                            'hidden_preheader' => [
+                                'type' => 'text',
+                                'value' => [
+                                    'nl' => 'Uw afspraak met bestelnummer #[%SUBSCRIPTION_NUMBER%] is onderweg. In deze mail vindt u meer informatie over uw afspraak terug.',
+                                    'en' => 'Your appointment #[%SUBSCRIPTION_NUMBER%] was shipped'
+                                ],
+                                'required' => true,
+                                'validation' => 'required'
+                            ],
+                            'intro' => [
+                                'type' => 'textarea',
+                                'value' => [
+                                    'nl' => 'Beste [%SUBSCRIPTION_FIRST_NAME%] [%SUBSCRIPTION_LAST_NAME%]<br><br>Uw afspraak is onderweg. Uw afspraak wordt volgende werkdag geleverd tussen 9:00u en 19:00u. Is er niemand thuis? Dan proberen we het de dag erna nog eens, maak u geen zorgen. Heeft u nog vragen? Neem gerust contact met ons op.',
+                                    'en' => 'Order is shipped'
+                                ],
+                                'required' => true,
+                                'validation' => 'required'
+                            ],
+                            'body_title' => [
+                                'type' => 'text',
+                                'value' => [
+                                    'nl' => 'Uw afspraak',
+                                    'en' => 'Your appointment'
+                                ],
+                                'required' => true,
+                                'validation' => 'required'
+                            ],
+                            'body' => [
+                                'type' => 'textarea',
+                                'value' => [
+                                    'nl' => 'Hieronder vind je nogmaals een overzicht terug van jouw afspraak. <br><br> <b>Verzending:</b> [%APPOINTMENT_CARRIER_NAME%] <br> <b>Verzendtijd:</b> [%APPOINTMENT_CARRIER_TRANSIT_TIME%] <br><br> <b>Overzicht: </b> <br> [%SUBSCRIPTION_SERVICES%] <br> <b>Verzendkosten</b>: [%SUBSCRIPTION_SHIPPING_TOTAL%] <br><br> <b>Totaal</b>: [%APPOINTMENT_FINAL%] <br><br> <b>Facturatie adres: </b> <br> Naam: [%SUBSCRIPTION_FIRST_NAME%] [%SUBSCRIPTION_LAST_NAME%] <br> E-mail: [%SUBSCRIPTION_EMAIL%] <br> Tel: [%SUBSCRIPTION_TELEPHONE%] <br> Bedrijf: [%SUBSCRIPTION_COMPANY%] <br> BTW: [%SUBSCRIPTION_COMPANY_VAT%] <br> Adres: <br>[%APPOINTMENT_BILLING_STREET%] [%APPOINTMENT_BILLING_HOUSENUMBER%], <br>[%APPOINTMENT_BILLING_POSTALCODE%] [%APPOINTMENT_BILLING_CITY%], [%APPOINTMENT_BILLING_COUNTRY%] <br><br> <b>Verzendadres:</b><br>Naam: [%APPOINTMENT_FIRST_NAME%] [%APPOINTMENT_LAST_NAME%] <br>Adres:<br>[%APPOINTMENT_SHIPPING_STREET%] [%APPOINTMENT_SHIPPING_HOUSENUMBER%], <br>[%APPOINTMENT_SHIPPING_POSTALCODE%] [%APPOINTMENT_SHIPPING_CITY%], [%APPOINTMENT_SHIPPING_COUNTRY%]',
+                                    'en' => 'Your appointment is shipped and on its way to you.'
+                                ],
+                                'required' => true,
+                                'validation' => 'required'
+                            ],
+                            'footer' => [
+                                'type' => 'textarea',
+                                'value' => [
+                                    'nl' => 'Heeft u vragen over uw afspraak? U kan ons steeds contacteren.<br><br><a href="mailto:' . ChuckSite::getSetting('company.email') . '">' . ChuckSite::getSetting('company.email') . '</a><br><br>' . ChuckSite::getSetting('company.name'),
+                                    'en' => 'Your appointment is shipped and on its way to you.'
+                                ],
+                                'required' => true,
+                                'validation' => 'required'
+                            ],
+                        ]
+                    ]
+                ],
+                'invoice' => true,
+                'paid' => true
+            ],
+            'payment' => [
+                'display_name' => ['nl' => 'Betaald', 'en' => 'Paid'],
+                'short' => ['nl' => 'Betaald', 'en' => 'Paid'],
+                'send_email' => true,
+                'email' => [
+                    'customer' => [
+                        'to' => '[%APPOINTMENT_EMAIL%]',
+                        'to_name' => '[%APPOINTMENT_FIRST_NAME%] [%APPOINTMENT_LAST_NAME%]',
+                        'cc' => null,
+                        'bcc' => null,
+                        'template' => 'chuckcms-module-booker::emails.default',
+                        'logo' => true,
+                        'data' => [
+                            'subject' => [
+                                'type' => 'text',
+                                'value' => [
+                                    'nl' => 'Uw afspraak is bevestigd en betaald',
+                                    'en' => 'Your appointment was confirmed and paid'
+                                ],
+                                'required' => true,
+                                'validation' => 'required'
+                            ],
+                            'hidden_preheader' => [
+                                'type' => 'text',
+                                'value' => [
+                                    'nl' => 'Uw afspraak bij XXX is bevestigd en betaald. In deze mail vindt u meer informatie over uw afspraak terug.',
+                                    'en' => 'Your appointment with XXX was confirmed and paid'
+                                ],
+                                'required' => true,
+                                'validation' => 'required'
+                            ],
+                            'intro' => [
+                                'type' => 'textarea',
+                                'value' => [
+                                    'nl' => 'Beste [%APPOINTMENT_FIRST_NAME%] [%APPOINTMENT_LAST_NAME%]<br><br>Uw afspraak is onderweg. Uw afspraak wordt volgende werkdag geleverd tussen 9:00u en 19:00u. Is er niemand thuis? Dan proberen we het de dag erna nog eens, maak u geen zorgen. Heeft u nog vragen? Neem gerust contact met ons op.',
+                                    'en' => 'Order is shipped'
+                                ],
+                                'required' => true,
+                                'validation' => 'required'
+                            ],
+                            'body_title' => [
+                                'type' => 'text',
+                                'value' => [
+                                    'nl' => 'Uw afspraak',
+                                    'en' => 'Your appointment'
+                                ],
+                                'required' => true,
+                                'validation' => 'required'
+                            ],
+                            'body' => [
+                                'type' => 'textarea',
+                                'value' => [
+                                    'nl' => 'Hieronder vind je nogmaals een overzicht terug van jouw afspraak. <br><br> <b>Verzending:</b> [%APPOINTMENT_CARRIER_NAME%] <br> <b>Verzendtijd:</b> [%APPOINTMENT_CARRIER_TRANSIT_TIME%] <br><br> <b>Overzicht: </b> <br> [%APPOINTMENT_SERVICES%] <br> <b>Verzendkosten</b>: [%APPOINTMENT_SHIPPING_TOTAL%] <br><br> <b>Totaal</b>: [%APPOINTMENT_FINAL%] <br><br> <b>Facturatie adres: </b> <br> Naam: [%APPOINTMENT_FIRST_NAME%] [%APPOINTMENT_LAST_NAME%] <br> E-mail: [%APPOINTMENT_EMAIL%] <br> Tel: [%APPOINTMENT_TELEPHONE%] <br> Bedrijf: [%APPOINTMENT_COMPANY%] <br> BTW: [%APPOINTMENT_COMPANY_VAT%] <br> Adres: <br>[%APPOINTMENT_BILLING_STREET%] [%APPOINTMENT_BILLING_HOUSENUMBER%], <br>[%APPOINTMENT_BILLING_POSTALCODE%] [%APPOINTMENT_BILLING_CITY%], [%APPOINTMENT_BILLING_COUNTRY%] <br><br> <b>Verzendadres:</b><br>Naam: [%APPOINTMENT_FIRST_NAME%] [%APPOINTMENT_LAST_NAME%] <br>Adres:<br>[%APPOINTMENT_SHIPPING_STREET%] [%APPOINTMENT_SHIPPING_HOUSENUMBER%], <br>[%APPOINTMENT_SHIPPING_POSTALCODE%] [%APPOINTMENT_SHIPPING_CITY%], [%APPOINTMENT_SHIPPING_COUNTRY%]',
+                                    'en' => 'Your appointment is shipped and on its way to you.'
+                                ],
+                                'required' => true,
+                                'validation' => 'required'
+                            ],
+                            'footer' => [
+                                'type' => 'textarea',
+                                'value' => [
+                                    'nl' => 'Heeft u vragen over uw afspraak? U kan ons steeds contacteren.<br><br><a href="mailto:' . ChuckSite::getSetting('company.email') . '">' . ChuckSite::getSetting('company.email') . '</a><br><br>' . ChuckSite::getSetting('company.name'),
+                                    'en' => 'Your appointment is shipped and on its way to you.'
+                                ],
+                                'required' => true,
+                                'validation' => 'required'
+                            ],
+                        ]
+                    ]
+                ],
+                'invoice' => true,
+                'paid' => true
+            ]
+        ];
+
+
         $json['settings']['customer'] = [
             'is_tel_required' => true,
             'title' => 'string',

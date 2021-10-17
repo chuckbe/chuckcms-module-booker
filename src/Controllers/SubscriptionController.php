@@ -9,9 +9,11 @@ use Chuckbe\ChuckcmsModuleBooker\Models\Appointment;
 use Chuckbe\ChuckcmsModuleBooker\Chuck\ServiceRepository;
 use Chuckbe\ChuckcmsModuleBooker\Chuck\LocationRepository;
 use Chuckbe\ChuckcmsModuleBooker\Chuck\AppointmentRepository;
+use Chuckbe\ChuckcmsModuleBooker\Chuck\SubscriptionRepository;
 
-class AppointmentController extends Controller
+class SubscriptionController extends Controller
 {
+    private $subscriptionRepository;
     private $appointmentRepository;
     private $locationRepository;
     private $serviceRepository;
@@ -22,38 +24,26 @@ class AppointmentController extends Controller
      * @return void
      */
     public function __construct(
+        SubscriptionRepository $subscriptionRepository, 
         AppointmentRepository $appointmentRepository, 
         LocationRepository $locationRepository,
         ServiceRepository $serviceRepository)
     {
+        $this->subscriptionRepository = $subscriptionRepository;
         $this->appointmentRepository = $appointmentRepository;
         $this->locationRepository = $locationRepository;
         $this->serviceRepository = $serviceRepository;
     }
 
     /**
-     * Return the Appointments overview page.
+     * Return the subscriptions overview page.
      *
      * @return Illuminate\View\View
      */
     public function index()
     {   
-        $appointments = $this->appointmentRepository->get();
-        return view('chuckcms-module-booker::backend.appointments.index', compact('appointments'));
-    }
-
-    /**
-     * Return the appointments json feed.
-     *
-     * @param Request $request
-     *
-     * @return Illuminate\Response\Json
-     */
-    public function json(Request $request)
-    {
-        $appointments = $this->appointmentRepository->betweenDates(new DateTime($request->start), new DateTime($request->end), 'asc', ['id', 'title', 'start', 'end', 'time', 'duration', 'status', 'weight', 'price']);
-
-        return response()->json($appointments);
+        $subscriptions = $this->subscriptionRepository->get();
+        return view('chuckcms-module-booker::backend.subscriptions.index', compact('subscriptions'));
     }
 
     /**
