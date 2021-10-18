@@ -348,10 +348,10 @@ $customer = \Chuckbe\ChuckcmsModuleBooker\Models\Customer::where('user_id', Auth
             slideHtml = '';
             
             if (!firstSelected && dates[a][1].status == 'available') {
-                slideHtml = '<div class="splide__slide datepicker_item border rounded mr-2 is_selected '+(dates[a][1].status !== 'available' ? ' disabled' : '' )+'" data-index="'+a+'" data-date="'+dates[a][1].month+'/'+dates[a][1].day+'/'+dates[a][1].year+'" data-timeslots=\''+JSON.stringify(dates[a][1].timeslots)+'\'>';
+                slideHtml = '<div class="splide__slide datepicker_item border rounded mr-2 me-2 is_selected '+(dates[a][1].status !== 'available' ? ' disabled' : '' )+'" data-index="'+a+'" data-date="'+dates[a][1].month+'/'+dates[a][1].day+'/'+dates[a][1].year+'" data-timeslots=\''+JSON.stringify(dates[a][1].timeslots)+'\'>';
                 firstSelected = true;
             } else {
-                slideHtml = '<div class="splide__slide datepicker_item border rounded mr-2 '+(dates[a][1].status !== 'available' ? ' disabled' : '' )+'" data-index="'+a+'" data-date="'+dates[a][1].month+'/'+dates[a][1].day+'/'+dates[a][1].year+'" data-timeslots=\''+JSON.stringify(dates[a][1].timeslots)+'\'>';
+                slideHtml = '<div class="splide__slide datepicker_item border rounded mr-2 me-2 '+(dates[a][1].status !== 'available' ? ' disabled' : '' )+'" data-index="'+a+'" data-date="'+dates[a][1].month+'/'+dates[a][1].day+'/'+dates[a][1].year+'" data-timeslots=\''+JSON.stringify(dates[a][1].timeslots)+'\'>';
             }
 
             slideHtml += '<span class="d-block px-2 text-center">';
