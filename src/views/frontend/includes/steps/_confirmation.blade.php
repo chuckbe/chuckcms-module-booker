@@ -103,7 +103,7 @@
 	</div>
 	<div class="cmb_confirmation_overview_section py-2 px-3 border rounded row no-gutters g-0 mb-2">
 		<div class="col-sm-12 mb-2">
-			<span class="font-weight-bold d-block"><span class="cmb_confirmation_date_text">10 oktober 2021</span> om <span class="cmb_confirmation_time_text">10:00</span></span>
+			<span class="font-weight-bold fw-bold d-block"><span class="cmb_confirmation_date_text">10 oktober 2021</span> om <span class="cmb_confirmation_time_text">10:00</span></span>
 			<small class="mr-2"><i class="fa fa-clock"></i> <span class="cmb_confirmation_duration_text">30 minuten</span></small>
 			<small><i class="fa fa-wallet"></i> <span class="cmb_confirmation_price_text">29 EUR</span></small>
 		</div>
