@@ -83,6 +83,7 @@ input[name="cmb_services"][type="checkbox"]
 {
     opacity: 0;
     position: absolute;
+    width: 0;
 }
  
 
