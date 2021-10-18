@@ -13,7 +13,7 @@
         <div>
         <p class="p-b-10">Locatie: '<span id="delete_category_name"></span>' verwijderen?</p>
         </div>
-        <form role="form" method="POST" action="{{ route('dashboard.module.order_form.locations.delete') }}">
+        <form role="form" method="POST" action="{{ route('dashboard.module.booker.locations.delete') }}">
           <div class="row">
             <div class="col-md-12">
               <input type="hidden" id="delete_category_id" name="id" value="">

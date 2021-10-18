@@ -99,7 +99,7 @@ class SettingsController extends Controller
     
         $settings = $this->settingsRepository->update($request);
 
-        return redirect()->route('dashboard.module.order_form.settings.index');
+        return redirect()->route('dashboard.module.booker.settings.index');
         
     }
 }
