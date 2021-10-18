@@ -262,11 +262,11 @@ class CustomerRepository
     {
         try {
             Mail::send('chuckcms-module-booker::frontend.emails.activation', ['customer' => $customer, 'user' => $user], function ($m) use ($user) {
-                $m->from(ChuckSite::module('chuckcms-module-order-form')->getSetting('emails.from_email'), ChuckSite::module('chuckcms-module-order-form')->getSetting('emails.from_name'));
+                $m->from(config('chuckcms-module-booker.emails.from_email'), config('chuckcms-module-booker.emails.from_name'));
                 $m->to($user->email, $user->name)->subject('Bevestiging van uw account bij '.ChuckSite::getSite('name'));
             });
         } catch (\Exception $e) {
-            dd('test 2', $e);
+            //dd('test 2', $e);
         }
     }
 }
