@@ -1,9 +1,9 @@
 <div class="modal fade stick-up disable-scroll" id="medicalDeclarationModal" tabindex="-1" role="dialog" aria-hidden="false">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-	      	<div class="modal-header clearfix text-left">
+	      	<div class="modal-header clearfix text-left test-start">
 		        <h5 class="modal-title">Medische Verklaring</h5>
-		        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
 		          	<span aria-hidden="true">&times;</span>
 		        </button>
 	      	</div>

@@ -1,9 +1,9 @@
 <div class="modal fade stick-up disable-scroll" id="cmb_login_modal" tabindex="-1" role="dialog" aria-hidden="false">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-header clearfix text-left">
+            <div class="modal-header clearfix text-left text-end">
                 <h5 class="modal-title">Meld je <span class="semi-bold">hier</span> aan</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -19,7 +19,7 @@
                     <div class="form-group-attached">
                         <div class="row">
                             <div class="col-md-12">
-                                <div class="form-group form-group-default required">
+                                <div class="form-group mb-3 form-group-default required">
                                     <label class="sr-only">E-mailadres *</label>
                                     <input type="email" name="email" placeholder="E-mailadres *" class="form-control" autocomplete="username" required>
                                     <small class="text-danger error-msg error-email"></small>
@@ -29,7 +29,7 @@
 
                         <div class="row">
                             <div class="col-md-12">
-                                <div class="form-group form-group-default required">
+                                <div class="form-group mb-3 form-group-default required">
                                     <label class="sr-only">Wachtwoord *</label>
                                     <input type="password" name="password" placeholder="Wachtwoord *" class="form-control" autocomplete="current-password" required>
                                     <small class="text-danger error-msg error-password"></small>
@@ -42,7 +42,7 @@
                             <input type="hidden" name="create">
                             <input type="hidden" name="_token" value="{{ Session::token() }}">
                             <button type="button" class="btn btn-default" data-dismiss="modal" aria-hidden="true">Annuleren</button>
-                            <button type="button" class="btn btn-dark float-right" id="cmb_login_modal_confirm_btn">Aanmelden</button>
+                            <button type="button" class="btn btn-dark float-right float-end" id="cmb_login_modal_confirm_btn">Aanmelden</button>
                         </div>
                     </div>
                 </form>
