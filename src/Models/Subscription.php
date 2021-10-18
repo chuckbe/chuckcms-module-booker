@@ -23,13 +23,14 @@ class Subscription extends Eloquent
      * @var array
      */
     protected $fillable = [
-        'is_expired', 'is_active', 'is_paid', 'subscription_plan_id', 'customer_id', 'expires_at', 'usage', 'weight', 'type', 'price', 'has_invoice', 'will_renew', 'json'
+        'is_expired', 'is_active', 'is_paid', 'is_previous_cycle', 'subscription_plan_id', 'customer_id', 'expires_at', 'usage', 'weight', 'type', 'price', 'has_invoice', 'will_renew', 'json'
     ];
 
     protected $casts = [
         'is_expired' => 'boolean',
         'is_active' => 'boolean',
         'is_paid' => 'boolean',
+        'is_previous_cycle' => 'boolean',
         'has_invoice' => 'boolean',
         'expires_at' => 'datetime',
         'json' => 'array',

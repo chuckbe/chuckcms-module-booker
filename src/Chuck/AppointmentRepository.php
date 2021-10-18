@@ -50,13 +50,23 @@ class AppointmentRepository
     }
 
     /**
-     * Get all the locations
+     * Get all the appointments
      *
      * @return Illuminate\Database\Eloquent\Collection
      **/
     public function get()
     {
         return $this->appointment->get();
+    }
+
+    /**
+     * Get all the appointments with invoices
+     *
+     * @return Illuminate\Database\Eloquent\Collection
+     **/
+    public function getInvoices()
+    {
+        return $this->appointment->where('has_invoice', true)->get();
     }
 
     /**
@@ -598,7 +608,7 @@ class AppointmentRepository
         if($status_object['invoice'] && !array_key_exists('invoice_number', $json) && !array_key_exists('subscription', $json)) {
             $json['invoice_number'] = $this->generateInvoiceNumber();
             $appointment->json = $json;
-            $appointment->has_invoice == true;
+            $appointment->has_invoice = true;
         }
 
         $appointment->update();

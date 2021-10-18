@@ -42,7 +42,7 @@ class SubscriptionController extends Controller
      */
     public function index()
     {   
-        $subscriptions = $this->subscriptionRepository->get();
+        $subscriptions = $this->subscriptionRepository->getWithoutPrevious();
         return view('chuckcms-module-booker::backend.subscriptions.index', compact('subscriptions'));
     }
 

@@ -36,6 +36,7 @@ class CreateSubscriptionsTable extends Migration
 
             $table->boolean('is_active')->default(false);
             $table->boolean('is_paid')->default(false);
+            $table->boolean('is_previous_cycle')->default(false);
             $table->integer('usage')->default(0);
 
             $table->boolean('has_invoice')->default(false);

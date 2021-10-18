@@ -42,6 +42,26 @@ class SubscriptionRepository
     }
 
     /**
+     * Get all the subscriptions with invoices
+     *
+     * @return Illuminate\Database\Eloquent\Collection
+     **/
+    public function getInvoices()
+    {
+        return $this->subscription->where('has_invoice', true)->get();
+    }
+
+    /**
+     * Get all the subscriptions
+     *
+     * @return Illuminate\Database\Eloquent\Collection
+     **/
+    public function getWithoutPrevious()
+    {
+        return $this->subscription->where('is_previous_cycle', false)->get();
+    }
+
+    /**
      * Get all active subscriptions that need renewal
      *
      * @return Illuminate\Database\Eloquent\Collection
@@ -278,6 +298,9 @@ class SubscriptionRepository
             'will_renew' => $subscription->type !== 'one-off',
             'json' => array('previous_cycle' => $subscription->id)
         ]);
+
+        $subscription->is_previous_cycle = true;
+        $subscription->update();
 
         return $newSubscription;
     }
