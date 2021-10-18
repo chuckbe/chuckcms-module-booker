@@ -3,6 +3,7 @@
 namespace Chuckbe\ChuckcmsModuleBooker\Models;
 
 use Eloquent;
+use ChuckSite;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Location extends Eloquent
@@ -115,5 +116,14 @@ class Location extends Eloquent
         }
 
         return $this->opening_hours[$day];
+    }
+
+    public function getLongAddressAttribute()
+    {
+        if (!is_array($this->json)) {
+            return ChuckSite::getSetting('company.name').' - '.ChuckSite::getSetting('company.street').' '.ChuckSite::getSetting('company.housenumber').', '.ChuckSite::getSetting('company.postalcode').' '.ChuckSite::getSetting('company.city');
+        }
+        
+        return array_key_exists('address', $this->json) ? $this->json['address'] : ChuckSite::getSetting('company.name').' - '.ChuckSite::getSetting('company.street').' '.ChuckSite::getSetting('company.housenumber').', '.ChuckSite::getSetting('company.postalcode').' '.ChuckSite::getSetting('company.city');
     }
 }

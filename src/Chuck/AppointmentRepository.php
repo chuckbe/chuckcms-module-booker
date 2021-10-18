@@ -95,7 +95,8 @@ class AppointmentRepository
             'weight' => $weight,
             'status' => 'awaiting',
             'is_canceled' => false,
-            'price' => 0
+            'price' => 0,
+            'json' => array()
         ]);
 
         $appointment->services()->attach($request->services);
@@ -206,12 +207,10 @@ class AppointmentRepository
             $payment = $this->makePayment($appointment);
 
             if ($payment === false) {
-                $appointment->status = 'confirmed';
-                $appointment->update();
+                $this->updateStatus($appointment, 'confirmed');
             }
         } else {
-            $appointment->status = 'confirmed';
-            $appointment->update();
+            $this->updateStatus($appointment, 'confirmed');
         }
 
         return $appointment;
@@ -233,6 +232,8 @@ class AppointmentRepository
      **/
     public function makePayment(Appointment $appointment)
     {
+        $appointment->refresh();
+        
         if ( ($appointment->customer->getAvailableWeight() == -1 || $appointment->customer->getAvailableWeight() >= $appointment->weight) && !in_array($appointment->start->format('Y-m-d'), explode(',', $appointment->customer->getDatesWhenAvailableWeightNotAvailable())) ) {
             $subscription = $appointment->customer->getSubscriptionForWeight($appointment->weight);
             
@@ -259,8 +260,9 @@ class AppointmentRepository
                 'currency' => 'EUR',
                 'value' => number_format( ( (float)$appointment->price ), 2, '.', ''), // You must send the correct number of decimals, thus we enforce the use of strings
             ],
+            'method' => 'bancontact',
             'description' => ChuckSite::getSite('name') . ' #' . $appointment->id,
-            'webhookUrl' => 'https://chuckcms.com/', //route('module.ecommerce.mollie_webhook'),
+            'webhookUrl' => 'https://chuckcms.com/', //route('module.booker.mollie_webhook'),
             'redirectUrl' => route('module.booker.checkout.followup', ['appointment' => $appointment->id]),
             //'method' => $order->json['payment_method'],
             "metadata" => array(
@@ -672,9 +674,9 @@ class AppointmentRepository
         $foundVariables = $this->getRawVariables($value, '[%', '%]');
         if (count($foundVariables) > 0) {
             foreach ($foundVariables as $foundVariable) {
-                // if (strpos($foundVariable, 'APPOINTMENT_NUMBER') !== false) {
-                //     $value = str_replace('[%APPOINTMENT_NUMBER%]', $order->json['APPOINTMENT_number'], $value);
-                // }
+                if (strpos($foundVariable, 'APPOINTMENT_NUMBER') !== false) {
+                    $value = str_replace('[%APPOINTMENT_NUMBER%]', $appointment->start->format('Ymd').'-'.$appointment->id, $value);
+                }
                 // if (strpos($foundVariable, 'APPOINTMENT_SUBTOTAL') !== false) {
                 //     $value = str_replace('[%APPOINTMENT_SUBTOTAL%]', ChuckEcommerce::formatPrice($order->subtotal), $value);
                 // }
@@ -690,9 +692,9 @@ class AppointmentRepository
                 // if (strpos($foundVariable, 'APPOINTMENT_SHIPPING_TOTAL') !== false) {
                 //     $value = str_replace('[%APPOINTMENT_SHIPPING_TOTAL%]', $order->shipping > 0 ? ChuckEcommerce::formatPrice($order->shipping + $order->shipping_tax) : 'gratis', $value);
                 // }
-                // if (strpos($foundVariable, 'APPOINTMENT_TOTAL') !== false) {
-                //     $value = str_replace('[%APPOINTMENT_TOTAL%]', ChuckEcommerce::formatPrice($order->total), $value);
-                // }
+                if (strpos($foundVariable, 'APPOINTMENT_TOTAL') !== false) {
+                    $value = str_replace('[%APPOINTMENT_TOTAL%]', ChuckModuleBooker::formatPrice($appointment->price), $value);
+                }
                 // if (strpos($foundVariable, 'APPOINTMENT_TOTAL_TAX') !== false) {
                 //     $value = str_replace('[%APPOINTMENT_TOTAL_TAX%]', ChuckEcommerce::formatPrice($order->total_tax), $value);
                 // }
@@ -754,6 +756,11 @@ class AppointmentRepository
 
     private function formatServices(Appointment $appointment) {
         $string = '';
+
+        $string .= '<p><b>Datum: </b>'.$appointment->start->format('d/m/Y').'<br>';
+        $string .= '<b>Uur: </b>'.$appointment->time.'<br>';
+        $string .= '<b>Locatie: </b>'.$appointment->location->long_address;
+        $string .= '</p>';
         
         foreach($appointment->services as $service) {
             $string .= '<p>1x "'.$service->name.'" ('.ChuckModuleBooker::formatPrice($service->price).')</p><hr>';    

@@ -14,3 +14,14 @@
 
 //use this to load the form itself - do not wrap it in a container
 {!! ChuckModuleBooker::renderForm() !!}
+
+- Inside another custom template file you can use the following methods for the subscription files
+``` 
+//use this to load css and styles
+{!! ChuckModuleBooker::renderSubscriptionStyles() !!}
+
+//use this to load js and scripts
+{!! ChuckModuleBooker::renderSubscriptionScripts() !!}
+
+//use this to load the form itself - do not wrap it in a container
+{!! ChuckModuleBooker::renderSubscriptionForm() !!}

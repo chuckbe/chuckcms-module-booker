@@ -2,7 +2,9 @@
 
 namespace Chuckbe\ChuckcmsModuleBooker;
 
+use Chuckbe\ChuckcmsModuleBooker\Commands\ExpireSubscriptions;
 use Chuckbe\ChuckcmsModuleBooker\Commands\InstallModuleBooker;
+use Chuckbe\ChuckcmsModuleBooker\Commands\RenewSubscriptions;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Collection;
@@ -28,7 +30,9 @@ class ChuckcmsModuleBookerServiceProvider extends ServiceProvider
 
         if ($this->app->runningInConsole()) {
             $this->commands([
+                ExpireSubscriptions::class,
                 InstallModuleBooker::class,
+                RenewSubscriptions::class,
             ]);
         }
     }

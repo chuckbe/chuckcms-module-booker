@@ -684,6 +684,9 @@ $customer = \Chuckbe\ChuckcmsModuleBooker\Models\Customer::where('user_id', Auth
 
             $('form.cmb_booker_app label[for="cmb_create_customer"]').remove();
 
+            $('form.cmb_booker_app .cmb_email_correction').addClass('d-none');
+            $('form.cmb_booker_app .cmb_email_suggestion').addClass('d-none');
+
             $('form.cmb_booker_app .cmb_open_login_modal').hide();
 
             $('#cmb_login_modal').modal('hide');

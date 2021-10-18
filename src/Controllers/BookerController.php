@@ -14,7 +14,10 @@ use App\Http\Controllers\Controller;
 use Chuckbe\ChuckcmsModuleBooker\Models\Subscription;
 use Chuckbe\ChuckcmsModuleBooker\Models\Appointment;
 use Chuckbe\ChuckcmsModuleBooker\Models\Location;
+use Chuckbe\ChuckcmsModuleBooker\Models\Payment;
+use ChuckModuleBooker;
 use ChuckSite;
+use Mollie;
 
 class BookerController extends Controller
 {
@@ -64,7 +67,7 @@ class BookerController extends Controller
         ]);
 
         $availableDatesAndTimeslots = $this->appointmentRepository->getAvailableDates($request->location, $request->services);
-        
+
         if (!$availableDatesAndTimeslots) {
             return response()->json(['status' => 'error'], 200);
         }
@@ -114,7 +117,7 @@ class BookerController extends Controller
             return response()->json(['status' => 'booked_already'], 200);
         }
 
-        if (array_key_exists('subscription', $appointment->json)) {
+        if (is_array($appointment->json) && array_key_exists('subscription', $appointment->json)) {
             return response()->json([
                 'status' => 'success', 
                 'redirect' => route('module.booker.checkout.followup', ['appointment' => $appointment->id])
@@ -129,15 +132,25 @@ class BookerController extends Controller
 
     public function followup(Appointment $appointment)
     {
-        if (array_key_exists('subscription', $appointment->json)) {
-            $this->appointmentRepository->updateStatus($appointment, 'confirmed');
+        if (is_array($appointment->json) && array_key_exists('subscription', $appointment->json)) {
             return redirect()->to(config('chuckcms-module-booker.followup.appointment'))->with('appointment', $appointment);
         }
 
         $payment = $appointment->payments()->where('type', 'one-off')->first();
+        $mollie = Mollie::api()->payments()->get($payment->external_id);
 
-        if ($payment->isPaid()) {
-            $this->appointmentRepository->updateStatus($appointment, 'payment');
+        if ($mollie->isPaid()) {
+            if (!ChuckModuleBooker::getSetting('appointment.statuses.'.$appointment->status.'.paid')) {
+                $this->appointmentRepository->updateStatus($appointment, 'payment');
+            }
+        }
+
+        if ($mollie->isCanceled()) {
+            $this->appointmentRepository->updateStatus($appointment, 'canceled');    
+        }
+
+        if ($mollie->isFailed()) {
+            $this->appointmentRepository->updateStatus($appointment, 'error');    
         }
 
         return redirect()->to(config('chuckcms-module-booker.followup.appointment'))->with('appointment', $appointment);
@@ -180,11 +193,119 @@ class BookerController extends Controller
     public function subscriptionFollowup(Subscription $subscription)
     {
         $payment = $subscription->payments()->where('type', 'first')->first();
+        $mollie = Mollie::api()->payments()->get($payment->external_id);
 
-        if ($payment->isPaid()) {
-            $this->subscriptionRepository->updateStatus($subscription, 'payment');
+        if ($mollie->isPaid()) {
+            if (!$subscription->is_paid && !$subscription->is_active) {
+                $this->subscriptionRepository->updateStatus($subscription, 'payment');
+            }
+        }
+
+        if ($mollie->isCanceled()) {
+            $this->subscriptionRepository->updateStatus($subscription, 'canceled');
+        }
+
+        if ($mollie->isFailed()) {
+            $this->subscriptionRepository->updateStatus($subscription, 'failed');    
         }
 
         return redirect()->to(config('chuckcms-module-booker.followup.subscription'))->with('subscription', $subscription);
+    }
+
+    public function webhookMollie(Request $request)
+    {
+        config(['mollie.key' => ChuckSite::get('chuckcms-module-booker')->getSetting('integrations.mollie.key')]);
+
+        if (! $request->has('id')) {
+            return;
+        }
+
+        $mollie = Mollie::api()->payments()->get($request->id);
+        $payment = Payment::where('external_id', $request->id)->first();
+
+        if ($payment == null) {
+            return response()->json(['status' => 'success'], 200);
+        }
+
+        $resourceType = !empty($mollie->metadata->subscription_id) ? 'subscription' : 'appointment';
+
+        if ($resourceType == 'subscription') {
+            $subscription = $this->subscriptionRepository->find($mollie->metadata->subscription_id);
+
+            if($subscription == null) {
+                return response()->json(['status' => 'success'], 200);
+            }
+        }
+
+        if ($resourceType == 'appointment') {
+            $appointment = $this->appointmentRepository->find($mollie->metadata->appointment_id);
+
+            if($appointment == null) {
+                return response()->json(['status' => 'success'], 200);
+            }
+        }
+
+        if ($mollie->isCanceled()) {
+            if ($resourceType == 'appointment') {
+                $this->appointmentRepository->updateStatus($appointment, 'canceled');
+            }
+            
+            if ($resourceType == 'subscription' && $mollie->sequenceType == 'first') {
+                $this->subscriptionRepository->updateStatus($subscription, 'canceled');
+            }
+
+            return response()->json(['status' => 'success'], 200);
+        }
+
+        if ($mollie->isExpired()) {
+            if ($resourceType == 'appointment') {
+                $this->appointmentRepository->updateStatus($appointment, 'error');
+            }
+            
+            if ($resourceType == 'subscription' && $mollie->sequenceType == 'first') {
+                $this->subscriptionRepository->updateStatus($subscription, 'expired');
+            }
+            
+            return response()->json(['status' => 'success'], 200);
+        }
+
+        if ($mollie->isPaid()) { 
+            if ($resourceType == 'appointment') { 
+                if (!ChuckModuleBooker::getSetting('appointment.statuses.'.$appointment->status.'.paid')) {
+                    $this->appointmentRepository->updateStatus($appointment, 'payment');
+                }
+            }
+
+            if ($sequenceType == 'subscription') {
+                if (!$subscription->is_paid && !$subscription->is_active) {
+                    $this->subscriptionRepository->updateStatus($subscription, 'payment');
+                }
+
+                if ($mollie->hasChargebacks()) {
+                    $this->subscriptionRepository->makeRecurringPayment($subscription, $subscription->customer);
+                }
+            }
+
+            return response()->json(['status' => 'success'], 200);
+        } 
+
+        if ($mollie->isFailed()) {
+            if ($resourceType == 'appointment') {
+                $this->appointmentRepository->updateStatus($appointment, 'error');
+            }
+
+            if ($resourceType == 'subscription' && $mollie->sequenceType == 'first') {
+                $this->subscriptionRepository->updateStatus($subscription, 'failed');
+            }
+
+            if ($resourceType == 'subscription' && $mollie->sequenceType == 'recurring') {
+                $this->subscriptionRepository->makeRecurringPayment($subscription, $subscription->customer);
+                $this->subscriptionRepository->updateStatus($subscription, 'failed_recurring');
+            }
+
+            return response()->json(['status' => 'success'], 200);
+        }
+
+        return response()->json(['status' => 'success'], 200);
     }
 }

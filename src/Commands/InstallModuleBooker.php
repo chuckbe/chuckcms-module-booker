@@ -305,15 +305,6 @@ Als je een klacht hebt over de wijze van verwerking van jouw persoonsgegevens ku
 
 
         $json['settings']['appointment']['statuses'] = [
-            'new' => [
-                'display_name' => ['nl' => 'Nieuwe afspraak', 'en' => 'New appointment'],
-                'short' => ['nl' => 'Nieuw', 'en' => 'New'],
-                'send_email' => false,
-                'email' => [],
-                'invoice' => false,
-                'paid' => false,
-                'deposit_paid' => false
-            ],
             'awaiting' => [
                 'display_name' => ['nl' => 'In afwachting van betaling', 'en' => 'Awaiting payment'],
                 'short' => ['nl' => 'Afwachting', 'en' => 'Awaiting'],
@@ -349,7 +340,7 @@ Als je een klacht hebt over de wijze van verwerking van jouw persoonsgegevens ku
                             'hidden_preheader' => [
                                 'type' => 'text',
                                 'value' => [
-                                    'nl' => 'Uw afspraak met bestelnummer #[%APPOINTMENT_NUMBER%] werd geannuleerd. In deze mail vindt u meer informatie terug.',
+                                    'nl' => 'Uw afspraak #[%APPOINTMENT_NUMBER%] werd geannuleerd. In deze mail vindt u meer informatie terug.',
                                     'en' => 'Your appointment #[%APPOINTMENT_NUMBER%] was canceled. You can find more information in this email.'
                                 ],
                                 'required' => true,
@@ -358,7 +349,7 @@ Als je een klacht hebt over de wijze van verwerking van jouw persoonsgegevens ku
                             'intro' => [
                                 'type' => 'textarea',
                                 'value' => [
-                                    'nl' => 'Beste [%APPOINTMENT_FIRST_NAME%] [%APPOINTMENT_LAST_NAME%]<br><br>Uw afspraak werd geannuleerd. Indien u reeds heeft betaald wordt dit bedrag automatisch teruggestort op het rekeningnummer dat gelinkt is aan de kaart waarmee u de betaling heeft uitgevoerd. <br><br> Denkt u dat het niet de bedoeling dat deze bestelling geannuleerd werd? Geen zorgen, neem dan contact op met de klantendienst.',
+                                    'nl' => 'Beste [%APPOINTMENT_FIRST_NAME%] [%APPOINTMENT_LAST_NAME%]<br><br>Uw afspraak werd geannuleerd. Indien u reeds heeft betaald wordt dit bedrag automatisch teruggestort op het rekeningnummer dat gelinkt is aan de kaart waarmee u de betaling heeft uitgevoerd. <br><br> Denkt u dat het niet de bedoeling dat deze afspraak geannuleerd werd? Geen zorgen, neem dan contact op met de klantendienst.',
                                     'en' => 'Dear [%APPOINTMENT_FIRST_NAME%] [%APPOINTMENT_LAST_NAME%]<br><br>Your appointment was canceled. If you have already paid then we will automatically debit the account linked to the card that has been used to pay this order. <br><br>Do you think this order was not supposed to be canceled? No worries, contact our customer support.'
                                 ],
                                 'required' => true,
@@ -376,8 +367,8 @@ Als je een klacht hebt over de wijze van verwerking van jouw persoonsgegevens ku
                             'body' => [
                                 'type' => 'textarea',
                                 'value' => [
-                                    'nl' => 'Hieronder vind je nogmaals een overzicht terug van jouw afspraak. <br><br> <b>Verzending:</b> [%APPOINTMENT_CARRIER_NAME%] <br> <b>Verzendtijd:</b> [%APPOINTMENT_CARRIER_TRANSIT_TIME%] <br><br> <b>Overzicht: </b> <br> [%APPOINTMENT_SERVICES%] <br> <b>Verzendkosten</b>: [%APPOINTMENT_SHIPPING_TOTAL%] <br><br> <b>Totaal</b>: [%APPOINTMENT_FINAL%] <br><br> <b>Facturatie adres: </b> <br> Naam: [%APPOINTMENT_FIRST_NAME%] [%APPOINTMENT_LAST_NAME%] <br> E-mail: [%APPOINTMENT_EMAIL%] <br> Tel: [%APPOINTMENT_TELEPHONE%] <br> Bedrijf: [%APPOINTMENT_COMPANY%] <br> BTW: [%APPOINTMENT_COMPANY_VAT%] <br> Adres: <br>[%APPOINTMENT_BILLING_STREET%] [%APPOINTMENT_BILLING_HOUSENUMBER%], <br>[%APPOINTMENT_BILLING_POSTALCODE%] [%APPOINTMENT_BILLING_CITY%], [%APPOINTMENT_BILLING_COUNTRY%] <br><br> <b>Verzendadres:</b><br>Naam: [%APPOINTMENT_FIRST_NAME%] [%APPOINTMENT_LAST_NAME%] <br>Adres:<br>[%APPOINTMENT_SHIPPING_STREET%] [%APPOINTMENT_SHIPPING_HOUSENUMBER%], <br>[%APPOINTMENT_SHIPPING_POSTALCODE%] [%APPOINTMENT_SHIPPING_CITY%], [%APPOINTMENT_SHIPPING_COUNTRY%]',
-                                    'en' => 'Below you will find another summary of your appointment. <br><br> <b>Shipping:</b> [%APPOINTMENT_CARRIER_NAME%] <br> <b>Transit time:</b> [%APPOINTMENT_CARRIER_TRANSIT_TIME%] <br><br> <b>Order: </b> <br> [%APPOINTMENT_SERVICES%] <br> <b>Shipping fees</b>: [%APPOINTMENT_SHIPPING_TOTAL%] <br><br> <b>Total</b>: [%APPOINTMENT_FINAL%] <br><br> <b>Invoice address: </b> <br> Name: [%APPOINTMENT_FIRST_NAME%] [%APPOINTMENT_LAST_NAME%] <br> E-mail: [%APPOINTMENT_EMAIL%] <br> Tel: [%APPOINTMENT_TELEPHONE%] <br> Company: [%APPOINTMENT_COMPANY%] <br> VAT: [%APPOINTMENT_COMPANY_VAT%] <br> Address: <br>[%APPOINTMENT_BILLING_STREET%] [%APPOINTMENT_BILLING_HOUSENUMBER%], <br>[%APPOINTMENT_BILLING_POSTALCODE%] [%APPOINTMENT_BILLING_CITY%], [%APPOINTMENT_BILLING_COUNTRY%] <br><br> <b>Shipping address:</b><br>Name: [%APPOINTMENT_FIRST_NAME%] [%APPOINTMENT_LAST_NAME%] <br>Address:<br>[%APPOINTMENT_SHIPPING_STREET%] [%APPOINTMENT_SHIPPING_HOUSENUMBER%], <br>[%APPOINTMENT_SHIPPING_POSTALCODE%] [%APPOINTMENT_SHIPPING_CITY%], [%APPOINTMENT_SHIPPING_COUNTRY%]'
+                                    'nl' => 'Uw afspraak <br><br> <b>Overzicht: </b> <br> [%APPOINTMENT_SERVICES%]',
+                                    'en' => 'Below you will find another summary of your appointment. <br><br> <b>Overview: </b> <br> [%APPOINTMENT_SERVICES%]'
                                 ],
                                 'required' => true,
                                 'validation' => 'required'
@@ -415,8 +406,8 @@ Als je een klacht hebt over de wijze van verwerking van jouw persoonsgegevens ku
                             'subject' => [
                                 'type' => 'text',
                                 'value' => [
-                                    'nl' => 'Uw afspraak #[%APPOINTMENT_NUMBER%] is mislukt',
-                                    'en' => 'Your appointment #[%APPOINTMENT_NUMBER%] has failed'
+                                    'nl' => 'Uw betaling voor afspraak #[%APPOINTMENT_NUMBER%] is mislukt',
+                                    'en' => 'Your payment for appointment #[%APPOINTMENT_NUMBER%] has failed'
                                 ],
                                 'required' => true,
                                 'validation' => 'required'
@@ -424,8 +415,8 @@ Als je een klacht hebt over de wijze van verwerking van jouw persoonsgegevens ku
                             'hidden_preheader' => [
                                 'type' => 'text',
                                 'value' => [
-                                    'nl' => 'Uw afspraak met bestelnummer #[%APPOINTMENT_NUMBER%] is mislukt. In deze mail vindt u meer informatie over uw afspraak terug.',
-                                    'en' => 'Your appointment #[%APPOINTMENT_NUMBER%] has failed. In this e-mail you will find more information on your appointment.'
+                                    'nl' => 'Uw afspraak #[%APPOINTMENT_NUMBER%] is mislukt. In deze mail vindt u meer informatie terug.',
+                                    'en' => 'Your appointment #[%APPOINTMENT_NUMBER%] has failed. In this e-mail you will find more information.'
                                 ],
                                 'required' => true,
                                 'validation' => 'required'
@@ -433,8 +424,8 @@ Als je een klacht hebt over de wijze van verwerking van jouw persoonsgegevens ku
                             'intro' => [
                                 'type' => 'textarea',
                                 'value' => [
-                                    'nl' => 'Beste [%APPOINTMENT_FIRST_NAME%] [%APPOINTMENT_LAST_NAME%]<br><br>Uw afspraak is mislukt. Helaas is er iets misgegaan met de betaling. Heeft u nog vragen? Neem gerust contact met ons op.',
-                                    'en' => 'Dear [%APPOINTMENT_FIRST_NAME%] [%APPOINTMENT_LAST_NAME%]<br><br>Your appointment has failed. Unfortunately something went wrong with your payment. Do you have any other questions? Please don\'t hesitate to contact us.'
+                                    'nl' => 'Beste [%APPOINTMENT_FIRST_NAME%] [%APPOINTMENT_LAST_NAME%]<br><br>Uw afspraak is mislukt. Helaas is er iets misgegaan met de betaling. ',
+                                    'en' => 'Dear [%APPOINTMENT_FIRST_NAME%] [%APPOINTMENT_LAST_NAME%]<br><br>Your appointment has failed. Unfortunately something went wrong with your payment. '
                                 ],
                                 'required' => true,
                                 'validation' => 'required'
@@ -451,8 +442,8 @@ Als je een klacht hebt over de wijze van verwerking van jouw persoonsgegevens ku
                             'body' => [
                                 'type' => 'textarea',
                                 'value' => [
-                                    'nl' => 'Hieronder vind je nogmaals een overzicht terug van jouw afspraak. <br><br> [%APPOINTMENT_SERVICES%] <br> <b>Verzendkosten</b>: [%APPOINTMENT_SHIPPING_TOTAL%] <br><br> <b>Totaal</b>: [%APPOINTMENT_FINAL%] <br><br> <b>Facturatie adres: </b> <br> Naam: [%APPOINTMENT_FIRST_NAME%] [%APPOINTMENT_LAST_NAME%] <br> E-mail: [%APPOINTMENT_EMAIL%] <br> Tel: [%APPOINTMENT_TELEPHONE%] <br> Bedrijf: [%APPOINTMENT_COMPANY%] <br> BTW: [%APPOINTMENT_COMPANY_VAT%] <br> Adres: <br>[%APPOINTMENT_BILLING_STREET%] [%APPOINTMENT_BILLING_HOUSENUMBER%], <br>[%APPOINTMENT_BILLING_POSTALCODE%] [%APPOINTMENT_BILLING_CITY%], [%APPOINTMENT_BILLING_COUNTRY%] <br><br> <b>Verzendadres:</b><br>Naam: [%APPOINTMENT_FIRST_NAME%] [%APPOINTMENT_LAST_NAME%] <br>Adres:<br>[%APPOINTMENT_SHIPPING_STREET%] [%APPOINTMENT_SHIPPING_HOUSENUMBER%], <br>[%APPOINTMENT_SHIPPING_POSTALCODE%] [%APPOINTMENT_SHIPPING_CITY%], [%APPOINTMENT_SHIPPING_COUNTRY%]',
-                                    'en' => 'Below you will find an overview of your appointment. <br><br> [%APPOINTMENT_SERVICES%] <br> <b>Shipping costs</b>: [%APPOINTMENT_SHIPPING_TOTAL%] <br><br> <b>Total</b>: [%APPOINTMENT_FINAL%] <br><br> <b>Invoice address: </b> <br> Name: [%APPOINTMENT_FIRST_NAME%] [%APPOINTMENT_LAST_NAME%] <br> E-mail: [%APPOINTMENT_EMAIL%] <br> Tel: [%APPOINTMENT_TELEPHONE%] <br> Company: [%APPOINTMENT_COMPANY%] <br> VAT: [%APPOINTMENT_COMPANY_VAT%] <br> Address: <br>[%APPOINTMENT_BILLING_STREET%] [%APPOINTMENT_BILLING_HOUSENUMBER%], <br>[%APPOINTMENT_BILLING_POSTALCODE%] [%APPOINTMENT_BILLING_CITY%], [%APPOINTMENT_BILLING_COUNTRY%] <br><br> <b>Shipping address:</b><br>Name: [%APPOINTMENT_FIRST_NAME%] [%APPOINTMENT_LAST_NAME%] <br>Address:<br>[%APPOINTMENT_SHIPPING_STREET%] [%APPOINTMENT_SHIPPING_HOUSENUMBER%], <br>[%APPOINTMENT_SHIPPING_POSTALCODE%] [%APPOINTMENT_SHIPPING_CITY%], [%APPOINTMENT_SHIPPING_COUNTRY%]'
+                                    'nl' => '[%APPOINTMENT_SERVICES%]',
+                                    'en' => '[%APPOINTMENT_SERVICES%]'
                                 ],
                                 'required' => true,
                                 'validation' => 'required'
@@ -460,8 +451,8 @@ Als je een klacht hebt over de wijze van verwerking van jouw persoonsgegevens ku
                             'footer' => [
                                 'type' => 'textarea',
                                 'value' => [
-                                    'nl' => 'Heeft u vragen over uw afspraak? U kan ons steeds contacteren.<br><br><a href="mailto:' . ChuckSite::getSetting('company.email') . '">' . ChuckSite::getSetting('company.email') . '</a><br><br>' . ChuckSite::getSetting('company.name'),
-                                    'en' => 'Your appointment is shipped and on its way to you.'
+                                    'nl' => 'Heeft u nog vragen? U kan ons steeds contacteren.<br><br><a href="mailto:' . ChuckSite::getSetting('company.email') . '">' . ChuckSite::getSetting('company.email') . '</a><br><br>' . ChuckSite::getSetting('company.name'),
+                                    'en' => 'Do you still have questions? U can always contact us.<br><br><a href="mailto:' . ChuckSite::getSetting('company.email') . '">' . ChuckSite::getSetting('company.email') . '</a><br><br>' . ChuckSite::getSetting('company.name')
                                 ],
                                 'required' => true,
                                 'validation' => 'required'
@@ -485,13 +476,13 @@ Als je een klacht hebt over de wijze van verwerking van jouw persoonsgegevens ku
                         'bcc' => null,
                         'template' => 'chuckcms-module-booker::emails.default',
                         'logo' => true,
-                        'ics' => false,
+                        'ics' => true,
                         'data' => [
                             'subject' => [
                                 'type' => 'text',
                                 'value' => [
-                                    'nl' => 'Uw afspraak #[%APPOINTMENT_NUMBER%] is verzonden',
-                                    'en' => 'Your appointment #[%APPOINTMENT_NUMBER%] was shipped'
+                                    'nl' => 'Uw afspraak #[%APPOINTMENT_NUMBER%] is bevestigd',
+                                    'en' => 'Your appointment #[%APPOINTMENT_NUMBER%] is confirmed'
                                 ],
                                 'required' => true,
                                 'validation' => 'required'
@@ -499,8 +490,8 @@ Als je een klacht hebt over de wijze van verwerking van jouw persoonsgegevens ku
                             'hidden_preheader' => [
                                 'type' => 'text',
                                 'value' => [
-                                    'nl' => 'Uw afspraak met bestelnummer #[%APPOINTMENT_NUMBER%] is onderweg. In deze mail vindt u meer informatie over uw afspraak terug.',
-                                    'en' => 'Your appointment #[%APPOINTMENT_NUMBER%] was shipped'
+                                    'nl' => 'Uw afspraak #[%APPOINTMENT_NUMBER%] is bevestigd. In deze mail vindt u meer informatie over uw afspraak terug.',
+                                    'en' => 'Your appointment #[%APPOINTMENT_NUMBER%] is confirmed. In this email you\'ll find more information.'
                                 ],
                                 'required' => true,
                                 'validation' => 'required'
@@ -508,8 +499,8 @@ Als je een klacht hebt over de wijze van verwerking van jouw persoonsgegevens ku
                             'intro' => [
                                 'type' => 'textarea',
                                 'value' => [
-                                    'nl' => 'Beste [%APPOINTMENT_FIRST_NAME%] [%APPOINTMENT_LAST_NAME%]<br><br>Uw afspraak is onderweg. Uw afspraak wordt volgende werkdag geleverd tussen 9:00u en 19:00u. Is er niemand thuis? Dan proberen we het de dag erna nog eens, maak u geen zorgen. Heeft u nog vragen? Neem gerust contact met ons op.',
-                                    'en' => 'Order is shipped'
+                                    'nl' => 'Beste [%APPOINTMENT_FIRST_NAME%] [%APPOINTMENT_LAST_NAME%]<br><br>Uw afspraak is bevestigd. Deze werd succesvol voldaan met uw abonnement. Heeft u nog vragen? Neem gerust contact met ons op.',
+                                    'en' => 'Dear [%APPOINTMENT_FIRST_NAME%] [%APPOINTMENT_LAST_NAME%]<br><br>Your appointment is confirmed. The appointment was succesfully confirmed with your active subscription. Do you have any more questions? Please don\'t hesitate to contact us.'
                                 ],
                                 'required' => true,
                                 'validation' => 'required'
@@ -526,8 +517,8 @@ Als je een klacht hebt over de wijze van verwerking van jouw persoonsgegevens ku
                             'body' => [
                                 'type' => 'textarea',
                                 'value' => [
-                                    'nl' => 'Hieronder vind je nogmaals een overzicht terug van jouw afspraak. <br><br> <b>Verzending:</b> [%APPOINTMENT_CARRIER_NAME%] <br> <b>Verzendtijd:</b> [%APPOINTMENT_CARRIER_TRANSIT_TIME%] <br><br> <b>Overzicht: </b> <br> [%APPOINTMENT_SERVICES%] <br> <b>Verzendkosten</b>: [%APPOINTMENT_SHIPPING_TOTAL%] <br><br> <b>Totaal</b>: [%APPOINTMENT_FINAL%] <br><br> <b>Facturatie adres: </b> <br> Naam: [%APPOINTMENT_FIRST_NAME%] [%APPOINTMENT_LAST_NAME%] <br> E-mail: [%APPOINTMENT_EMAIL%] <br> Tel: [%APPOINTMENT_TELEPHONE%] <br> Bedrijf: [%APPOINTMENT_COMPANY%] <br> BTW: [%APPOINTMENT_COMPANY_VAT%] <br> Adres: <br>[%APPOINTMENT_BILLING_STREET%] [%APPOINTMENT_BILLING_HOUSENUMBER%], <br>[%APPOINTMENT_BILLING_POSTALCODE%] [%APPOINTMENT_BILLING_CITY%], [%APPOINTMENT_BILLING_COUNTRY%] <br><br> <b>Verzendadres:</b><br>Naam: [%APPOINTMENT_FIRST_NAME%] [%APPOINTMENT_LAST_NAME%] <br>Adres:<br>[%APPOINTMENT_SHIPPING_STREET%] [%APPOINTMENT_SHIPPING_HOUSENUMBER%], <br>[%APPOINTMENT_SHIPPING_POSTALCODE%] [%APPOINTMENT_SHIPPING_CITY%], [%APPOINTMENT_SHIPPING_COUNTRY%]',
-                                    'en' => 'Your appointment is shipped and on its way to you.'
+                                    'nl' => 'Hieronder vind je nogmaals een overzicht terug van jouw afspraak. <br><br> <b>Overzicht: </b> <br> [%APPOINTMENT_SERVICES%] <br><br> <b>Gegevens: </b> <br> Naam: [%APPOINTMENT_FIRST_NAME%] [%APPOINTMENT_LAST_NAME%] <br> E-mail: [%APPOINTMENT_EMAIL%] <br> Tel: [%APPOINTMENT_TELEPHONE%]',
+                                    'en' => 'Below you will find another overview of your appointment. <br><br> <b>Overview: </b> <br> [%APPOINTMENT_SERVICES%] <br><br> <b>Details: </b> <br> Name: [%APPOINTMENT_FIRST_NAME%] [%APPOINTMENT_LAST_NAME%] <br> E-mail: [%APPOINTMENT_EMAIL%] <br> Tel: [%APPOINTMENT_TELEPHONE%]'
                                 ],
                                 'required' => true,
                                 'validation' => 'required'
@@ -536,7 +527,7 @@ Als je een klacht hebt over de wijze van verwerking van jouw persoonsgegevens ku
                                 'type' => 'textarea',
                                 'value' => [
                                     'nl' => 'Heeft u vragen over uw afspraak? U kan ons steeds contacteren.<br><br><a href="mailto:' . ChuckSite::getSetting('company.email') . '">' . ChuckSite::getSetting('company.email') . '</a><br><br>' . ChuckSite::getSetting('company.name'),
-                                    'en' => 'Your appointment is shipped and on its way to you.'
+                                    'en' => 'Do you have any questions on your appointment? You can always contact us.<br><br><a href="mailto:' . ChuckSite::getSetting('company.email') . '">' . ChuckSite::getSetting('company.email') . '</a><br><br>' . ChuckSite::getSetting('company.name')
                                 ],
                                 'required' => true,
                                 'validation' => 'required'
@@ -560,13 +551,13 @@ Als je een klacht hebt over de wijze van verwerking van jouw persoonsgegevens ku
                         'bcc' => null,
                         'template' => 'chuckcms-module-booker::emails.default',
                         'logo' => true,
-                        'ics' => true,
+                        'ics' => false,
                         'data' => [
                             'subject' => [
                                 'type' => 'text',
                                 'value' => [
-                                    'nl' => 'Uw afspraak is bevestigd en betaald',
-                                    'en' => 'Your appointment was confirmed and paid'
+                                    'nl' => 'Uw afspraak #[%APPOINTMENT_NUMBER%] is bevestigd en betaald',
+                                    'en' => 'Your appointment #[%APPOINTMENT_NUMBER%] is confirmed and paid for'
                                 ],
                                 'required' => true,
                                 'validation' => 'required'
@@ -574,8 +565,8 @@ Als je een klacht hebt over de wijze van verwerking van jouw persoonsgegevens ku
                             'hidden_preheader' => [
                                 'type' => 'text',
                                 'value' => [
-                                    'nl' => 'Uw afspraak bij XXX is bevestigd en betaald. In deze mail vindt u meer informatie over uw afspraak terug.',
-                                    'en' => 'Your appointment with XXX was confirmed and paid'
+                                    'nl' => 'Uw afspraak #[%APPOINTMENT_NUMBER%] is bevestigd en betaald. In deze mail vindt u meer informatie over uw afspraak terug.',
+                                    'en' => 'Your appointment #[%APPOINTMENT_NUMBER%] is confirmed and paid for. In this email you\'ll find more information.'
                                 ],
                                 'required' => true,
                                 'validation' => 'required'
@@ -583,8 +574,8 @@ Als je een klacht hebt over de wijze van verwerking van jouw persoonsgegevens ku
                             'intro' => [
                                 'type' => 'textarea',
                                 'value' => [
-                                    'nl' => 'Beste [%APPOINTMENT_FIRST_NAME%] [%APPOINTMENT_LAST_NAME%]<br><br>Uw afspraak is onderweg. Uw afspraak wordt volgende werkdag geleverd tussen 9:00u en 19:00u. Is er niemand thuis? Dan proberen we het de dag erna nog eens, maak u geen zorgen. Heeft u nog vragen? Neem gerust contact met ons op.',
-                                    'en' => 'Order is shipped'
+                                    'nl' => 'Beste [%APPOINTMENT_FIRST_NAME%] [%APPOINTMENT_LAST_NAME%]<br><br>Uw afspraak is bevestigd en betaald. Heeft u nog vragen? Neem gerust contact met ons op.',
+                                    'en' => 'Dear [%APPOINTMENT_FIRST_NAME%] [%APPOINTMENT_LAST_NAME%]<br><br>Your appointment is confirmed and paid for. Do you have any more questions? Please don\'t hesitate to contact us.'
                                 ],
                                 'required' => true,
                                 'validation' => 'required'
@@ -601,8 +592,8 @@ Als je een klacht hebt over de wijze van verwerking van jouw persoonsgegevens ku
                             'body' => [
                                 'type' => 'textarea',
                                 'value' => [
-                                    'nl' => 'Hieronder vind je nogmaals een overzicht terug van jouw afspraak. <br><br> <b>Verzending:</b> [%APPOINTMENT_CARRIER_NAME%] <br> <b>Verzendtijd:</b> [%APPOINTMENT_CARRIER_TRANSIT_TIME%] <br><br> <b>Overzicht: </b> <br> [%APPOINTMENT_SERVICES%] <br> <b>Verzendkosten</b>: [%APPOINTMENT_SHIPPING_TOTAL%] <br><br> <b>Totaal</b>: [%APPOINTMENT_FINAL%] <br><br> <b>Facturatie adres: </b> <br> Naam: [%APPOINTMENT_FIRST_NAME%] [%APPOINTMENT_LAST_NAME%] <br> E-mail: [%APPOINTMENT_EMAIL%] <br> Tel: [%APPOINTMENT_TELEPHONE%] <br> Bedrijf: [%APPOINTMENT_COMPANY%] <br> BTW: [%APPOINTMENT_COMPANY_VAT%] <br> Adres: <br>[%APPOINTMENT_BILLING_STREET%] [%APPOINTMENT_BILLING_HOUSENUMBER%], <br>[%APPOINTMENT_BILLING_POSTALCODE%] [%APPOINTMENT_BILLING_CITY%], [%APPOINTMENT_BILLING_COUNTRY%] <br><br> <b>Verzendadres:</b><br>Naam: [%APPOINTMENT_FIRST_NAME%] [%APPOINTMENT_LAST_NAME%] <br>Adres:<br>[%APPOINTMENT_SHIPPING_STREET%] [%APPOINTMENT_SHIPPING_HOUSENUMBER%], <br>[%APPOINTMENT_SHIPPING_POSTALCODE%] [%APPOINTMENT_SHIPPING_CITY%], [%APPOINTMENT_SHIPPING_COUNTRY%]',
-                                    'en' => 'Your appointment is shipped and on its way to you.'
+                                    'nl' => 'Hieronder vind je nogmaals een overzicht terug van jouw afspraak. <br><br> <b>Overzicht: </b> <br> [%APPOINTMENT_SERVICES%] <br><br> <b>Gegevens: </b> <br> Naam: [%APPOINTMENT_FIRST_NAME%] [%APPOINTMENT_LAST_NAME%] <br> E-mail: [%APPOINTMENT_EMAIL%] <br> Tel: [%APPOINTMENT_TELEPHONE%]',
+                                    'en' => 'Below you will find another overview of your appointment. <br><br> <b>Overview: </b> <br> [%APPOINTMENT_SERVICES%] <br><br> <b>Details: </b> <br> Name: [%APPOINTMENT_FIRST_NAME%] [%APPOINTMENT_LAST_NAME%] <br> E-mail: [%APPOINTMENT_EMAIL%] <br> Tel: [%APPOINTMENT_TELEPHONE%]'
                                 ],
                                 'required' => true,
                                 'validation' => 'required'
@@ -611,7 +602,7 @@ Als je een klacht hebt over de wijze van verwerking van jouw persoonsgegevens ku
                                 'type' => 'textarea',
                                 'value' => [
                                     'nl' => 'Heeft u vragen over uw afspraak? U kan ons steeds contacteren.<br><br><a href="mailto:' . ChuckSite::getSetting('company.email') . '">' . ChuckSite::getSetting('company.email') . '</a><br><br>' . ChuckSite::getSetting('company.name'),
-                                    'en' => 'Your appointment is shipped and on its way to you.'
+                                    'en' => 'Do you have any questions on your appointment? You can always contact us.<br><br><a href="mailto:' . ChuckSite::getSetting('company.email') . '">' . ChuckSite::getSetting('company.email') . '</a><br><br>' . ChuckSite::getSetting('company.name')
                                 ],
                                 'required' => true,
                                 'validation' => 'required'
@@ -634,14 +625,6 @@ Als je een klacht hebt over de wijze van verwerking van jouw persoonsgegevens ku
 
 
         $json['settings']['subscription']['statuses'] = [
-            'new' => [
-                'display_name' => ['nl' => 'Nieuw abonnement', 'en' => 'New subscription'],
-                'short' => ['nl' => 'Nieuw', 'en' => 'New'],
-                'send_email' => false,
-                'email' => [],
-                'invoice' => false,
-                'paid' => false
-            ],
             'awaiting' => [
                 'display_name' => ['nl' => 'In afwachting van betaling', 'en' => 'Awaiting payment'],
                 'short' => ['nl' => 'Afwachting', 'en' => 'Awaiting'],
@@ -653,7 +636,7 @@ Als je een klacht hebt over de wijze van verwerking van jouw persoonsgegevens ku
             'canceled' => [
                 'display_name' => ['nl' => 'Abonnement betaling geannuleerd', 'en' => 'Subscription payment canceled'],
                 'short' => ['nl' => 'Geannuleerd', 'en' => 'Canceled'],
-                'send_email' => true,
+                'send_email' => false,
                 'email' => [],
                 'invoice' => false,
                 'paid' => false
@@ -661,6 +644,14 @@ Als je een klacht hebt over de wijze van verwerking van jouw persoonsgegevens ku
             'failed' => [
                 'display_name' => ['nl' => 'Betalingsfout', 'en' => 'Payment Error'],
                 'short' => ['nl' => 'Betalingsfout', 'en' => 'Payment Error'],
+                'send_email' => false,
+                'email' => [],
+                'invoice' => false,
+                'paid' => false
+            ],
+            'failed_recurring' => [
+                'display_name' => ['nl' => 'Abonnement Betalingsfout', 'en' => 'Subscription Payment Error'],
+                'short' => ['nl' => 'Abo Betalingsfout', 'en' => 'Sub Payment Error'],
                 'send_email' => true,
                 'email' => [
                     'customer' => [
@@ -674,8 +665,8 @@ Als je een klacht hebt over de wijze van verwerking van jouw persoonsgegevens ku
                             'subject' => [
                                 'type' => 'text',
                                 'value' => [
-                                    'nl' => 'Uw afspraak #[%SUBSCRIPTION_NUMBER%] is mislukt',
-                                    'en' => 'Your appointment #[%SUBSCRIPTION_NUMBER%] has failed'
+                                    'nl' => 'Uw betaling voor abonnement #[%SUBSCRIPTION_NUMBER%] is mislukt',
+                                    'en' => 'Your payment for subscription #[%SUBSCRIPTION_NUMBER%] has failed'
                                 ],
                                 'required' => true,
                                 'validation' => 'required'
@@ -683,8 +674,8 @@ Als je een klacht hebt over de wijze van verwerking van jouw persoonsgegevens ku
                             'hidden_preheader' => [
                                 'type' => 'text',
                                 'value' => [
-                                    'nl' => 'Uw afspraak met bestelnummer #[%SUBSCRIPTION_NUMBER%] is mislukt. In deze mail vindt u meer informatie over uw afspraak terug.',
-                                    'en' => 'Your appointment #[%SUBSCRIPTION_NUMBER%] has failed. In this e-mail you will find more information on your appointment.'
+                                    'nl' => 'Uw betaling voor abonnement #[%SUBSCRIPTION_NUMBER%] is mislukt. In deze mail vindt u meer informatie over terug.',
+                                    'en' => 'Your payment for subscription #[%SUBSCRIPTION_NUMBER%] has failed. In this e-mail you will find more information.'
                                 ],
                                 'required' => true,
                                 'validation' => 'required'
@@ -692,8 +683,8 @@ Als je een klacht hebt over de wijze van verwerking van jouw persoonsgegevens ku
                             'intro' => [
                                 'type' => 'textarea',
                                 'value' => [
-                                    'nl' => 'Beste [%SUBSCRIPTION_FIRST_NAME%] [%SUBSCRIPTION_LAST_NAME%]<br><br>Uw afspraak is mislukt. Helaas is er iets misgegaan met de betaling. Heeft u nog vragen? Neem gerust contact met ons op.',
-                                    'en' => 'Dear [%SUBSCRIPTION_FIRST_NAME%] [%SUBSCRIPTION_LAST_NAME%]<br><br>Your appointment has failed. Unfortunately something went wrong with your payment. Do you have any other questions? Please don\'t hesitate to contact us.'
+                                    'nl' => 'Beste [%SUBSCRIPTION_FIRST_NAME%] [%SUBSCRIPTION_LAST_NAME%]<br><br>De vernieuwing van uw abonnement is mislukt. Helaas is er iets misgegaan met de betaling. Wij proberen het automatisch opnieuw. Heeft u nog vragen? Neem gerust contact met ons op.',
+                                    'en' => 'Dear [%SUBSCRIPTION_FIRST_NAME%] [%SUBSCRIPTION_LAST_NAME%]<br><br>The renewal of your subscription has failed. Unfortunately something went wrong with your payment. Do you have any other questions? Please don\'t hesitate to contact us.'
                                 ],
                                 'required' => true,
                                 'validation' => 'required'
@@ -710,8 +701,8 @@ Als je een klacht hebt over de wijze van verwerking van jouw persoonsgegevens ku
                             'body' => [
                                 'type' => 'textarea',
                                 'value' => [
-                                    'nl' => 'Hieronder vind je nogmaals een overzicht terug van jouw afspraak. <br><br> [%SUBSCRIPTION_SERVICES%] <br> <b>Verzendkosten</b>: [%APPOINTMENT_SHIPPING_TOTAL%] <br><br> <b>Totaal</b>: [%APPOINTMENT_FINAL%] <br><br> <b>Facturatie adres: </b> <br> Naam: [%SUBSCRIPTION_FIRST_NAME%] [%SUBSCRIPTION_LAST_NAME%] <br> E-mail: [%SUBSCRIPTION_EMAIL%] <br> Tel: [%SUBSCRIPTION_TELEPHONE%] <br> Bedrijf: [%SUBSCRIPTION_COMPANY%] <br> BTW: [%SUBSCRIPTION_COMPANY_VAT%] <br> Adres: <br>[%APPOINTMENT_BILLING_STREET%] [%APPOINTMENT_BILLING_HOUSENUMBER%], <br>[%APPOINTMENT_BILLING_POSTALCODE%] [%APPOINTMENT_BILLING_CITY%], [%APPOINTMENT_BILLING_COUNTRY%] <br><br> <b>Verzendadres:</b><br>Naam: [%APPOINTMENT_FIRST_NAME%] [%APPOINTMENT_LAST_NAME%] <br>Adres:<br>[%APPOINTMENT_SHIPPING_STREET%] [%APPOINTMENT_SHIPPING_HOUSENUMBER%], <br>[%APPOINTMENT_SHIPPING_POSTALCODE%] [%APPOINTMENT_SHIPPING_CITY%], [%APPOINTMENT_SHIPPING_COUNTRY%]',
-                                    'en' => 'Below you will find an overview of your appointment. <br><br> [%SUBSCRIPTION_SERVICES%] <br> <b>Shipping costs</b>: [%APPOINTMENT_SHIPPING_TOTAL%] <br><br> <b>Total</b>: [%APPOINTMENT_FINAL%] <br><br> <b>Invoice address: </b> <br> Name: [%SUBSCRIPTION_FIRST_NAME%] [%SUBSCRIPTION_LAST_NAME%] <br> E-mail: [%SUBSCRIPTION_EMAIL%] <br> Tel: [%SUBSCRIPTION_TELEPHONE%] <br> Company: [%SUBSCRIPTION_COMPANY%] <br> VAT: [%SUBSCRIPTION_COMPANY_VAT%] <br> Address: <br>[%APPOINTMENT_BILLING_STREET%] [%APPOINTMENT_BILLING_HOUSENUMBER%], <br>[%APPOINTMENT_BILLING_POSTALCODE%] [%APPOINTMENT_BILLING_CITY%], [%APPOINTMENT_BILLING_COUNTRY%] <br><br> <b>Shipping address:</b><br>Name: [%APPOINTMENT_FIRST_NAME%] [%APPOINTMENT_LAST_NAME%] <br>Address:<br>[%APPOINTMENT_SHIPPING_STREET%] [%APPOINTMENT_SHIPPING_HOUSENUMBER%], <br>[%APPOINTMENT_SHIPPING_POSTALCODE%] [%APPOINTMENT_SHIPPING_CITY%], [%APPOINTMENT_SHIPPING_COUNTRY%]'
+                                    'nl' => 'Hieronder vind je nogmaals een overzicht terug van jouw abonnement. <br><br> [%SUBSCRIPTION_SERVICES%] <br><br> <b>Gegevens: </b> <br> Naam: [%SUBSCRIPTION_FIRST_NAME%] [%SUBSCRIPTION_LAST_NAME%] <br> E-mail: [%SUBSCRIPTION_EMAIL%] <br> Tel: [%SUBSCRIPTION_TELEPHONE%]',
+                                    'en' => 'Below you will find an overview of your subscription. <br><br> [%SUBSCRIPTION_SERVICES%] <br><br> <b>Information: </b> <br> Name: [%SUBSCRIPTION_FIRST_NAME%] [%SUBSCRIPTION_LAST_NAME%] <br> E-mail: [%SUBSCRIPTION_EMAIL%] <br> Tel: [%SUBSCRIPTION_TELEPHONE%]'
                                 ],
                                 'required' => true,
                                 'validation' => 'required'
@@ -719,8 +710,8 @@ Als je een klacht hebt over de wijze van verwerking van jouw persoonsgegevens ku
                             'footer' => [
                                 'type' => 'textarea',
                                 'value' => [
-                                    'nl' => 'Heeft u vragen over uw afspraak? U kan ons steeds contacteren.<br><br><a href="mailto:' . ChuckSite::getSetting('company.email') . '">' . ChuckSite::getSetting('company.email') . '</a><br><br>' . ChuckSite::getSetting('company.name'),
-                                    'en' => 'Your appointment is shipped and on its way to you.'
+                                    'nl' => 'Heeft u vragen over uw abonnement? U kan ons steeds contacteren.<br><br><a href="mailto:' . ChuckSite::getSetting('company.email') . '">' . ChuckSite::getSetting('company.email') . '</a><br><br>' . ChuckSite::getSetting('company.name'),
+                                    'en' => 'Do you have questions about your subscription? You can always contact us.<br><br><a href="mailto:' . ChuckSite::getSetting('company.email') . '">' . ChuckSite::getSetting('company.email') . '</a><br><br>' . ChuckSite::getSetting('company.name')
                                 ],
                                 'required' => true,
                                 'validation' => 'required'
@@ -731,13 +722,13 @@ Als je een klacht hebt over de wijze van verwerking van jouw persoonsgegevens ku
                 'invoice' => false,
                 'paid' => false
             ],
-            'confirmed' => [
-                'display_name' => ['nl' => 'Bevestigd', 'en' => 'Confirmed'],
-                'short' => ['nl' => 'Bevestigd', 'en' => 'Confirmed'],
+            'payment' => [
+                'display_name' => ['nl' => 'Betaald', 'en' => 'Paid'],
+                'short' => ['nl' => 'Betaald', 'en' => 'Paid'],
                 'send_email' => true,
                 'email' => [
                     'customer' => [
-                        'to' => '[%ASUBSCRIPTIONEMAIL%]',
+                        'to' => '[%SUBSCRIPTION_EMAIL%]',
                         'to_name' => '[%SUBSCRIPTION_FIRST_NAME%] [%SUBSCRIPTION_LAST_NAME%]',
                         'cc' => null,
                         'bcc' => null,
@@ -747,8 +738,8 @@ Als je een klacht hebt over de wijze van verwerking van jouw persoonsgegevens ku
                             'subject' => [
                                 'type' => 'text',
                                 'value' => [
-                                    'nl' => 'Uw afspraak #[%SUBSCRIPTION_NUMBER%] is verzonden',
-                                    'en' => 'Your appointment #[%SUBSCRIPTION_NUMBER%] was shipped'
+                                    'nl' => 'Uw abonnement is betaald en bevestigd',
+                                    'en' => 'Your subscription is paid and confirmed'
                                 ],
                                 'required' => true,
                                 'validation' => 'required'
@@ -756,8 +747,8 @@ Als je een klacht hebt over de wijze van verwerking van jouw persoonsgegevens ku
                             'hidden_preheader' => [
                                 'type' => 'text',
                                 'value' => [
-                                    'nl' => 'Uw afspraak met bestelnummer #[%SUBSCRIPTION_NUMBER%] is onderweg. In deze mail vindt u meer informatie over uw afspraak terug.',
-                                    'en' => 'Your appointment #[%SUBSCRIPTION_NUMBER%] was shipped'
+                                    'nl' => 'Uw abonnement is betaald en bevestigd. In deze mail vindt u meer informatie over uw abonnement terug.',
+                                    'en' => 'Your subscription is paid and confirmed. In this email you will find more information on your subscription.'
                                 ],
                                 'required' => true,
                                 'validation' => 'required'
@@ -765,8 +756,8 @@ Als je een klacht hebt over de wijze van verwerking van jouw persoonsgegevens ku
                             'intro' => [
                                 'type' => 'textarea',
                                 'value' => [
-                                    'nl' => 'Beste [%SUBSCRIPTION_FIRST_NAME%] [%SUBSCRIPTION_LAST_NAME%]<br><br>Uw afspraak is onderweg. Uw afspraak wordt volgende werkdag geleverd tussen 9:00u en 19:00u. Is er niemand thuis? Dan proberen we het de dag erna nog eens, maak u geen zorgen. Heeft u nog vragen? Neem gerust contact met ons op.',
-                                    'en' => 'Order is shipped'
+                                    'nl' => 'Beste [%SUBSCRIPTION_FIRST_NAME%] [%SUBSCRIPTION_LAST_NAME%]<br><br>Uw abonnement is betaald en bevestigd. Bij het boeken van nieuwe afspraken zal er automatisch rekening worden gehouden met uw actieve abonnement wanneer u bent aangemeld. Heeft u nog vragen? Neem gerust contact met ons op.',
+                                    'en' => 'Dear [%SUBSCRIPTION_FIRST_NAME%] [%SUBSCRIPTION_LAST_NAME%]<br><br>Your subscription is paid and confirmed. When making new appointments make sure you are logged in, any active subscription will be used. Do you have any other questions? Please don\'t hesitate to contact us.'
                                 ],
                                 'required' => true,
                                 'validation' => 'required'
@@ -774,8 +765,8 @@ Als je een klacht hebt over de wijze van verwerking van jouw persoonsgegevens ku
                             'body_title' => [
                                 'type' => 'text',
                                 'value' => [
-                                    'nl' => 'Uw afspraak',
-                                    'en' => 'Your appointment'
+                                    'nl' => 'Uw abonnement',
+                                    'en' => 'Your subscription'
                                 ],
                                 'required' => true,
                                 'validation' => 'required'
@@ -783,8 +774,8 @@ Als je een klacht hebt over de wijze van verwerking van jouw persoonsgegevens ku
                             'body' => [
                                 'type' => 'textarea',
                                 'value' => [
-                                    'nl' => 'Hieronder vind je nogmaals een overzicht terug van jouw afspraak. <br><br> <b>Verzending:</b> [%APPOINTMENT_CARRIER_NAME%] <br> <b>Verzendtijd:</b> [%APPOINTMENT_CARRIER_TRANSIT_TIME%] <br><br> <b>Overzicht: </b> <br> [%SUBSCRIPTION_SERVICES%] <br> <b>Verzendkosten</b>: [%SUBSCRIPTION_SHIPPING_TOTAL%] <br><br> <b>Totaal</b>: [%APPOINTMENT_FINAL%] <br><br> <b>Facturatie adres: </b> <br> Naam: [%SUBSCRIPTION_FIRST_NAME%] [%SUBSCRIPTION_LAST_NAME%] <br> E-mail: [%SUBSCRIPTION_EMAIL%] <br> Tel: [%SUBSCRIPTION_TELEPHONE%] <br> Bedrijf: [%SUBSCRIPTION_COMPANY%] <br> BTW: [%SUBSCRIPTION_COMPANY_VAT%] <br> Adres: <br>[%APPOINTMENT_BILLING_STREET%] [%APPOINTMENT_BILLING_HOUSENUMBER%], <br>[%APPOINTMENT_BILLING_POSTALCODE%] [%APPOINTMENT_BILLING_CITY%], [%APPOINTMENT_BILLING_COUNTRY%] <br><br> <b>Verzendadres:</b><br>Naam: [%APPOINTMENT_FIRST_NAME%] [%APPOINTMENT_LAST_NAME%] <br>Adres:<br>[%APPOINTMENT_SHIPPING_STREET%] [%APPOINTMENT_SHIPPING_HOUSENUMBER%], <br>[%APPOINTMENT_SHIPPING_POSTALCODE%] [%APPOINTMENT_SHIPPING_CITY%], [%APPOINTMENT_SHIPPING_COUNTRY%]',
-                                    'en' => 'Your appointment is shipped and on its way to you.'
+                                    'nl' => 'Hieronder vind je nogmaals een overzicht terug van jouw abonnement. <br><br> <b>Overzicht: </b> <br> [%SUBSCRIPTION_SUBSCRIPTION_PLAN%] <br><br> <b>Gegevens: </b> <br> Naam: [%SUBSCRIPTION_FIRST_NAME%] [%SUBSCRIPTION_LAST_NAME%] <br> E-mail: [%SUBSCRIPTION_EMAIL%] <br> Tel: [%SUBSCRIPTION_TELEPHONE%]',
+                                    'en' => 'Below you\'ll find an overview of your subscription. <br><br> <b>Overview: </b> <br> [%SUBSCRIPTION_SUBSCRIPTION_PLAN%] <br><br> <b>Details: </b> <br> Name: [%SUBSCRIPTION_FIRST_NAME%] [%SUBSCRIPTION_LAST_NAME%] <br> E-mail: [%SUBSCRIPTION_EMAIL%] <br> Tel: [%SUBSCRIPTION_TELEPHONE%]'
                                 ],
                                 'required' => true,
                                 'validation' => 'required'
@@ -792,8 +783,8 @@ Als je een klacht hebt over de wijze van verwerking van jouw persoonsgegevens ku
                             'footer' => [
                                 'type' => 'textarea',
                                 'value' => [
-                                    'nl' => 'Heeft u vragen over uw afspraak? U kan ons steeds contacteren.<br><br><a href="mailto:' . ChuckSite::getSetting('company.email') . '">' . ChuckSite::getSetting('company.email') . '</a><br><br>' . ChuckSite::getSetting('company.name'),
-                                    'en' => 'Your appointment is shipped and on its way to you.'
+                                    'nl' => 'Heeft u vragen over uw abonnement? U kan ons steeds contacteren.<br><br><a href="mailto:' . ChuckSite::getSetting('company.email') . '">' . ChuckSite::getSetting('company.email') . '</a><br><br>' . ChuckSite::getSetting('company.name'),
+                                    'en' => 'Do you have questions about your subscription? You can always contact us.<br><br><a href="mailto:' . ChuckSite::getSetting('company.email') . '">' . ChuckSite::getSetting('company.email') . '</a><br><br>' . ChuckSite::getSetting('company.name')
                                 ],
                                 'required' => true,
                                 'validation' => 'required'
@@ -804,14 +795,14 @@ Als je een klacht hebt over de wijze van verwerking van jouw persoonsgegevens ku
                 'invoice' => true,
                 'paid' => true
             ],
-            'payment' => [
-                'display_name' => ['nl' => 'Betaald', 'en' => 'Paid'],
-                'short' => ['nl' => 'Betaald', 'en' => 'Paid'],
+            'payment_recurring' => [
+                'display_name' => ['nl' => 'Abonnement vernieuwd', 'en' => 'Subscription renewed'],
+                'short' => ['nl' => 'Vernieuwd', 'en' => 'Renewed'],
                 'send_email' => true,
                 'email' => [
                     'customer' => [
-                        'to' => '[%APPOINTMENT_EMAIL%]',
-                        'to_name' => '[%APPOINTMENT_FIRST_NAME%] [%APPOINTMENT_LAST_NAME%]',
+                        'to' => '[%SUBSCRIPTION_EMAIL%]',
+                        'to_name' => '[%SUBSCRIPTION_FIRST_NAME%] [%SUBSCRIPTION_LAST_NAME%]',
                         'cc' => null,
                         'bcc' => null,
                         'template' => 'chuckcms-module-booker::emails.default',
@@ -820,8 +811,8 @@ Als je een klacht hebt over de wijze van verwerking van jouw persoonsgegevens ku
                             'subject' => [
                                 'type' => 'text',
                                 'value' => [
-                                    'nl' => 'Uw afspraak is bevestigd en betaald',
-                                    'en' => 'Your appointment was confirmed and paid'
+                                    'nl' => 'De vernieuwing van uw abonnement is gelukt.',
+                                    'en' => 'The renewal of your subscription was succesful.'
                                 ],
                                 'required' => true,
                                 'validation' => 'required'
@@ -829,8 +820,8 @@ Als je een klacht hebt over de wijze van verwerking van jouw persoonsgegevens ku
                             'hidden_preheader' => [
                                 'type' => 'text',
                                 'value' => [
-                                    'nl' => 'Uw afspraak bij XXX is bevestigd en betaald. In deze mail vindt u meer informatie over uw afspraak terug.',
-                                    'en' => 'Your appointment with XXX was confirmed and paid'
+                                    'nl' => 'De vernieuwing van uw abonnement is gelukt. In deze mail vindt u meer informatie over uw abonnement terug.',
+                                    'en' => 'The renewal of your subscription was succesful. In this email you will find more information on your subscription.'
                                 ],
                                 'required' => true,
                                 'validation' => 'required'
@@ -838,8 +829,8 @@ Als je een klacht hebt over de wijze van verwerking van jouw persoonsgegevens ku
                             'intro' => [
                                 'type' => 'textarea',
                                 'value' => [
-                                    'nl' => 'Beste [%APPOINTMENT_FIRST_NAME%] [%APPOINTMENT_LAST_NAME%]<br><br>Uw afspraak is onderweg. Uw afspraak wordt volgende werkdag geleverd tussen 9:00u en 19:00u. Is er niemand thuis? Dan proberen we het de dag erna nog eens, maak u geen zorgen. Heeft u nog vragen? Neem gerust contact met ons op.',
-                                    'en' => 'Order is shipped'
+                                    'nl' => 'Beste [%SUBSCRIPTION_FIRST_NAME%] [%SUBSCRIPTION_LAST_NAME%]<br><br>Bedankt! Uw abonnement is succesvol vernieuwd. Bij het boeken van nieuwe afspraken zal er automatisch rekening worden gehouden met uw actieve abonnement wanneer u bent aangemeld. Heeft u nog vragen? Neem gerust contact met ons op.',
+                                    'en' => 'Dear [%SUBSCRIPTION_FIRST_NAME%] [%SUBSCRIPTION_LAST_NAME%]<br><br>Thank you! Your subscription was succesfully renewed. When making new appointments make sure you are logged in, any active subscription will be used. Do you have any other questions? Please don\'t hesitate to contact us.'
                                 ],
                                 'required' => true,
                                 'validation' => 'required'
@@ -847,8 +838,8 @@ Als je een klacht hebt over de wijze van verwerking van jouw persoonsgegevens ku
                             'body_title' => [
                                 'type' => 'text',
                                 'value' => [
-                                    'nl' => 'Uw afspraak',
-                                    'en' => 'Your appointment'
+                                    'nl' => 'Uw abonnement',
+                                    'en' => 'Your subscription'
                                 ],
                                 'required' => true,
                                 'validation' => 'required'
@@ -856,8 +847,8 @@ Als je een klacht hebt over de wijze van verwerking van jouw persoonsgegevens ku
                             'body' => [
                                 'type' => 'textarea',
                                 'value' => [
-                                    'nl' => 'Hieronder vind je nogmaals een overzicht terug van jouw afspraak. <br><br> <b>Verzending:</b> [%APPOINTMENT_CARRIER_NAME%] <br> <b>Verzendtijd:</b> [%APPOINTMENT_CARRIER_TRANSIT_TIME%] <br><br> <b>Overzicht: </b> <br> [%APPOINTMENT_SERVICES%] <br> <b>Verzendkosten</b>: [%APPOINTMENT_SHIPPING_TOTAL%] <br><br> <b>Totaal</b>: [%APPOINTMENT_FINAL%] <br><br> <b>Facturatie adres: </b> <br> Naam: [%APPOINTMENT_FIRST_NAME%] [%APPOINTMENT_LAST_NAME%] <br> E-mail: [%APPOINTMENT_EMAIL%] <br> Tel: [%APPOINTMENT_TELEPHONE%] <br> Bedrijf: [%APPOINTMENT_COMPANY%] <br> BTW: [%APPOINTMENT_COMPANY_VAT%] <br> Adres: <br>[%APPOINTMENT_BILLING_STREET%] [%APPOINTMENT_BILLING_HOUSENUMBER%], <br>[%APPOINTMENT_BILLING_POSTALCODE%] [%APPOINTMENT_BILLING_CITY%], [%APPOINTMENT_BILLING_COUNTRY%] <br><br> <b>Verzendadres:</b><br>Naam: [%APPOINTMENT_FIRST_NAME%] [%APPOINTMENT_LAST_NAME%] <br>Adres:<br>[%APPOINTMENT_SHIPPING_STREET%] [%APPOINTMENT_SHIPPING_HOUSENUMBER%], <br>[%APPOINTMENT_SHIPPING_POSTALCODE%] [%APPOINTMENT_SHIPPING_CITY%], [%APPOINTMENT_SHIPPING_COUNTRY%]',
-                                    'en' => 'Your appointment is shipped and on its way to you.'
+                                    'nl' => 'Hieronder vind je nogmaals een overzicht terug van jouw abonnement. <br><br> <b>Overzicht: </b> <br> [%SUBSCRIPTION_SUBSCRIPTION_PLAN%] <br><br> <b>Gegevens: </b> <br> Naam: [%SUBSCRIPTION_FIRST_NAME%] [%SUBSCRIPTION_LAST_NAME%] <br> E-mail: [%SUBSCRIPTION_EMAIL%] <br> Tel: [%SUBSCRIPTION_TELEPHONE%]',
+                                    'en' => 'Below you\'ll find an overview of your subscription. <br><br> <b>Overview: </b> <br> [%SUBSCRIPTION_SUBSCRIPTION_PLAN%] <br><br> <b>Details: </b> <br> Name: [%SUBSCRIPTION_FIRST_NAME%] [%SUBSCRIPTION_LAST_NAME%] <br> E-mail: [%SUBSCRIPTION_EMAIL%] <br> Tel: [%SUBSCRIPTION_TELEPHONE%]'
                                 ],
                                 'required' => true,
                                 'validation' => 'required'
@@ -865,8 +856,8 @@ Als je een klacht hebt over de wijze van verwerking van jouw persoonsgegevens ku
                             'footer' => [
                                 'type' => 'textarea',
                                 'value' => [
-                                    'nl' => 'Heeft u vragen over uw afspraak? U kan ons steeds contacteren.<br><br><a href="mailto:' . ChuckSite::getSetting('company.email') . '">' . ChuckSite::getSetting('company.email') . '</a><br><br>' . ChuckSite::getSetting('company.name'),
-                                    'en' => 'Your appointment is shipped and on its way to you.'
+                                    'nl' => 'Heeft u vragen over uw abonnement? U kan ons steeds contacteren.<br><br><a href="mailto:' . ChuckSite::getSetting('company.email') . '">' . ChuckSite::getSetting('company.email') . '</a><br><br>' . ChuckSite::getSetting('company.name'),
+                                    'en' => 'Do you have questions about your subscription? You can always contact us.<br><br><a href="mailto:' . ChuckSite::getSetting('company.email') . '">' . ChuckSite::getSetting('company.email') . '</a><br><br>' . ChuckSite::getSetting('company.name')
                                 ],
                                 'required' => true,
                                 'validation' => 'required'

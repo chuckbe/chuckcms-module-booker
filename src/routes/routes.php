@@ -66,7 +66,7 @@ Route::group(['middleware' => ['web']], function() {
 		Route::post('/dashboard/booker/settings/statuses/emails/delete', 'Chuckbe\ChuckcmsModuleBooker\Controllers\Settings\StatusController@emailDelete')->name('dashboard.module.booker.settings.index.statuses.email.delete');
 
         Route::get('/dashboard/booker/settings/subscriptions', 'Chuckbe\ChuckcmsModuleBooker\Controllers\SettingsController@subscriptions')->name('dashboard.module.booker.settings.index.subscriptions');
-        
+
         Route::get('/dashboard/booker/settings/subscriptions/statuses/edit/{status}', 'Chuckbe\ChuckcmsModuleBooker\Controllers\Settings\SubscriptionStatusController@edit')->name('dashboard.module.booker.settings.index.subscriptions.statuses.edit');
         Route::get('/dashboard/booker/settings/subscriptions/statuses/{status}/emails/new', 'Chuckbe\ChuckcmsModuleBooker\Controllers\Settings\SubscriptionStatusController@email')->name('dashboard.module.booker.settings.index.subscriptions.statuses.email.new');
         Route::post('/dashboard/booker/settings/subscriptions/statuses/update', 'Chuckbe\ChuckcmsModuleBooker\Controllers\Settings\SubscriptionStatusController@update')->name('dashboard.module.booker.settings.index.subscriptions.statuses.update');
@@ -89,3 +89,5 @@ Route::group(['middleware' => ['web']], function() {
     Route::get('/cmb/follow-up/{appointment}/redirect', 'Chuckbe\ChuckcmsModuleBooker\Controllers\BookerController@followup')->name('module.booker.checkout.followup');
     Route::get('/cmb/subscription/follow-up/{subscription}/redirect', 'Chuckbe\ChuckcmsModuleBooker\Controllers\BookerController@subscriptionFollowup')->name('module.booker.checkout.subscription.followup');
 });
+
+Route::post('/webhook/chuck-booker-module', 'Chuckbe\ChuckcmsModuleBooker\Controllers\BookerController@webhookMollie')->name('module.booker.mollie_webhook');

@@ -20,7 +20,7 @@ class Appointment extends Eloquent
      * @var array
      */
     protected $fillable = [
-        'location_id', 'customer_id', 'title', 'start', 'end', 'date', 'time', 'duration', 'status', 'is_canceled', 'has_invoice', 'price', 'json'
+        'location_id', 'customer_id', 'title', 'start', 'end', 'date', 'time', 'duration', 'weight', 'status', 'is_canceled', 'has_invoice', 'price', 'json'
     ];
 
     protected $casts = [

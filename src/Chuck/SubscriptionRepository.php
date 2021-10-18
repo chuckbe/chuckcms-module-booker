@@ -42,6 +42,41 @@ class SubscriptionRepository
     }
 
     /**
+     * Get all active subscriptions that need renewal
+     *
+     * @return Illuminate\Database\Eloquent\Collection
+     **/
+    public function getActiveSubscriptionsToRenew()
+    {
+        return $this->subscription->where('is_expired', true)
+                                    ->where('is_active', true)
+                                    ->where('will_renew', true)
+                                    ->get();
+    }
+
+    /**
+     * Get all subscriptions that need expiration
+     *
+     * @return void
+     **/
+    public function expireSubscriptions()
+    {
+        $this->subscription->whereDate('expires_at', '<=', now()->format('Y-m-d'))
+                                    ->whereTime('expires_at', '<', now()->format('H:i:s'))
+                                    ->where('is_expired', false)
+                                    ->where('is_active', true)
+                                    ->where('type', 'one-off')
+                                    ->update(['is_expired' => true, 'is_active' => false]);
+
+        $this->subscription->whereDate('expires_at', '<=', now()->format('Y-m-d'))
+                                    ->whereTime('expires_at', '<', now()->format('H:i:s'))
+                                    ->where('is_expired', false)
+                                    ->where('is_active', true)
+                                    ->where('type', '!=', 'one-off')
+                                    ->update(['is_expired' => true]);
+    }
+
+    /**
      * Find the subscription for the given id(s).
      *
      * @param string|array $id
@@ -71,6 +106,25 @@ class SubscriptionRepository
 
         if ($subscription->price > 0) {
             $payment = $this->makePayment($subscription, $customer);
+        } 
+
+        return $subscription;
+    }
+
+    /**
+     * Make a subscription from a previous cycle
+     *
+     * @param Illuminate\Http\Request $request
+     * @param $customer
+     * 
+     * @return mixed
+     **/
+    public function makeFromPrevious(Subscription $subscription)
+    {
+        $subscription = $this->recreate($subscription);
+
+        if ($subscription->price > 0) {
+            $payment = $this->makeRecurringPayment($subscription, $subscription->customer);
         } 
 
         return $subscription;
@@ -116,6 +170,61 @@ class SubscriptionRepository
         return $mollie;
     }
 
+    /**
+     * Make a new recurring payment for the subscription
+     *
+     * @param Chuckbe\ChuckcmsModuleBooker\Models\Subscription $subscription
+     * @param Chuckbe\ChuckcmsModuleBooker\Models\Customer $customer
+     * 
+     * @return void
+     **/
+    public function makeRecurringPayment(Subscription $subscription, Customer $customer)
+    {
+        config(['mollie.key' => ChuckSite::module('chuckcms-module-booker')->getSetting('integrations.mollie.key')]);
+
+        if (!$customer->hasMollieId()) {
+            $customer = $this->customerRepository->createMollieId($customer);
+            //can't create payment so send email with payment request for first payment
+        }
+
+        $mollieCustomer = Mollie::api()->customers()->get($customer->json['mollie_id']);
+        $mandates = Mollie::api()->mandates()->listFor($mollieCustomer);
+        $continuePayment = false;
+
+        foreach($mandates as $mandate) {
+            if ($mandate->status == 'valid') {
+                $continuePayment = true;
+            }
+            //dd('Mandate :: '.$mandate->id.' / '.$mandate->status. ' / '.$mandate->method);
+        }
+
+        if (!$continuePayment) {
+            //no valid mandates, stop executing
+        }
+
+        //dd('Mollie ID: '.$customer->json['mollie_id']);
+        //dd('Mollie Cu: '.$mollieCustomer->id);
+
+        $mollie = Mollie::api()->payments()->create([
+            'amount' => [
+                'currency' => 'EUR',
+                'value' => number_format( ( (float)$subscription->price ), 2, '.', ''), 
+            ],
+            'customerId'    => $customer->json['mollie_id'],
+            'sequenceType'  => 'recurring',
+            //'method'        => 'bancontact',
+            'description'   => ChuckSite::getSite('name') . ' Abo #' . $subscription->id,
+            'webhookUrl'    => 'https://chuckcms.com', //route('module.booker.mollie_webhook'),
+            'metadata'      => array(
+                    'price'                 => number_format( ( (float)$subscription->price ), 2, '.', ''),
+                    'subscription_id'       => $subscription->id,
+                    'sequence'              => 'recurring'
+                )
+        ]);
+
+        $this->payment->create(['subscription_id' => $subscription->id, 'external_id' => $mollie->id, 'type' => 'recurring', 'status' => 'awaiting', 'amount' => $subscription->price, 'log' => array(), 'json' => array()]);
+    }
+
 
 
 
@@ -142,7 +251,7 @@ class SubscriptionRepository
             'type' => $plan->type,
             'weight' => $plan->weight,
             'price' => $plan->price,
-            'expires_at' => $this->getExpiresAt($plan),
+            'expires_at' => $this->getExpiresAt($plan->type, $plan),
             'will_renew' => $plan->type !== 'one-off',
             'json' => array()
         ]);
@@ -150,26 +259,53 @@ class SubscriptionRepository
         return $subscription;
     }
 
-    private function getExpiresAt($plan)
+    /**
+     * Rereate a subscription from a previous cycle.
+     *
+     * @param Subscription $subscription
+     * 
+     * @return Chuckbe\ChuckcmsModuleBooker\Models\Subscription
+     **/
+    public function recreate(Subscription $subscription)
     {
-        if ($plan->type == 'one-off') {
-            return now()->addMonths($plan->months_valid)->addDays($plan->days_valid);
+        $newSubscription = $this->subscription->create([
+            'subscription_plan_id' => $subscription->subscription_plan_id,
+            'customer_id' => $subscription->customer_id,
+            'type' => $subscription->type,
+            'weight' => $subscription->subscription_plan->weight,
+            'price' => $subscription->price,
+            'expires_at' => $this->getExpiresAt($subscription->type, $subscription->subscription_plan, $subscription->expires_at),
+            'will_renew' => $subscription->type !== 'one-off',
+            'json' => array('previous_cycle' => $subscription->id)
+        ]);
+
+        return $newSubscription;
+    }
+
+    private function getExpiresAt($type, $plan, $now = null)
+    {
+        if (is_null($now)) {
+            $now = now();
+        }
+
+        if ($type == 'one-off') {
+            return $now->addMonths($plan->months_valid)->addDays($plan->days_valid);
         } 
 
-        if ($plan->type == 'weekly') {
-            return now()->addDays(7);
+        if ($type == 'weekly') {
+            return $now->addDays(7);
         } 
 
-        if ($plan->type == 'monthly') {
-            return now()->addMonths(1);
+        if ($type == 'monthly') {
+            return $now->addMonths(1);
         } 
 
-        if ($plan->type == 'quarterly') {
-            return now()->addMonths(3);
+        if ($type == 'quarterly') {
+            return $now->addMonths(3);
         } 
 
-        if ($plan->type == 'yearly') {
-            return now()->addYears(1);
+        if ($type == 'yearly') {
+            return $now->addYears(1);
         } 
     }
 
@@ -263,18 +399,25 @@ class SubscriptionRepository
         //$subscription->status = $status;
         $json = is_null($subscription->json) ? [] : $subscription->json; 
 
+        if ($status == 'expired') {
+            $subscription->delete();
+            return;
+        }
+
         if ($status == 'payment') {
             $subscription->is_active = true;
+            $subscription->is_paid = true;
         }
 
         if ($status == 'failed' || $status == 'canceled' || $status == 'expired') {
             $subscription->is_active = false;
+            $subscription->is_paid = false;
         }
         
-        if($status_object['invoice'] && !array_key_exists('invoice_number', $json)) {
+        if($status_object['invoice'] && !$subscription->has_invoice) {
             $json['invoice_number'] = $this->generateInvoiceNumber();
             $subscription->json = $json;
-            $subscription->has_invoice == true;
+            $subscription->has_invoice = true;
         }
 
         $subscription->update();
@@ -341,33 +484,14 @@ class SubscriptionRepository
         $foundVariables = $this->getRawVariables($value, '[%', '%]');
         if (count($foundVariables) > 0) {
             foreach ($foundVariables as $foundVariable) {
-                // if (strpos($foundVariable, 'APPOINTMENT_NUMBER') !== false) {
-                //     $value = str_replace('[%APPOINTMENT_NUMBER%]', $order->json['APPOINTMENT_number'], $value);
-                // }
-                // if (strpos($foundVariable, 'APPOINTMENT_SUBTOTAL') !== false) {
-                //     $value = str_replace('[%APPOINTMENT_SUBTOTAL%]', ChuckEcommerce::formatPrice($order->subtotal), $value);
-                // }
-                // if (strpos($foundVariable, 'APPOINTMENT_SUBTOTAL_TAX') !== false) {
-                //     $value = str_replace('[%APPOINTMENT_SUBTOTAL_TAX%]', ChuckEcommerce::formatPrice($order->subtotal_tax), $value);
-                // }
-                // if (strpos($foundVariable, 'APPOINTMENT_SHIPPING') !== false) {
-                //     $value = str_replace('[%APPOINTMENT_SHIPPING%]', ChuckEcommerce::formatPrice($order->shipping), $value);
-                // }
-                // if (strpos($foundVariable, 'APPOINTMENT_SHIPPING_TAX') !== false) {
-                //     $value = str_replace('[%APPOINTMENT_SHIPPING_TAX%]', ChuckEcommerce::formatPrice($order->shipping_tax), $value);
-                // }
-                // if (strpos($foundVariable, 'APPOINTMENT_SHIPPING_TOTAL') !== false) {
-                //     $value = str_replace('[%APPOINTMENT_SHIPPING_TOTAL%]', $order->shipping > 0 ? ChuckEcommerce::formatPrice($order->shipping + $order->shipping_tax) : 'gratis', $value);
-                // }
-                // if (strpos($foundVariable, 'APPOINTMENT_TOTAL') !== false) {
-                //     $value = str_replace('[%APPOINTMENT_TOTAL%]', ChuckEcommerce::formatPrice($order->total), $value);
-                // }
-                // if (strpos($foundVariable, 'APPOINTMENT_TOTAL_TAX') !== false) {
-                //     $value = str_replace('[%APPOINTMENT_TOTAL_TAX%]', ChuckEcommerce::formatPrice($order->total_tax), $value);
-                // }
-                // if (strpos($foundVariable, 'APPOINTMENT_FINAL') !== false) {
-                //     $value = str_replace('[%APPOINTMENT_FINAL%]', ChuckEcommerce::formatPrice($order->final), $value);
-                // }
+                if (strpos($foundVariable, 'SUBSCRIPTION_NUMBER') !== false) {
+                    $value = str_replace('[%SUBSCRIPTION_NUMBER%]', $subscription->created_at->format('Ymd').$subscription->id, $value);
+                }
+                
+                if (strpos($foundVariable, 'SUBSCRIPTION_TOTAL') !== false) {
+                    $value = str_replace('[%SUBSCRIPTION_TOTAL%]', ChuckModuleBooker::formatPrice($subscription->price), $value);
+                }
+                
                 // if (strpos($foundVariable, 'APPOINTMENT_PAYMENT_METHOD') !== false) {
                 //     $value = str_replace('[%APPOINTMENT_PAYMENT_METHOD%]', $order->json['payment_method'], $value);
                 // }
@@ -392,26 +516,26 @@ class SubscriptionRepository
 
 
 
-                // if (strpos($foundVariable, 'APPOINTMENT_COMPANY') !== false) {
-                //     $value = str_replace('[%APPOINTMENT_COMPANY%]', !is_null($order->json['company']['name']) ? $order->json['company']['name'] : '', $value);
+                // if (strpos($foundVariable, 'SUBSCRIPTION_COMPANY') !== false) {
+                //     $value = str_replace('[%SUBSCRIPTION_COMPANY%]', !is_null($order->json['company']['name']) ? $order->json['company']['name'] : '', $value);
                 // }
-                // if (strpos($foundVariable, 'APPOINTMENT_COMPANY_VAT') !== false) {
-                //     $value = str_replace('[%APPOINTMENT_COMPANY_VAT%]', !is_null($order->json['company']['name']) ? $order->json['company']['vat'] : '', $value);
+                // if (strpos($foundVariable, 'SUBSCRIPTION_COMPANY_VAT') !== false) {
+                //     $value = str_replace('[%SUBSCRIPTION_COMPANY_VAT%]', !is_null($order->json['company']['name']) ? $order->json['company']['vat'] : '', $value);
                 // }
-                // if (strpos($foundVariable, 'APPOINTMENT_BILLING_STREET') !== false) {
-                //     $value = str_replace('[%APPOINTMENT_BILLING_STREET%]', $order->json['address']['billing']['street'], $value);
+                // if (strpos($foundVariable, 'SUBSCRIPTION_BILLING_STREET') !== false) {
+                //     $value = str_replace('[%SUBSCRIPTION_BILLING_STREET%]', $order->json['address']['billing']['street'], $value);
                 // }
-                // if (strpos($foundVariable, 'APPOINTMENT_BILLING_HOUSENUMBER') !== false) {
-                //     $value = str_replace('[%APPOINTMENT_BILLING_HOUSENUMBER%]', $order->json['address']['billing']['housenumber'], $value);
+                // if (strpos($foundVariable, 'SUBSCRIPTION_BILLING_HOUSENUMBER') !== false) {
+                //     $value = str_replace('[%SUBSCRIPTION_BILLING_HOUSENUMBER%]', $order->json['address']['billing']['housenumber'], $value);
                 // }
-                // if (strpos($foundVariable, 'APPOINTMENT_BILLING_POSTALCODE') !== false) {
-                //     $value = str_replace('[%APPOINTMENT_BILLING_POSTALCODE%]', $order->json['address']['billing']['postalcode'], $value);
+                // if (strpos($foundVariable, 'SUBSCRIPTION_BILLING_POSTALCODE') !== false) {
+                //     $value = str_replace('[%SUBSCRIPTION_BILLING_POSTALCODE%]', $order->json['address']['billing']['postalcode'], $value);
                 // }
-                // if (strpos($foundVariable, 'APPOINTMENT_BILLING_CITY') !== false) {
-                //     $value = str_replace('[%APPOINTMENT_BILLING_CITY%]', $order->json['address']['billing']['city'], $value);
+                // if (strpos($foundVariable, 'SUBSCRIPTION_BILLING_CITY') !== false) {
+                //     $value = str_replace('[%SUBSCRIPTION_BILLING_CITY%]', $order->json['address']['billing']['city'], $value);
                 // }
-                // if (strpos($foundVariable, 'APPOINTMENT_BILLING_COUNTRY') !== false) {
-                //     $value = str_replace('[%APPOINTMENT_BILLING_COUNTRY%]', config('chuckcms-module-ecommerce.countries_data.'.$order->json['address']['billing']['country'].'.native'), $value);
+                // if (strpos($foundVariable, 'SUBSCRIPTION_BILLING_COUNTRY') !== false) {
+                //     $value = str_replace('[%SUBSCRIPTION_BILLING_COUNTRY%]', config('chuckcms-module-ecommerce.countries_data.'.$order->json['address']['billing']['country'].'.native'), $value);
                 // }
 
 

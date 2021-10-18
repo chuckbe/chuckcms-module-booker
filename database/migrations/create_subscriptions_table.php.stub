@@ -32,9 +32,10 @@ class CreateSubscriptionsTable extends Migration
             $table->decimal('price', 6,2);
 
             $table->dateTime('expires_at');
-            $table->integer('is_expired')->default(0);
+            $table->boolean('is_expired')->default(false);
 
-            $table->integer('is_active')->default(0);
+            $table->boolean('is_active')->default(false);
+            $table->boolean('is_paid')->default(false);
             $table->integer('usage')->default(0);
 
             $table->boolean('has_invoice')->default(false);
