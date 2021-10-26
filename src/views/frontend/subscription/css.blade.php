@@ -83,6 +83,7 @@ input[name="cmb_subscription_plan"][type="checkbox"]
 {
     opacity: 0;
     position: absolute;
+    width: 0;
 }
  
 

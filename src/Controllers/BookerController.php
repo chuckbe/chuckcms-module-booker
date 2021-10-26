@@ -117,7 +117,7 @@ class BookerController extends Controller
             return response()->json(['status' => 'booked_already'], 200);
         }
 
-        if (is_array($appointment->json) && array_key_exists('subscription', $appointment->json)) {
+        if (is_array($appointment->json) && (array_key_exists('subscription', $appointment->json) || array_key_exists('is_free_session', $appointment->json)) ) {
             return response()->json([
                 'status' => 'success', 
                 'redirect' => route('module.booker.checkout.followup', ['appointment' => $appointment->id])
@@ -132,7 +132,7 @@ class BookerController extends Controller
 
     public function followup(Appointment $appointment)
     {
-        if (is_array($appointment->json) && array_key_exists('subscription', $appointment->json)) {
+        if (is_array($appointment->json) && (array_key_exists('subscription', $appointment->json) || array_key_exists('is_free_session', $appointment->json))) {
             return redirect()->to(config('chuckcms-module-booker.followup.appointment'))->with('appointment', $appointment);
         }
 

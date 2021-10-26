@@ -243,6 +243,19 @@ class AppointmentRepository
     public function makePayment(Appointment $appointment)
     {
         $appointment->refresh();
+
+        $customer = $appointment->customer;
+        $otherAppointments = $customer->appointments()->where('is_canceled', 0)->where('status', 'confirmed')->count();
+
+        if ($otherAppointments == 0) {
+            $json = $appointment->json;
+            $json['is_free_session'] = true;
+            $appointment->json = $json;
+            $appointment->price = 0;
+            $appointment->update();
+
+            return false;
+        }
         
         if ( ($appointment->customer->getAvailableWeight() == -1 || $appointment->customer->getAvailableWeight() >= $appointment->weight) && !in_array($appointment->start->format('Y-m-d'), explode(',', $appointment->customer->getDatesWhenAvailableWeightNotAvailable())) ) {
             $subscription = $appointment->customer->getSubscriptionForWeight($appointment->weight);
@@ -605,7 +618,7 @@ class AppointmentRepository
         $appointment->status = $status;
         $json = is_null($appointment->json) ? [] : $appointment->json; 
         
-        if($status_object['invoice'] && !array_key_exists('invoice_number', $json) && !array_key_exists('subscription', $json)) {
+        if($status_object['invoice'] && !array_key_exists('invoice_number', $json) && !array_key_exists('subscription', $json) && !array_key_exists('is_free_session', $json)) {
             $json['invoice_number'] = $this->generateInvoiceNumber();
             $appointment->json = $json;
             $appointment->has_invoice = true;

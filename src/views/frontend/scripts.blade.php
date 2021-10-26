@@ -355,14 +355,43 @@ $customer = \Chuckbe\ChuckcmsModuleBooker\Models\Customer::where('user_id', Auth
             }
 
             slideHtml += '<span class="d-block px-2 text-center">';
-            slideHtml += '<small class="day">'+dates[a][1].short_weekday+'</small>';
+            slideHtml += '<small class="day">'+getShortWeekday(dates[a][1].short_weekday)+'</small>';
             slideHtml += '<h6 class="font-weight-bold mb-0 number">'+dates[a][1].day+'</h6>';
-            slideHtml += '<small class="month">'+dates[a][1].short_month+'</small>';
+            slideHtml += '<small class="month">'+getShortMonth(dates[a][1].short_month)+'</small>';
             slideHtml += '</span>';
             slideHtml += '</div>';
 
             datePickerSlider.add(slideHtml);
         };
+    }
+
+    function getShortWeekday(weekday) {
+        if (weekday == "Mon") { return "Maa"; }
+        if (weekday == "Tue") { return "Din"; }
+        if (weekday == "Wen") { return "Woe"; }
+        if (weekday == "Thu") { return "Don"; }
+        if (weekday == "Fri") { return "Vri"; }
+        if (weekday == "Sat") { return "Zat"; }
+        if (weekday == "Sun") { return "Zon"; }
+
+        return weekday;
+    }
+
+    function getShortMonth(month) {
+        if (month == "Jan") { return "Jan"; }
+        if (month == "Feb") { return "Feb"; }
+        if (month == "Mar") { return "Maa"; }
+        if (month == "Apr") { return "Apr"; }
+        if (month == "May") { return "Mei"; }
+        if (month == "Jun") { return "Jun"; }
+        if (month == "Jul") { return "Jul"; }
+        if (month == "Aug") { return "Aug"; }
+        if (month == "Sep") { return "Sep"; }
+        if (month == "Oct") { return "Okt"; }
+        if (month == "Nov") { return "Nov"; }
+        if (month == "Dec") { return "Dec"; }
+
+        return month;
     }
 
     function removeAllDates() {
