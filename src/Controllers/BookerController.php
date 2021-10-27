@@ -239,7 +239,7 @@ class BookerController extends Controller
 
     public function webhookMollie(Request $request)
     {
-        config(['mollie.key' => ChuckSite::get('chuckcms-module-booker')->getSetting('integrations.mollie.key')]);
+        config(['mollie.key' => ChuckSite::module('chuckcms-module-booker')->getSetting('integrations.mollie.key')]);
 
         if (! $request->has('id')) {
             return;
