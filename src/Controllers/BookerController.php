@@ -167,9 +167,7 @@ class BookerController extends Controller
             }
 
             return redirect()->to(config('chuckcms-module-booker.followup.appointment'))->with('appointment', $appointment);
-        }
-
-        if ($mollie->isCanceled() || $mollie->isFailed()) {
+        } else {
             $payment = $this->appointmentRepository->makePayment($appointment);
 
             if ($payment === false) {
@@ -178,7 +176,7 @@ class BookerController extends Controller
             }
         }
 
-        return redirect()->to($appointment->payments()->where('status', 'awaiting')->first()->getPaymentUrl());
+        return redirect()->to($payment->getCheckoutUrl());
     }
 
     public function makeSubscription(Request $request)
