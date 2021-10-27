@@ -87,6 +87,8 @@ Route::group(['middleware' => ['web']], function() {
     Route::post('/module/booker/subscribe', 'Chuckbe\ChuckcmsModuleBooker\Controllers\BookerController@makeSubscription')->name('module.booker.subscribe');
 
     Route::get('/cmb/follow-up/{appointment}/redirect', 'Chuckbe\ChuckcmsModuleBooker\Controllers\BookerController@followup')->name('module.booker.checkout.followup');
+    Route::get('/cmb/follow-up/{appointment}/retry-payment', 'Chuckbe\ChuckcmsModuleBooker\Controllers\BookerController@retryPayment')->name('module.booker.checkout.retry_payment');
+
     Route::get('/cmb/subscription/follow-up/{subscription}/redirect', 'Chuckbe\ChuckcmsModuleBooker\Controllers\BookerController@subscriptionFollowup')->name('module.booker.checkout.subscription.followup');
 });
 

@@ -145,14 +145,40 @@ class BookerController extends Controller
             }
         }
 
-        if ($mollie->isCanceled()) {
-            $this->appointmentRepository->updateStatus($appointment, 'canceled');    
-        }
-
-        if ($mollie->isFailed()) {
+        if ($mollie->isCanceled() || $mollie->isFailed()) {
             $this->appointmentRepository->updateStatus($appointment, 'error');    
         }
 
+        return redirect()->to(config('chuckcms-module-booker.followup.appointment'))->with('appointment', $appointment);
+    }
+
+    public function retryPayment(Appointment $appointment)
+    {
+        if (is_array($appointment->json) && (array_key_exists('subscription', $appointment->json) || array_key_exists('is_free_session', $appointment->json))) {
+            return redirect()->to(config('chuckcms-module-booker.followup.appointment'))->with('appointment', $appointment);
+        }
+
+        $payment = $appointment->payments()->where('type', 'one-off')->first();
+        $mollie = Mollie::api()->payments()->get($payment->external_id);
+
+        if ($mollie->isPaid()) {
+            if (!ChuckModuleBooker::getSetting('appointment.statuses.'.$appointment->status.'.paid')) {
+                $this->appointmentRepository->updateStatus($appointment, 'payment');
+            }
+
+            return redirect()->to(config('chuckcms-module-booker.followup.appointment'))->with('appointment', $appointment);
+        }
+
+        if ($mollie->isCanceled() || $mollie->isFailed()) {
+            $payment = $this->appointmentRepository->makePayment($appointment);
+
+            if ($payment === false) {
+                $this->appointmentRepository->updateStatus($appointment, 'confirmed');
+                return redirect()->to(config('chuckcms-module-booker.followup.appointment'))->with('appointment', $appointment);
+            }
+        }
+
+        return redirect()->to($appointment->payments()->where('status', 'awaiting')->first()->getPaymentUrl())
         return redirect()->to(config('chuckcms-module-booker.followup.appointment'))->with('appointment', $appointment);
     }
 
@@ -247,7 +273,7 @@ class BookerController extends Controller
 
         if ($mollie->isCanceled()) {
             if ($resourceType == 'appointment') {
-                $this->appointmentRepository->updateStatus($appointment, 'canceled');
+                $this->appointmentRepository->updateStatus($appointment, 'error');
             }
             
             if ($resourceType == 'subscription' && $mollie->sequenceType == 'first') {
@@ -263,7 +289,7 @@ class BookerController extends Controller
             }
             
             if ($resourceType == 'subscription' && $mollie->sequenceType == 'first') {
-                $this->subscriptionRepository->updateStatus($subscription, 'expired');
+                $this->subscriptionRepository->updateStatus($subscription, 'failed');
             }
             
             return response()->json(['status' => 'success'], 200);

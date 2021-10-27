@@ -100,6 +100,7 @@ class LoginController extends Controller
                 'customer' => $customer,
                 'available_weight' => $customer->getAvailableWeight(),
                 'available_weight_not_on_days' => $customer->getDatesWhenAvailableWeightNotAvailable(),
+                'customer_eligible_for_free_session' => $customer->appointments()->where('json->is_free_session', true)->count() == 0,
                 'intended' => $this->redirectPath(),
                 'token' => csrf_token()
             ]);

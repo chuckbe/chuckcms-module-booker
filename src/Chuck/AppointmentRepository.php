@@ -245,7 +245,7 @@ class AppointmentRepository
         $appointment->refresh();
 
         $customer = $appointment->customer;
-        $otherAppointments = $customer->appointments()->where('is_canceled', 0)->where('status', 'confirmed')->count();
+        $otherAppointments = $customer->appointments()->where('json->is_free_session', true)->where('is_canceled', 0)->where('status', 'confirmed')->count();
 
         if ($otherAppointments == 0) {
             $json = $appointment->json;
@@ -285,7 +285,7 @@ class AppointmentRepository
             ],
             'method' => 'bancontact',
             'description' => ChuckSite::getSite('name') . ' #' . $appointment->id,
-            'webhookUrl' => 'https://chuckcms.com/', //route('module.booker.mollie_webhook'),
+            'webhookUrl' => route('module.booker.mollie_webhook'),
             'redirectUrl' => route('module.booker.checkout.followup', ['appointment' => $appointment->id]),
             //'method' => $order->json['payment_method'],
             "metadata" => array(
@@ -786,7 +786,11 @@ class AppointmentRepository
         $string .= '</p>';
         
         foreach($appointment->services as $service) {
-            $string .= '<p>1x "'.$service->name.'" ('.ChuckModuleBooker::formatPrice($service->price).')</p><hr>';    
+            if (!array_key_exists('is_free_session', $appointment->json)) {
+                $string .= '<p>1x "'.$service->name.'" ('.ChuckModuleBooker::formatPrice($service->price).')</p><hr>';
+            } else {
+                $string .= '<p>1x "'.$service->name.'" (gratis eerste sessie)</p><hr>';
+            }
         }
 
         return $string;
