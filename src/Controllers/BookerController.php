@@ -178,8 +178,7 @@ class BookerController extends Controller
             }
         }
 
-        return redirect()->to($appointment->payments()->where('status', 'awaiting')->first()->getPaymentUrl())
-        return redirect()->to(config('chuckcms-module-booker.followup.appointment'))->with('appointment', $appointment);
+        return redirect()->to($appointment->payments()->where('status', 'awaiting')->first()->getPaymentUrl());
     }
 
     public function makeSubscription(Request $request)
