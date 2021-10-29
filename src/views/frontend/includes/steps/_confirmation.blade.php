@@ -45,6 +45,12 @@
 				</small>
 			</label>
 			<div class="w-100 d-block"></div>
+			<label class="mb-0" for="cmb_promo_check">
+				<small>
+					<input type="checkbox" class="mr-2 me-2" name="promo" id="cmb_promo_check"> Ja, CCA mag mij per email op de hoogte houden van de toekomstige acties of promoties.
+				</small>
+			</label>
+			<div class="w-100 d-block"></div>
 			<label class="mb-0" for="cmb_create_customer">
 				<small>
 					<input type="checkbox" class="mr-2 me-2" name="create_customer" id="cmb_create_customer"> Ik wil een account aanmaken
@@ -92,6 +98,12 @@
 			<label class="mb-0" for="cmb_medical_declaration">
 				<small>
 					<input type="checkbox" class="mr-2 me-2" name="medical_declaration" id="cmb_medical_declaration" checked disabled> Ik ga akkoord met de medische verklaring
+				</small>
+			</label>
+			<div class="w-100 d-block"></div>
+			<label class="mb-0" for="cmb_promo_check">
+				<small>
+					<input type="checkbox" class="mr-2 me-2" name="promo" id="cmb_promo_check"> Ja, CCA mag mij per email op de hoogte houden van de toekomstige acties of promoties.
 				</small>
 			</label>
 		</div>

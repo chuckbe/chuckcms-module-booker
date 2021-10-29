@@ -593,6 +593,12 @@ $customer = \Chuckbe\ChuckcmsModuleBooker\Models\Customer::where('user_id', Auth
         let customer = null;
         let create_customer = $('form.cmb_booker_app input[name="create_customer"]').is(':checked') ? 1 : 0;
 
+        if ($('form.cmb_booker_app input[name="promo"]').length) {
+            let promo_check = $('form.cmb_booker_app input[name="promo"]').is(':checked') ? 1 : 0;
+        } else {
+            let promo_check = 0;
+        }
+
         if (auth_check) {
             customer = $('form.cmb_booker_app input[name="customer_id"]').val();
             create_customer = 0;
@@ -620,6 +626,7 @@ $customer = \Chuckbe\ChuckcmsModuleBooker\Models\Customer::where('user_id', Auth
                 last_name: last_name,
                 email: email,
                 tel: tel,
+                promo: promo_check,
                 _token: session_token
             }
         });

@@ -16,6 +16,7 @@ use Chuckbe\ChuckcmsModuleBooker\Models\Appointment;
 use Chuckbe\ChuckcmsModuleBooker\Models\Location;
 use Chuckbe\ChuckcmsModuleBooker\Models\Payment;
 use ChuckModuleBooker;
+use Newsletter;
 use ChuckSite;
 use Mollie;
 
@@ -90,7 +91,8 @@ class BookerController extends Controller
             'first_name' => 'required',
             'last_name' => 'required',
             'email' => 'required|email',
-            'tel' => 'required'
+            'tel' => 'required',
+            'promo' => 'nullable'
         ]);
 
         if ($request->create_customer == 1) {
@@ -115,6 +117,10 @@ class BookerController extends Controller
 
         if ($appointment == 'unavailable') {
             return response()->json(['status' => 'booked_already'], 200);
+        }
+
+        if ($request->has('promo') && !is_null($request->get('promo')) && $request->get('promo') == 1) {
+            Newsletter::subscribeOrUpdate($customer->email, ['FNAME' => $customer->first_name, 'LNAME' => $customer->last_name]);
         }
 
         if (is_array($appointment->json) && (array_key_exists('subscription', $appointment->json) || array_key_exists('is_free_session', $appointment->json)) ) {

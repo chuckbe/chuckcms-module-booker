@@ -65,6 +65,11 @@ class SubscriptionPlanRepository
      **/
     public function create(StoreSubscriptionPlanRequest $request)
     {
+        $json = [];
+        if ($request->has('description') && !is_null($request->description)) {
+            $json['description'] = $request->description;
+        }
+
         $subscriptionPlan = $this->subscriptionPlan->create([
             'is_active' => $request->get('is_active') == 1 ? true : false,
             'is_recurring' => $request->get('type') == 'one-off' ? false : true,
@@ -76,7 +81,7 @@ class SubscriptionPlanRepository
             'price' => $request->get('price'),
             'weight' => (int)$request->get('weight'),
             'order' => (int)$request->get('order'),
-            'json' => array()
+            'json' => $json
         ]);
 
         return $subscriptionPlan;
@@ -93,6 +98,11 @@ class SubscriptionPlanRepository
     {
         $subscriptionPlan = $this->subscriptionPlan->where('id', $request->get('id'))->first();
 
+        $json = $subscriptionPlan->json;
+        if ($request->has('description') && !is_null($request->description)) {
+            $json['description'] = $request->description;
+        }
+
         $subscriptionPlan = $subscriptionPlan->update([
             'is_active' => $request->get('is_active') == 1 ? true : false,
             'is_recurring' => $request->get('type') == 'one-off' ? false : true,
@@ -104,7 +114,7 @@ class SubscriptionPlanRepository
             'weight' => (int)$request->get('weight'),
             'price' => $request->get('price'),
             'order' => (int)$request->get('order'),
-            'json' => array()
+            'json' => $json
         ]);
 
         return $subscriptionPlan;

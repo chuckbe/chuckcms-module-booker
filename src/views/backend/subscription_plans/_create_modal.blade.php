@@ -102,6 +102,15 @@
 
             <div class="row">
               <div class="col-md-12">
+                <div class="form-group form-group-default">
+                  <label>Beschrijving</label>
+                  <textarea id="create_subscription_plan_description" name="description" class="form-control"></textarea>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-12">
                 <div class="form-group form-group-default required">
                   <label>Volgorde</label>
                   <input type="number" min="0" steps="1" max="9999" id="create_subscription_plan_order" name="order" class="form-control" value="{{ ($subscription_plans->count() + 1) }}" required>

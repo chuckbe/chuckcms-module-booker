@@ -63,6 +63,18 @@ class SubscriptionPlanController extends Controller
     }
 
     /**
+     * Return the subscription plan edit page for given plan.
+     *
+     * @param SubscriptionPlan $subscription_plan
+     * 
+     * @return Illuminate\View\View
+     */
+    public function edit(SubscriptionPlan $subscription_plan)
+    {
+        return view('chuckcms-module-booker::backend.subscription_plan.edit', compact('subscription_plan'));
+    }
+
+    /**
      * Save a new subscription plan from the request.
      *
      * @param StoreSubscriptionPlanRequest $request

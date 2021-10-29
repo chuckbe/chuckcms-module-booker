@@ -38,6 +38,8 @@ class StoreSubscriptionPlanRequest extends FormRequest
 
             'disabled_weekdays' => 'nullable|array',
             'disabled_dates' => 'nullable|string',
+            
+            'description' => 'nullable',
 
             'order' => 'numeric|required'
         ];
