@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use Chuckbe\ChuckcmsModuleBooker\Models\Appointment;
 use Chuckbe\ChuckcmsModuleBooker\Chuck\ServiceRepository;
 use Chuckbe\ChuckcmsModuleBooker\Chuck\LocationRepository;
+use Chuckbe\ChuckcmsModuleBooker\Chuck\CustomerRepository;
 use Chuckbe\ChuckcmsModuleBooker\Chuck\AppointmentRepository;
 
 class AppointmentController extends Controller
@@ -24,10 +25,12 @@ class AppointmentController extends Controller
     public function __construct(
         AppointmentRepository $appointmentRepository, 
         LocationRepository $locationRepository,
+        CustomerRepository $customerRepository,
         ServiceRepository $serviceRepository)
     {
         $this->appointmentRepository = $appointmentRepository;
         $this->locationRepository = $locationRepository;
+        $this->customerRepository = $customerRepository;
         $this->serviceRepository = $serviceRepository;
     }
 
@@ -37,9 +40,16 @@ class AppointmentController extends Controller
      * @return Illuminate\View\View
      */
     public function index()
-    {   
-        $appointments = $this->appointmentRepository->get();
-        return view('chuckcms-module-booker::backend.appointments.index', compact('appointments'));
+    {
+        $locations = $this->locationRepository->get();
+        if (count($locations) == 1) {
+            $services = $locations->first()->services()->get();
+        } else {
+            $services = $this->serviceRepository->get();
+        }
+        $customers = $this->customerRepository->get();
+
+        return view('chuckcms-module-booker::backend.appointments.index', compact('locations', 'services', 'customers'));
     }
 
     /**

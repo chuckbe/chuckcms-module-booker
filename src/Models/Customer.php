@@ -20,7 +20,7 @@ class Customer extends Eloquent
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'tel', 'json'
+        'first_name', 'last_name', 'email', 'tel', 'json'
     ];
 
     protected $casts = [

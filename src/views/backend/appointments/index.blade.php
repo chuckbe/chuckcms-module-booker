@@ -8,13 +8,14 @@
 <meta name="csrf-token" content="{{ Session::token() }}">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.9.0/main.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" integrity="sha512-+4zCK9k+qNFUR5X+cKL9EIR+ZOhtIloNl9GIKS57V1MyNsYpYcUrUeQc9vNfzsWfV28IaLL3i96P9sdNyeRssA==" crossorigin="anonymous">
+@include('chuckcms-module-booker::backend.appointments.booker.css')
 @endsection
 
 @section('content')
 <div class="container min-height">
     <div class="row py-3">
         <div class="col-sm-12 text-right">
-            <button class="btn btn-sm btn-outline-secondary">+ Afspraak</button>
+            <button class="btn btn-sm btn-outline-secondary" data-target="#createAppointmentModal" data-toggle="modal">+ Afspraak</button>
         </div>
     </div>
     <div class="row bg-light shadow-sm rounded p-3 mt-2 mb-5 mx-1">
@@ -24,6 +25,7 @@
     </div>
 </div>
 @include('chuckcms-module-booker::backend.appointments._modal')
+@include('chuckcms-module-booker::backend.appointments._create_modal')
 @endsection
 
 @section('scripts')
@@ -130,4 +132,6 @@
         }
     });
 </script>
+
+@include('chuckcms-module-booker::backend.appointments.booker.scripts')
 @endsection
