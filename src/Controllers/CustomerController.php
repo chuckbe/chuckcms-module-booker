@@ -82,7 +82,12 @@ class CustomerController extends Controller
      */
     public function store(StoreCustomerRequest $request)
     {
-        $this->customerRepository->createOrUpdate($request);
+        if(is_null($request->make_account)){
+            $this->customerRepository->makeGuestFromRequest($request);
+        }else{
+            $this->customerRepository->makeFromRequest($request);
+        }
+        // $this->customerRepository->createOrUpdate($request);
 
         return redirect()->route('dashboard.module.booker.customers.index');
     }

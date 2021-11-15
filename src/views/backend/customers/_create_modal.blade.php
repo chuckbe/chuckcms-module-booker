@@ -23,13 +23,13 @@
               <div class="col-md-6">
                 <div class="form-group form-group-default required">
                   <label>Voornaam *</label>
-                  <input type="text" id="create_service_fname" name="firstname" class="form-control" required>
+                  <input type="text" id="create_service_fname" name="first_name" class="form-control" required>
                 </div>
               </div>
               <div class="col-md-6">
                 <div class="form-group form-group-default required">
                   <label>Achternaam *</label>
-                  <input type="text" id="create_service_lname" name="lastname" class="form-control" required>
+                  <input type="text" id="create_service_lname" name="last_name" class="form-control" required>
                 </div>
               </div>
             </div>

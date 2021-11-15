@@ -24,13 +24,12 @@ class StoreCustomerRequest extends FormRequest
     public function rules()
     {
         return [
-            'type' => 'nullable',
-            'name' => 'required',
-            'duration' => 'numeric|required',
-            'min_duration' => 'nullable|numeric',
-            'max_duration' => 'nullable|numeric',
-            'price' => 'required|min:0',
-            'deposit' => 'required|min:0'
+            'first_name' => 'required',
+            'last_name' => 'required',
+            'email' => 'required',
+            'tel' => 'required',
+            'general_conditions' => 'required',
+            'medical_declaration' => 'required'
         ];
     }
 }
