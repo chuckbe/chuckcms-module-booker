@@ -5,6 +5,7 @@
 @endsection
 
 @section('css')
+<link rel="stylesheet" href="{{ asset('module-booker/css/intlTelInput.min.css') }}" />
 <style>
 .bg-white{
 	background: #fff;
@@ -14,6 +15,7 @@
 
 @section('scripts')
 <script src="https://cdn.chuck.be/assets/plugins/sweetalert2.all.js"></script>
+<script src="{{ asset('module-booker/scripts/intlTelInput-jquery.min.js') }}"></script>
 <script>
 $(function() {
 	$('body').on('click', '.customer_delete', function (event) {
@@ -57,7 +59,13 @@ $(function() {
 		});
 	});
 });
+$('input[type="tel"]').intlTelInput({
+	initialCountry: "be",
+	onlyCountries: ["be", "lu", "nl"],
+	utilsScript: "{{ asset('module-booker/scripts/intlTelInput-utils.js') }}"
+});
 </script>
+
 @endsection
 
 @section('content')

@@ -20,10 +20,16 @@
         <form role="form" method="POST" action="{{ route('dashboard.module.booker.customers.save') }}">
           <div class="form-group-attached">
             <div class="row">
-              <div class="col-md-12">
+              <div class="col-md-6">
                 <div class="form-group form-group-default required">
-                  <label>Naam *</label>
-                  <input type="text" id="create_service_name" name="name" class="form-control" required>
+                  <label>Voornaam *</label>
+                  <input type="text" id="create_service_fname" name="firstname" class="form-control" required>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group form-group-default required">
+                  <label>Achternaam *</label>
+                  <input type="text" id="create_service_lname" name="lastname" class="form-control" required>
                 </div>
               </div>
             </div>
@@ -42,6 +48,30 @@
                 <div class="form-group form-group-default required">
                   <label>Telefoonnummer *</label>
                   <input type="tel" id="create_customer_tel" name="tel" class="form-control" required>
+                </div>
+              </div>
+            </div>
+            
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group form-group-default required">
+                  <label class="mb-0" for="cmb_general_conditions">
+                    <small>
+                      <input type="checkbox" class="mr-2 me-2" name="general_conditions" id="cmb_general_conditions"> Ik ga akkoord met de <a href="" class="cmb_show_general_conditions_btn text-dark"><u>algemene voorwaarden</u></a>.
+                    </small>
+                  </label>
+                  <div class="w-100 d-block"></div>
+                  <label class="mb-0" for="cmb_medical_declaration">
+                    <small>
+                      <input type="checkbox" class="mr-2 me-2" name="medical_declaration" id="cmb_medical_declaration"> Ik ga akkoord met de <a href="" class="cmb_show_medical_declaration_btn text-dark"><u>medische verklaring</u></a>.
+                    </small>
+                  </label>
+                  <div class="w-100 d-block"></div>
+                  <label class="mb-0" for="cmb_make_account">
+                    <small>
+                      <input type="checkbox" class="mr-2 me-2" name="make_account" id="cmb_make_account"> Ik wil een account aanmaken
+                    </small>
+                  </label>
                 </div>
               </div>
             </div>
