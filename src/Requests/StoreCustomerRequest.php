@@ -26,7 +26,7 @@ class StoreCustomerRequest extends FormRequest
         return [
             'first_name' => 'required',
             'last_name' => 'required',
-            'email' => 'required',
+            'email' => 'required|email|unique:cmb_customers,email,',
             'tel' => 'required',
             'general_conditions' => 'required',
             'medical_declaration' => 'required'
