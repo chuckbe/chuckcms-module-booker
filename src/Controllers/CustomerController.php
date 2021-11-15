@@ -74,7 +74,7 @@ class CustomerController extends Controller
     }
 
     /**
-     * Save a new location from the request.
+     * Save a new customer from the request.
      *
      * @param StoreCustomerRequest $request
      *
@@ -93,7 +93,7 @@ class CustomerController extends Controller
     }
 
     /**
-     * Delete the given location.
+     * Delete the given customer.
      *
      * @param Illuminate\Http\Request $request
      *

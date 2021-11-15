@@ -26,7 +26,7 @@ $(function() {
 
 		swal({
 			title: 'Are you sure?',
-			text: "This will delete this service. You won't be able to revert this!",
+			text: "This will delete this client. You won't be able to revert this!",
 			type: 'warning',
 			showCancelButton: true,
 			confirmButtonColor: '#3085d6',
@@ -37,15 +37,15 @@ $(function() {
 				method: 'POST',
 				url: "{{ route('dashboard.module.booker.customers.delete') }}",
 				data: { 
-					service_id: customerId, 
+					customer_id: customerId, 
 					_token: token
 				}
 			}).done(function(data){
-				if(data == 'success'){
+				if(data.status == 'success'){
 					$("tr[data-id='"+customerId+"']").first().remove();
 					swal(
 						'Deleted!',
-						'The service has been deleted.',
+						'The client has been deleted.',
 						'success'
 					)
 				}else{
