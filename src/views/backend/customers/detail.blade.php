@@ -113,8 +113,8 @@ Klant: {{ $customer->first_name . ' ' . $customer->last_name }}
                                 <label for="country">Land *</label>
                                 <select class="custom-select d-block w-100" id="country" name="customer_country" required>
                                     <option selected disabled>Kies...</option>
-                                    @foreach(ChuckEcommerce::getSetting('order.countries') as $country)
-                                    <option value="{{ $country }}" {{ old('customer_country', $customer->billing_address_country) == $country ? 'selected' : '' }} >{{ config('chuckcms-module-booker.countries')[$country] }}</option>
+                                    @foreach(config('chuckcms-module-booker.countries') as $countryKey => $country)
+                                    <option value="{{ $countryKey }}" {{ old('customer_country', $customer->billing_address_country) == $countryKey ? 'selected' : '' }} >{{ config('chuckcms-module-booker.countries')[$country] }}</option>
                                     @endforeach
                                 </select>
                                 <div class="invalid-feedback">Gelieve uw land te selecteren.</div>
