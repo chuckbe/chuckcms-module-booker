@@ -115,4 +115,9 @@ class Subscription extends Eloquent
     {
         return array_key_exists('address', $this->json) ? $this->json['address']['shipping'] : array();
     }
+
+    public function getAvailableWeightAttribute() 
+    {
+        return $this->weight == -1 ? '∞' : $this->weight;
+    }
 }

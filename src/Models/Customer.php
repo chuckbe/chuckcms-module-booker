@@ -58,6 +58,16 @@ class Customer extends Eloquent
     }
 
     /**
+    * Does the customer has a company
+    *
+    * @return bool
+    */
+    public function hasCompany()
+    {
+        return array_key_exists('company', $this->json);
+    }
+
+    /**
      * Does the customer has a mollie id.
      *
      * @return bool
@@ -148,5 +158,40 @@ class Customer extends Eloquent
     public function getShippingAddressAttribute() 
     {
         return array_key_exists('address', $this->json) ? $this->json['address']['shipping'] : array();
+    }
+
+    public function getBillingAddressStreetAttribute() 
+    {
+        return array_key_exists('street', $this->billing_address) ? $this->billing_address['street'] : null;
+    }
+
+    public function getBillingAddressHousenumberAttribute() 
+    {
+        return array_key_exists('housenumber', $this->billing_address) ? $this->billing_address['housenumber'] : null;
+    }
+
+    public function getBillingAddressPostalcodeAttribute() 
+    {
+        return array_key_exists('postalcode', $this->billing_address) ? $this->billing_address['postalcode'] : null;
+    }
+
+    public function getBillingAddressCityAttribute() 
+    {
+        return array_key_exists('city', $this->billing_address) ? $this->billing_address['city'] : null;
+    }
+
+    public function getBillingAddressCountryAttribute() 
+    {
+        return array_key_exists('country', $this->billing_address) ? $this->billing_address['country'] : null;
+    }
+
+    public function getCompanyNameAttribute() 
+    {
+        return $this->hasCompany() ? $this->json['company']['name'] : null;
+    }
+
+    public function getCompanyVatAttribute() 
+    {
+        return $this->hasCompany() ? $this->json['company']['vat'] : null;
     }
 }

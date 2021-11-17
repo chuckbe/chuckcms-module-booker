@@ -2,6 +2,7 @@
 
 namespace Chuckbe\ChuckcmsModuleBooker\Controllers;
 
+use PDF;
 use DateTime;
 use Newsletter;
 use Illuminate\Http\Request;
@@ -167,6 +168,19 @@ class AppointmentController extends Controller
         }
 
         return response()->json(['status' => 'success'], 200);
+    }
+
+    /**
+     * Return the appointment invoice.
+     *
+     * @param Appointment $appointment
+     * 
+     * @return Illuminate\View\View
+     */
+    public function invoice(Appointment $appointment)
+    {
+        $pdf = PDF::loadView('chuckcms-module-booker::pdf.invoice', compact('appointment'));
+        return $pdf->download($appointment->invoiceFileName);
     }
 
 }

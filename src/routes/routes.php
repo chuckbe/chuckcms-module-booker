@@ -37,6 +37,7 @@ Route::group(['middleware' => ['web']], function() {
         //Route::get('/dashboard/booker/customers/{customer}/edit', 'Chuckbe\ChuckcmsModuleBooker\Controllers\CustomerController@edit')->name('dashboard.module.booker.customers.edit');
         Route::post('/dashboard/booker/customers/save', 'Chuckbe\ChuckcmsModuleBooker\Controllers\CustomerController@store')->name('dashboard.module.booker.customers.save');
         Route::post('/dashboard/booker/customers/update', 'Chuckbe\ChuckcmsModuleBooker\Controllers\CustomerController@store')->name('dashboard.module.booker.customers.update');
+        Route::post('/dashboard/booker/customers/address/update', 'Chuckbe\ChuckcmsModuleBooker\Controllers\CustomerController@address')->name('dashboard.module.booker.customers.update_address');
         Route::post('/dashboard/booker/customers/delete', 'Chuckbe\ChuckcmsModuleBooker\Controllers\CustomerController@delete')->name('dashboard.module.booker.customers.delete');
         //END OF:   CUSTOMERS ROUTES
 

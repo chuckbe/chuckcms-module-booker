@@ -93,6 +93,24 @@ class CustomerController extends Controller
     }
 
     /**
+     * Update address/company on a customer from the request.
+     *
+     * @param Request $request
+     *
+     * @return Illuminate\Http\RedirectResponse
+     */
+    public function address(Request $request)
+    {
+        $customer = $this->customerRepository->updateAddress($request);
+
+        if(! is_null($request->customer_company_name)){
+            $customer = $this->customerRepository->updateCompany($request);
+        }
+
+        return redirect()->route('dashboard.module.booker.customers.detail', ['customer' => $customer->id]);
+    }
+
+    /**
      * Delete the given customer.
      *
      * @param Illuminate\Http\Request $request

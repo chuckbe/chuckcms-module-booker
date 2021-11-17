@@ -82,11 +82,12 @@ $(function() {
 						<th scope="col">ID</th>
 						<th scope="col">Naam</th>
 						<th scope="col">Vervalt</th>
-						<th scope="col">Zal vernieuwen?</th>
+						<th scope="col">Hernieuwen?</th>
 						<th scope="col">Klant</th>
 						<th scope="col">Prijs</th>
 						<th scope="col">Actief?</th>
-						<th scope="col">Acties</th>
+						<th scope="col">Resterend?</th>
+						<th scope="col" style="min-width:140px">Acties</th>
 					</thead>
 					<tbody>
 						@foreach ($subscriptions as $subscription)
@@ -122,13 +123,19 @@ $(function() {
 										{!! $subscription->is_active ? '✓' : '✕'!!}
 									</span>
 								</td>
+								<td class="semi-bold">{{ $subscription->available_weight }}</td>
 								<td>
-									<a href="{{ route('dashboard.module.booker.services.edit', ['service' => $subscription->id]) }}" class="btn btn-sm btn-outline-secondary rounded d-inline-block">
-						    			<i class="fa fa-edit"></i> edit
+									{{-- <a href="{{ route('dashboard.module.booker.services.edit', ['service' => $subscription->id]) }}" class="btn btn-sm btn-outline-secondary rounded d-inline-block">
+						    			<i class="fa fa-edit"></i> 
+						    		</a> --}}
+						    		@if($subscription->has_invoice)
+						    		<a href="{{ route('dashboard.module.booker.subscriptions.invoice', ['subscription' => $subscription->id]) }}" class="btn btn-sm btn-outline-secondary rounded d-inline-block">
+						    			<i class="fa fa-file-pdf-o"></i> 
 						    		</a>
-									<a href="#" class="btn btn-danger btn-sm btn-rounded m-r-20 service_delete" data-id="{{ $subscription->id }}">
+						    		@endif
+									{{-- <a href="#" class="btn btn-danger btn-sm btn-rounded m-r-20 service_delete" data-id="{{ $subscription->id }}">
 						    			<i class="fa fa-trash"></i> 
-						    		</a>
+						    		</a> --}}
 								</td>
 							</tr>
 						@endforeach

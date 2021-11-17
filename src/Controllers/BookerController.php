@@ -305,7 +305,7 @@ class BookerController extends Controller
                 }
             }
 
-            if ($sequenceType == 'subscription') {
+            if ($resourceType == 'subscription') {
                 if (!$subscription->is_paid && !$subscription->is_active) {
                     $this->subscriptionRepository->updateStatus($subscription, 'payment');
                 }

@@ -247,8 +247,7 @@ class CustomerRepository
      **/
     public function updateAddress(Request $request)
     {
-        $user = Auth::user();
-        $customer = $user->customer;
+        $customer = $this->find($request->customer_id);
 
         $json = $this->mapAddress($request, $customer->json);
         
@@ -265,8 +264,7 @@ class CustomerRepository
      **/
     public function updateCompany(Request $request)
     {
-        $user = Auth::user();
-        $customer = $user->customer;
+        $customer = $this->find($request->customer_id);
 
         $json = $this->mapCompany($request, $customer->json);        
 
@@ -316,14 +314,7 @@ class CustomerRepository
         $json['address']['billing']['city'] = $request->get('customer_city');
         $json['address']['billing']['country'] = $request->get('customer_country');
 
-        $json['address']['shipping_equal_to_billing'] = $request->get('customer_shipping_equal_to_billing') == '1';
-        if($request->get('customer_shipping_equal_to_billing') !== '1') {
-            $json['address']['shipping']['street'] = $request->get('customer_shipping_street');
-            $json['address']['shipping']['housenumber'] = $request->get('customer_shipping_housenumber');
-            $json['address']['shipping']['postalcode'] = $request->get('customer_shipping_postalcode');
-            $json['address']['shipping']['city'] = $request->get('customer_shipping_city');
-            $json['address']['shipping']['country'] = $request->get('customer_shipping_country');
-        }
+        $json['address']['shipping_equal_to_billing'] = true;
 
         return $json;
     }
