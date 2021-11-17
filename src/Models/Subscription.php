@@ -77,6 +77,16 @@ class Subscription extends Eloquent
     }
 
     /**
+    * Does the subscription has a company
+    *
+    * @return bool
+    */
+    public function hasCompany()
+    {
+        return array_key_exists('company', $this->json);
+    }
+
+    /**
     * Return the formatted price.
     *
     * @var string
@@ -94,5 +104,15 @@ class Subscription extends Eloquent
     public function getInvoiceFileNameAttribute()
     {
         return 'factuur_' . ChuckModuleBooker::getSetting('invoice.prefix') . str_pad( array_key_exists('invoice_number', $this->json) ? $this->json['invoice_number'] : 'XXXX', 4, '0', STR_PAD_LEFT) . '.pdf';
+    }
+
+    public function getBillingAddressAttribute() 
+    {
+        return array_key_exists('address', $this->json) ? $this->json['address']['billing'] : array();
+    }
+
+    public function getShippingAddressAttribute() 
+    {
+        return array_key_exists('address', $this->json) ? $this->json['address']['shipping'] : array();
     }
 }

@@ -3,6 +3,7 @@
 namespace Chuckbe\ChuckcmsModuleBooker\Controllers;
 
 use DateTime;
+use Newsletter;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Chuckbe\ChuckcmsModuleBooker\Models\Appointment;
@@ -67,6 +68,22 @@ class AppointmentController extends Controller
     }
 
     /**
+     * Return the appointment json feed.
+     *
+     * @param Request $request
+     *
+     * @return Illuminate\Response\Json
+     */
+    public function modal(Request $request)
+    {
+        $appointment = $this->appointmentRepository->find($request->id);
+
+        $view = view('chuckcms-module-booker::backend.appointments._modal_body', compact('appointment'))->render();
+
+        return response()->json(['html' => $view]);
+    }
+
+    /**
      * Return the appointments detail page for given appointment.
      *
      * @param Appointment $appointment
@@ -76,6 +93,80 @@ class AppointmentController extends Controller
     public function detail(Appointment $appointment)
     {
         return view('chuckcms-module-booker::backend.appointments.detail', compact('appointments'));
+    }
+
+    /**
+     * Create a new appointment.
+     *
+     * @param Appointment $appointment
+     * 
+     * @return Illuminate\View\View
+     */
+    public function create(Request $request)
+    {
+        $this->validate($request, [
+            'date' => 'required',
+            'time' => 'required',
+            'location' => 'required',
+            'services' => 'required|array',
+            'customer' => 'nullable',
+            'create_customer' => 'required|boolean',
+            'first_name' => 'required',
+            'last_name' => 'required',
+            'email' => 'required|email',
+            'tel' => 'required',
+            'promo' => 'nullable',
+            'is_free_session' => 'required',
+            'paid' => 'required',
+            'needs_payment' => 'required',
+        ]);
+
+        if ($request->create_customer == 1) {
+            $customer = $this->customerRepository->makeFromRequest($request);
+        } else {
+            $customer = $this->customerRepository->makeGuestFromRequest($request);
+        }
+
+        if ($customer == false || $customer == null) {
+            return response()->json(['status' => 'error'], 200);
+        }
+
+        if ($customer == 'customer_exists' || $customer == 'user_exists') {
+            return response()->json(['status' => $customer], 200);
+        }
+
+        $appointment = $this->appointmentRepository->makeFromRequest($request, $customer);
+
+        if ($appointment == false || $appointment == null) {
+            return response()->json(['status' => 'error'], 200);
+        }
+
+        if ($appointment == 'unavailable') {
+            return response()->json(['status' => 'booked_already'], 200);
+        }
+
+        if ($request->has('promo') && $request->get('promo') == 1) {
+            Newsletter::subscribeOrUpdate($customer->email, ['FNAME' => $customer->first_name, 'LNAME' => $customer->last_name]);
+        }
+
+
+
+
+        if (is_array($appointment->json) && (array_key_exists('subscription', $appointment->json) || array_key_exists('is_free_session', $appointment->json)) ) {
+            $this->appointmentRepository->updateStatus($appointment, 'confirmed', true);
+
+            return response()->json(['status' => 'success'], 200);
+        }
+
+        if ($request->get('needs_payment') == 1) {
+            $this->appointmentRepository->updateStatus($appointment, 'awaiting', true);
+        }
+
+        if ($request->get('paid') == 1) {
+            $this->appointmentRepository->updateStatus($appointment, 'payment', true);
+        }
+
+        return response()->json(['status' => 'success'], 200);
     }
 
 }

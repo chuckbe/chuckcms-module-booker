@@ -2,10 +2,12 @@
 
 namespace Chuckbe\ChuckcmsModuleBooker\Controllers;
 
+use PDF;
 use DateTime;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Chuckbe\ChuckcmsModuleBooker\Models\Appointment;
+use Chuckbe\ChuckcmsModuleBooker\Models\Subscription;
 use Chuckbe\ChuckcmsModuleBooker\Chuck\ServiceRepository;
 use Chuckbe\ChuckcmsModuleBooker\Chuck\LocationRepository;
 use Chuckbe\ChuckcmsModuleBooker\Chuck\AppointmentRepository;
@@ -58,4 +60,16 @@ class SubscriptionController extends Controller
         return view('chuckcms-module-booker::backend.appointments.detail', compact('appointments'));
     }
 
+    /**
+     * Return the subscription invoice.
+     *
+     * @param Subscription $subscription
+     * 
+     * @return Illuminate\View\View
+     */
+    public function invoice(Subscription $subscription)
+    {
+        $pdf = PDF::loadView('chuckcms-module-booker::pdf.subscription_invoice', compact('subscription'));
+        return $pdf->download($subscription->invoiceFileName);
+    }
 }

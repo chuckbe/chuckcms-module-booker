@@ -217,10 +217,10 @@ class AppointmentRepository
             $payment = $this->makePayment($appointment);
 
             if ($payment === false) {
-                $this->updateStatus($appointment, 'confirmed');
+                $this->updateStatus($appointment, 'confirmed', true);
             }
         } else {
-            $this->updateStatus($appointment, 'confirmed');
+            $this->updateStatus($appointment, 'confirmed', true);
         }
 
         return $appointment;
@@ -278,6 +278,11 @@ class AppointmentRepository
 
         config(['mollie.key' => ChuckSite::module('chuckcms-module-booker')->getSetting('integrations.mollie.key')]);
 
+        $webhookUrl = route('module.booker.mollie_webhook');
+        if (config('app.env') !== 'production') {
+            $webhookUrl = 'https://chuckcms.com';
+        }
+
         $mollie = Mollie::api()->payments()->create([
             'amount' => [
                 'currency' => 'EUR',
@@ -285,7 +290,7 @@ class AppointmentRepository
             ],
             'method' => 'bancontact',
             'description' => ChuckSite::getSite('name') . ' #' . $appointment->id,
-            'webhookUrl' => route('module.booker.mollie_webhook'),
+            'webhookUrl' => $webhookUrl,
             'redirectUrl' => route('module.booker.checkout.followup', ['appointment' => $appointment->id]),
             //'method' => $order->json['payment_method'],
             "metadata" => array(
@@ -612,7 +617,7 @@ class AppointmentRepository
         return ($int->days * 24 * 60) + ($int->h * 60) + $int->i;
     }
 
-    public function updateStatus(Appointment $appointment, $status)
+    public function updateStatus(Appointment $appointment, $status, $sendEmail = false)
     {
         $status_object = ChuckModuleBooker::getSetting('appointment.statuses.'.$status);
         $appointment->status = $status;
@@ -626,7 +631,7 @@ class AppointmentRepository
 
         $appointment->update();
 
-        if($status_object['send_email']) {
+        if($status_object['send_email'] && $sendEmail) {
             if($status_object['invoice'] && $appointment->has_invoice) {
                 $pdf = $this->generatePDF($appointment);
             } else {
@@ -768,6 +773,10 @@ class AppointmentRepository
                 // }
 
 
+
+                if (strpos($foundVariable, 'APPOINTMENT_PAYMENT_URL') !== false) {
+                    $value = str_replace('[%APPOINTMENT_PAYMENT_URL%]', route('module.booker.checkout.retry_payment', ['appointment' => $appointment->id]), $value);
+                }
 
                 if (strpos($foundVariable, 'APPOINTMENT_SERVICES') !== false) {
                     $value = str_replace('[%APPOINTMENT_SERVICES%]', $this->formatServices($appointment), $value);

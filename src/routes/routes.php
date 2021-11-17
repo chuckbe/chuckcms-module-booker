@@ -9,9 +9,15 @@ Route::group(['middleware' => ['web']], function() {
 	Route::group(['middleware' => 'auth'], function () {
         Route::get('/dashboard/booker/appointments', 'Chuckbe\ChuckcmsModuleBooker\Controllers\AppointmentController@index')->name('dashboard.module.booker.appointments.index');
         Route::get('/dashboard/booker/appointment/detail', 'Chuckbe\ChuckcmsModuleBooker\Controllers\AppointmentController@detail')->name('dashboard.module.booker.appointments.details');
+        Route::post('/dashboard/booker/appointment/create', 'Chuckbe\ChuckcmsModuleBooker\Controllers\AppointmentController@create')->name('dashboard.module.booker.appointments.create');
+        Route::post('/dashboard/booker/appointment/modal', 'Chuckbe\ChuckcmsModuleBooker\Controllers\AppointmentController@modal')->name('dashboard.module.booker.appointments.modal');
+
+        Route::get('/dashboard/booker/appointment/{appointment}/invoice', 'Chuckbe\ChuckcmsModuleBooker\Controllers\AppointmentController@invoice')->name('dashboard.module.booker.appointments.invoice');
+
 
         //START OF: SUBSCRIPTIONS ROUTES
         Route::get('/dashboard/booker/subscriptions', 'Chuckbe\ChuckcmsModuleBooker\Controllers\SubscriptionController@index')->name('dashboard.module.booker.subscriptions.index');
+        Route::get('/dashboard/booker/subscriptions/{subscription}/invoice', 'Chuckbe\ChuckcmsModuleBooker\Controllers\SubscriptionController@invoice')->name('dashboard.module.booker.subscriptions.invoice');
         //END OF:   SUBSCRIPTIONS ROUTES
         
         //START OF: SUBSCRIPTION PLANS ROUTES

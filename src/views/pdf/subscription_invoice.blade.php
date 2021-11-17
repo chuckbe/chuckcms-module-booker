@@ -260,11 +260,19 @@
         <div style="width:auto;height:auto;margin: 0 auto;">
           <div id="client">
             <div class="to">FACTUUR VOOR:</div>
-            <h2 class="name" style="color:#000;">{{ $subscription->customer->first_name .' '. $subscription->customer->last_name }}</h2>
+            <h2 class="name" style="color:#000;">{{ $subscription->hasCompany() ? $subscription->company_name : $subscription->customer->first_name .' '. $subscription->customer->last_name }}</h2>
+            @if(count($subscription->billing_address) > 0)
+            <div class="address">{{ $subscription->billing_address['street'] }} {{ $subscription->billing_address['housenumber'] }}</div>
+            <div class="address">{{ $subscription->billing_address['postalcode'] }} {{ $subscription->billing_address['city'] }}, {{ $subscription->billing_address['country'] }}</div>
+            @endif
+            @if($subscription->hasCompany())
+            <div class="address">BTW: {{ $subscription->json['company']['vat'] }}</div>
+            @endif
             @if(!is_null($subscription->customer->tel))
             <div class="clientphone">TEL: {{ $subscription->customer->tel }}</div>
             @endif
             <div class="email"><a href="mailto:{{ $subscription->customer->email }}">{{ $subscription->customer->email }}</a></div>
+
           </div>
           <div id="invoice">
             <h1 style="color:#000;">FACTUUR {{ ChuckModuleBooker::getSetting('invoice.prefix') . str_pad($subscription->json['invoice_number'], 4, '0', STR_PAD_LEFT) }}</h1>

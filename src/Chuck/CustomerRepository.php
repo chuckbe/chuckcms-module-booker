@@ -127,6 +127,7 @@ class CustomerRepository
         $json = [];
         $json['general_conditions'] = true;
         $json['medical_declaration'] = true;
+        $json['promo'] = ($request->has('promo') && $request->get('promo') == 1) ? true : false;
 
         $customer->json = $json;
         $customer->save();
@@ -182,6 +183,7 @@ class CustomerRepository
         $json = [];
         $json['general_conditions'] = true;
         $json['medical_declaration'] = true;
+        $json['promo'] = ($request->has('promo') && $request->get('promo') == 1) ? true : false;
 
         $customer->json = $json;
         $customer->save();
@@ -239,6 +241,42 @@ class CustomerRepository
     }
 
     /**
+     * Update a customer
+     *
+     * @var Request $request
+     **/
+    public function updateAddress(Request $request)
+    {
+        $user = Auth::user();
+        $customer = $user->customer;
+
+        $json = $this->mapAddress($request, $customer->json);
+        
+        $customer->json = $json;
+        $customer->update();
+
+        return $customer;
+    }
+
+    /**
+     * Update a customer
+     *
+     * @var Request $request
+     **/
+    public function updateCompany(Request $request)
+    {
+        $user = Auth::user();
+        $customer = $user->customer;
+
+        $json = $this->mapCompany($request, $customer->json);        
+
+        $customer->json = $json;
+        $customer->update();
+
+        return $customer;
+    }
+
+    /**
      * Delete the given customer.
      *
      * @param Customer $customer
@@ -268,5 +306,33 @@ class CustomerRepository
         } catch (\Exception $e) {
             //dd('test 2', $e);
         }
+    }
+
+    public function mapAddress(Request $request, $json)
+    {
+        $json['address']['billing']['street'] = $request->get('customer_street');
+        $json['address']['billing']['housenumber'] = $request->get('customer_housenumber');
+        $json['address']['billing']['postalcode'] = $request->get('customer_postalcode');
+        $json['address']['billing']['city'] = $request->get('customer_city');
+        $json['address']['billing']['country'] = $request->get('customer_country');
+
+        $json['address']['shipping_equal_to_billing'] = $request->get('customer_shipping_equal_to_billing') == '1';
+        if($request->get('customer_shipping_equal_to_billing') !== '1') {
+            $json['address']['shipping']['street'] = $request->get('customer_shipping_street');
+            $json['address']['shipping']['housenumber'] = $request->get('customer_shipping_housenumber');
+            $json['address']['shipping']['postalcode'] = $request->get('customer_shipping_postalcode');
+            $json['address']['shipping']['city'] = $request->get('customer_shipping_city');
+            $json['address']['shipping']['country'] = $request->get('customer_shipping_country');
+        }
+
+        return $json;
+    }
+
+    public function mapCompany(Request $request, $json)
+    {
+        $json['company']['name'] = $request->get('customer_company_name');
+        $json['company']['vat'] = $request->get('customer_company_vat');
+
+        return $json;
     }
 }

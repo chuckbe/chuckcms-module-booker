@@ -147,12 +147,12 @@ class BookerController extends Controller
 
         if ($mollie->isPaid()) {
             if (!ChuckModuleBooker::getSetting('appointment.statuses.'.$appointment->status.'.paid')) {
-                $this->appointmentRepository->updateStatus($appointment, 'payment');
+                $this->appointmentRepository->updateStatus($appointment, 'payment', true);
             }
         }
 
         if ($mollie->isCanceled() || $mollie->isFailed()) {
-            $this->appointmentRepository->updateStatus($appointment, 'error');    
+            $this->appointmentRepository->updateStatus($appointment, 'error', true);    
         }
 
         return redirect()->to(config('chuckcms-module-booker.followup.appointment'))->with('appointment', $appointment);
@@ -169,7 +169,7 @@ class BookerController extends Controller
 
         if ($mollie->isPaid()) {
             if (!ChuckModuleBooker::getSetting('appointment.statuses.'.$appointment->status.'.paid')) {
-                $this->appointmentRepository->updateStatus($appointment, 'payment');
+                $this->appointmentRepository->updateStatus($appointment, 'payment', true);
             }
 
             return redirect()->to(config('chuckcms-module-booker.followup.appointment'))->with('appointment', $appointment);
@@ -177,7 +177,7 @@ class BookerController extends Controller
             $payment = $this->appointmentRepository->makePayment($appointment);
 
             if ($payment === false) {
-                $this->appointmentRepository->updateStatus($appointment, 'confirmed');
+                $this->appointmentRepository->updateStatus($appointment, 'confirmed', true);
                 return redirect()->to(config('chuckcms-module-booker.followup.appointment'))->with('appointment', $appointment);
             }
         }
@@ -276,7 +276,7 @@ class BookerController extends Controller
 
         if ($mollie->isCanceled()) {
             if ($resourceType == 'appointment') {
-                $this->appointmentRepository->updateStatus($appointment, 'error');
+                $this->appointmentRepository->updateStatus($appointment, 'error', true);
             }
             
             if ($resourceType == 'subscription' && $mollie->sequenceType == 'first') {
@@ -288,7 +288,7 @@ class BookerController extends Controller
 
         if ($mollie->isExpired()) {
             if ($resourceType == 'appointment') {
-                $this->appointmentRepository->updateStatus($appointment, 'error');
+                $this->appointmentRepository->updateStatus($appointment, 'error', true);
             }
             
             if ($resourceType == 'subscription' && $mollie->sequenceType == 'first') {
@@ -301,7 +301,7 @@ class BookerController extends Controller
         if ($mollie->isPaid()) { 
             if ($resourceType == 'appointment') { 
                 if (!ChuckModuleBooker::getSetting('appointment.statuses.'.$appointment->status.'.paid')) {
-                    $this->appointmentRepository->updateStatus($appointment, 'payment');
+                    $this->appointmentRepository->updateStatus($appointment, 'payment', true);
                 }
             }
 
@@ -320,7 +320,7 @@ class BookerController extends Controller
 
         if ($mollie->isFailed()) {
             if ($resourceType == 'appointment') {
-                $this->appointmentRepository->updateStatus($appointment, 'error');
+                $this->appointmentRepository->updateStatus($appointment, 'error', true);
             }
 
             if ($resourceType == 'subscription' && $mollie->sequenceType == 'first') {

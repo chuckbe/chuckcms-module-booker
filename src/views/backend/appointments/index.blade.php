@@ -33,6 +33,8 @@
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.9.0/locales-all.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        var session_token = "{{ Session::token() }}";
+        var get_appointment_modal_url = "{{ route('dashboard.module.booker.appointments.modal') }}";
         var calendarEl = document.getElementById('calendar');
         var calendar = new FullCalendar.Calendar(calendarEl, {
             initialView: 'timeGridDay',
@@ -65,23 +67,7 @@
                 //textColor: 'black' // a non-ajax option
             },
             eventClick: function(info) {
-                console.log('clickk :: ', info.event);
-                
-                let options = { year: 'numeric', month: 'long', day: 'numeric' };
-                let date = new Date(info.event.start);
-                date = date.toLocaleDateString('nl-BE', options);
-
-                time = info.event.extendedProps.time;
-                duration = info.event.extendedProps.duration+" minuten";
-                price = (Math.round((Number(info.event.extendedProps.price) + Number.EPSILON) * 100) / 100) + " EUR";
-
-                $('#appointmentDetailsModal .cmb_confirmation_date_text').text(date);
-                $('#appointmentDetailsModal .cmb_confirmation_time_text').text(time);
-                $('#appointmentDetailsModal .cmb_confirmation_duration_text').text(duration);
-                $('#appointmentDetailsModal .cmb_confirmation_price_text').text(price);
-
-
-                $('#appointmentDetailsModal').modal('show');
+                openSingleAppointmentModal(info);
             },
             eventDataTransform: function( eventData ) {
                 //console.log('checkks', eventData);
@@ -97,7 +83,7 @@
                         duration: eventData.duration,
                         status: eventData.status,
                         weight: eventData.weight,
-                        price: eventData.price,
+                        price: eventData.price
                     },
                     backgroundColor: getBackgroundColorForStatus(eventData.status)
                 }
@@ -129,6 +115,28 @@
             if (status == "payment") {
                 return "green";
             }
+        }
+
+        function openSingleAppointmentModal(info) {
+            $('#appointmentDetailsModal').find('.modal-footer').remove();
+            $('#appointmentDetailsModal').find('.modal-body').html("<h5><i class=\"fas fa-spinner fa-pulse\"></i> Data ophalen...</h5>");
+
+            $('#appointmentDetailsModal').modal('show');
+
+            return $.ajax({
+                method: 'POST',
+                url: get_appointment_modal_url,
+                data: { 
+                    id: info.event.id,
+                    _token: session_token
+                }
+            }).done(function (data) {
+                let html = data.html;
+                $('#appointmentDetailsModal').find('.modal-body').remove();
+                $('#appointmentDetailsModal').find('.modal-footer').remove();
+
+                $(html).appendTo('#appointmentDetailsModal .modal-content');
+            });
         }
     });
 </script>

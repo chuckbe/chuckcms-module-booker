@@ -8,38 +8,23 @@
 $(document).ready(function (event) {
     var session_token = "{{Session::token()}}";
     var get_available_dates_url = "{{route('module.booker.get_available_dates')}}";
-    var make_appointment_url = "{{route('module.booker.book')}}";
-    var make_login_url = "{{route('login.post')}}";
-    var auth_check = ("{{ Auth::check() }}" == 1) ? true : false;
+    var make_appointment_url = "{{route('dashboard.module.booker.appointments.create')}}";
+    var auth_check = false;
+    var auth_available_weight = 0;
+    var auth_has_free_session = false;
+    var auth_available_weight_not_on_days = [];
 
     $('select').select2({
         theme: 'bootstrap4',
         minimumResultsForSearch: 3
     });
-
-@if(Auth::check() && Auth::user()->hasRole('customer'))
-@php
-$customer = \Chuckbe\ChuckcmsModuleBooker\Models\Customer::where('user_id', Auth::user()->id)->first();
-@endphp
-    var auth_available_weight = parseInt("{{ $customer->getAvailableWeight() }}");
-    var auth_available_weight_not_on_days = ("{{ $customer->getDatesWhenAvailableWeightNotAvailable() }}").split(',');
-@else
-    var auth_available_weight = 0;
-@endif
     
     var datePickerSlider = new Splide( '#splide', {
         perPage: 7,
         perMove: 6,
-        // padding: {
-        //     right: '1.5rem',
-        //     left : '1.5rem',
-        // },
         rewind : false,
         pagination: false,
-        //isNavigation: true,
         focus: 'center',
-        // height: '6rem',
-        // autoWidth: true,
     }).mount();
 
     datePickerSlider.on( 'scroll', function () {
@@ -52,9 +37,9 @@ $customer = \Chuckbe\ChuckcmsModuleBooker\Models\Customer::where('user_id', Auth
         utilsScript: "{{ asset('module-booker/scripts/intlTelInput-utils.js') }}"
     });
 
-    Mailcheck.defaultDomains.push('chuck.be', 'live.com', 'live.be', 'outlook.com', 'outlook.be', 'msn.be', 'hotmail.be', 'hotmail.com', 'gmail.com', 'aol.com') // extend existing domains
-    Mailcheck.defaultSecondLevelDomains.push('msn', 'live', 'gmail', 'outlook', 'hotmail', 'yahoo', 'aol', 'gmx') // extend existing SLDs
-    Mailcheck.defaultTopLevelDomains.push("be", "nl", "fr", "co.uk", "de", "com", "net", "org") // extend existing TLDs
+    Mailcheck.defaultDomains.push('live.com','outlook.com','hotmail.be','hotmail.com', 'gmail.com');
+    Mailcheck.defaultSecondLevelDomains.push('msn', 'live', 'gmail', 'outlook', 'hotmail', 'yahoo');
+    Mailcheck.defaultTopLevelDomains.push("be", "nl", "fr", "co.uk", "de", "com", "net", "org");
 
     $('body').on('click', '#cmb_selectExistingCustomer', function (event) {
         event.preventDefault();
@@ -65,6 +50,89 @@ $customer = \Chuckbe\ChuckcmsModuleBooker\Models\Customer::where('user_id', Auth
             $('#cmb_selectExistingCustomerWrapper').addClass('d-none');
         }
     });
+
+    $('body').on('change', 'select[name="customers"]', function (event) {
+        let selected = $(this).find('option:selected:not(:disabled)');
+
+        if (selected == undefined || selected.val() == 0) {
+            $('#cmb_selectExistingCustomerWrapper').addClass('d-none');
+
+            removeCustomerSelect();
+            
+            return;
+        }
+
+        let customer = {
+            id: selected.data('customer-id'),
+            first_name: selected.data('first-name'),
+            last_name: selected.data('last-name'),
+            email: selected.data('email'),
+            tel: selected.data('tel'),
+            available_weight: selected.data('available-weight'),
+            available_weight_not_on_days: selected.data('available-weight-not-on-days'),
+            has_free_session: selected.data('has-free-session') == 1 ? true : false
+        };
+
+        handleCustomerSelect(customer);
+    });
+
+    function handleCustomerSelect(customer) {
+        $('.cmb_confirmation_error_msg').text('');
+
+        let preSelect = 'form.cmb_booker_app';
+        $(preSelect+' input[name="first_name"]').val(customer.first_name).prop('disabled', true);
+        $(preSelect+' input[name="last_name"]').val(customer.last_name).prop('disabled', true);
+        $(preSelect+' input[name="email"]').val(customer.email).prop('disabled', true);
+        $(preSelect+' input[name="tel"]').val(customer.tel).prop('disabled', false);
+
+        $(preSelect+' input[name="general_conditions"]').prop('checked', true).prop('disabled', true);
+        $(preSelect+' input[name="medical_declaration"]').prop('checked', true).prop('disabled', true);
+
+        $(preSelect+' input[name="customer_id"]').val(customer.id);
+
+        $(preSelect+' label[for="cmb_create_customer"]').addClass('d-none');
+        $(preSelect+' label[for="cmb_create_customer"]').find('input').prop('checked', false).prop('disabled', true);
+
+        $(preSelect+' .cmb_email_correction').addClass('d-none');
+        $(preSelect+' .cmb_email_suggestion').addClass('d-none');
+
+        auth_check = true;
+        auth_available_weight = parseInt(customer.available_weight);
+        auth_available_weight_not_on_days = customer.available_weight_not_on_days.split(',');
+        auth_has_free_session = customer.has_free_session;
+        
+        fillConfirmation();
+        
+        $('#cmb_selectExistingCustomerWrapper').addClass('d-none');
+    }
+
+    function removeCustomerSelect() {
+        $('.cmb_confirmation_error_msg').text('');
+
+        let preSelect = 'form.cmb_booker_app';
+        $(preSelect+' input[name="first_name"]').val('').prop('disabled', false);
+        $(preSelect+' input[name="last_name"]').val('').prop('disabled', false);
+        $(preSelect+' input[name="email"]').val('').prop('disabled', false);
+        $(preSelect+' input[name="tel"]').val('').prop('disabled', false);
+
+        $(preSelect+' input[name="general_conditions"]').prop('checked', false).prop('disabled', false);
+        $(preSelect+' input[name="medical_declaration"]').prop('checked', false).prop('disabled', false);
+
+        $(preSelect+' input[name="customer_id"]').val('');
+
+        $(preSelect+' label[for="cmb_create_customer"]').removeClass('d-none');
+        $(preSelect+' label[for="cmb_create_customer"]').find('input').prop('checked', false).prop('disabled', false);
+
+        $(preSelect+' .cmb_email_correction').addClass('d-none');
+        $(preSelect+' .cmb_email_suggestion').addClass('d-none');
+
+        auth_check = false;
+        auth_available_weight = 0;
+        auth_available_weight_not_on_days = [];
+        auth_has_free_session = false;
+
+        fillConfirmation();
+    }
 
     $('input[type="email"]').on('blur', function() {
         let emailInput = $(this);
@@ -100,7 +168,47 @@ $customer = \Chuckbe\ChuckcmsModuleBooker\Models\Customer::where('user_id', Auth
 
         $(this).parent().addClass('d-none');
         emailInput.trigger('blur');
-    })
+    });
+
+    $('body').on('change', '#cmb_is_free_session', function (event) {
+        event.preventDefault();
+
+        if ($(this).is(':checked')) {
+            $('input[name="paid"]').prop('checked', false).prop('disabled', true);
+            $('input[name="needs_payment"]').prop('checked', false).prop('disabled', true);
+            auth_has_free_session = true;
+        } else {
+            $('input[name="paid"]').prop('checked', false).prop('disabled', false);
+            $('input[name="needs_payment"]').prop('checked', false).prop('disabled', false);
+            auth_has_free_session = false;
+        }
+
+        fillConfirmation();
+    });
+
+    $('body').on('change', '#cmb_paid', function (event) {
+        event.preventDefault();
+
+        if ($(this).is(':checked')) {
+            $('input[name="is_free_session"]').prop('checked', false).prop('disabled', true);
+            $('input[name="needs_payment"]').prop('checked', false).prop('disabled', true);
+        } else {
+            $('input[name="is_free_session"]').prop('checked', false).prop('disabled', false);
+            $('input[name="needs_payment"]').prop('checked', false).prop('disabled', false);
+        }
+    });
+
+    $('body').on('change', '#cmb_needs_payment', function (event) {
+        event.preventDefault();
+
+        if ($(this).is(':checked')) {
+            $('input[name="paid"]').prop('checked', false).prop('disabled', true);
+            $('input[name="is_free_session"]').prop('checked', false).prop('disabled', true);
+        } else {
+            $('input[name="paid"]').prop('checked', false).prop('disabled', false);
+            $('input[name="is_free_session"]').prop('checked', false).prop('disabled', false);
+        }
+    });
 
 
     $('body').on('change', 'form.cmb_booker_app input[name="cmb_services"]', function (event) {
@@ -160,25 +268,6 @@ $customer = \Chuckbe\ChuckcmsModuleBooker\Models\Customer::where('user_id', Auth
         $('.cmb_datepicker_wrapper').removeClass('d-none');
     });
 
-    $('body').on('click', '.cmb_open_login_modal', function (event) {
-        event.preventDefault();
-
-        $('#cmb_login_modal').modal('show');
-    });
-
-    $('body').on('click', '#cmb_login_modal_confirm_btn', function (event) {
-        event.preventDefault();
-
-        $(this).prop('disabled', true);
-        $(this).text('Even geduld...');
-
-        if (validateLoginForm()) {
-            makeLogin().done(function (data) {
-                handleLoginResponse(data);
-            });
-        }
-    });
-
     $('body').on('click', '.cmb_show_general_conditions_btn', function (event) {
         event.preventDefault();
 
@@ -225,7 +314,6 @@ $customer = \Chuckbe\ChuckcmsModuleBooker\Models\Customer::where('user_id', Auth
     function showDatepicker() {
         showLoadingMessage();
 
-        //Get available dates for service/location(s)
         getAvailableDates().done(function (response) {
             if (response.status == "success") {
                 hideLoadingMessage();
@@ -438,10 +526,27 @@ $customer = \Chuckbe\ChuckcmsModuleBooker\Models\Customer::where('user_id', Auth
 
         $('.cmb_confirmation_duration_text').text(getSelectedServicesDuration()+' minuten');
         
-        if ( isSubscriptionValidForSelection() ) {
+        if (auth_has_free_session) {
+            $('.cmb_confirmation_price_text').html('<span style="text-decoration: line-through;">'+getSelectedServicesPrice()+' EUR</span> (Gratis Sessie)');
+
+            $('input[name="paid"]').prop('checked', true).prop('disabled', true);
+            $('input[name="needs_payment"]').prop('checked', false).prop('disabled', true);
+            
+            if ($('input[name="is_free_session"]').is(':checked')) {
+                $('input[name="is_free_session"]').prop('checked', true).prop('disabled', false);
+            } else {
+                $('input[name="is_free_session"]').prop('checked', true).prop('disabled', true);
+            }
+        } else if (isSubscriptionValidForSelection()) {
             $('.cmb_confirmation_price_text').html('<span style="text-decoration: line-through;">'+getSelectedServicesPrice()+' EUR</span> (Actief Abonnement)');
+            $('input[name="paid"]').prop('checked', true).prop('disabled', true);
+            $('input[name="needs_payment"]').prop('checked', false).prop('disabled', true);
+            $('input[name="is_free_session"]').prop('checked', false).prop('disabled', true);
         } else {
             $('.cmb_confirmation_price_text').text(getSelectedServicesPrice()+' EUR');
+            $('input[name="paid"]').prop('checked', false).prop('disabled', false);
+            $('input[name="needs_payment"]').prop('checked', false).prop('disabled', false);
+            $('input[name="is_free_session"]').prop('checked', false).prop('disabled', false);
         }
     }
 
@@ -597,6 +702,13 @@ $customer = \Chuckbe\ChuckcmsModuleBooker\Models\Customer::where('user_id', Auth
             return false;
         }
 
+        if (!$('input[name="is_free_session"]').is(':checked') 
+            && !$('input[name="paid"]').is(':checked') 
+            && !$('input[name="needs_payment"]').is(':checked')) {
+            $('.cmb_confirmation_error_msg').text('Gelieve een betaalmethode aan te duiden.');
+            return false;
+        }
+
         return true;
     }
 
@@ -608,24 +720,22 @@ $customer = \Chuckbe\ChuckcmsModuleBooker\Models\Customer::where('user_id', Auth
         let duration = getSelectedServicesDuration();
         let customer = null;
         let create_customer = $('form.cmb_booker_app input[name="create_customer"]').is(':checked') ? 1 : 0;
-
-        if ($('form.cmb_booker_app input[name="promo"]').length) {
-            let promo_check = $('form.cmb_booker_app input[name="promo"]').is(':checked') ? 1 : 0;
-        } else {
-            let promo_check = 0;
-        }
-
+    
+        let promo_check = $('form.cmb_booker_app input[name="promo"]').is(':checked') ? 1 : 0;
+        
         if (auth_check) {
             customer = $('form.cmb_booker_app input[name="customer_id"]').val();
             create_customer = 0;
         }
 
-        //console.log('check for the customer :: ',customer, auth_check, "{{ Auth::check() }}");
-
         let first_name = $('form.cmb_booker_app input[name="first_name"]').val();
         let last_name = $('form.cmb_booker_app input[name="last_name"]').val();
         let email = $('form.cmb_booker_app input[name="email"]').val();
         let tel = $('form.cmb_booker_app input[name="tel"]').intlTelInput("getNumber");
+
+        let is_free_session = $('form.cmb_booker_app input[name="is_free_session"]').is(':checked') ? 1 : 0;
+        let paid = $('form.cmb_booker_app input[name="paid"]').is(':checked') ? 1 : 0;
+        let needs_payment = $('form.cmb_booker_app input[name="needs_payment"]').is(':checked') ? 1 : 0;
 
         return $.ajax({
             method: 'POST',
@@ -643,6 +753,9 @@ $customer = \Chuckbe\ChuckcmsModuleBooker\Models\Customer::where('user_id', Auth
                 email: email,
                 tel: tel,
                 promo: promo_check,
+                is_free_session: is_free_session,
+                paid: paid,
+                needs_payment: needs_payment,
                 _token: session_token
             }
         });
@@ -650,11 +763,11 @@ $customer = \Chuckbe\ChuckcmsModuleBooker\Models\Customer::where('user_id', Auth
 
     function handleResponseFromMakeAppointment(data) {
         if (data.status == 'success') {
-            window.location = data.redirect;
+            window.location = window.location;
         }
 
         if (data.status == 'user_exists' || data.status == 'customer_exists') {
-            $('.cmb_confirmation_error_msg').text('Er bestaat al een gebruiker met dit e-mailadres, gelieve aan te melden om een afspraak vast te leggen.');
+            $('.cmb_confirmation_error_msg').text('Er bestaat al een gebruiker met dit e-mailadres, gelieve deze te selecteren om een afspraak vast te leggen.');
 
             $('#cmb_confirmation_booker_btn').prop('disabled', false);
             $('#cmb_confirmation_booker_btn').text('Bevestigen');
@@ -676,98 +789,11 @@ $customer = \Chuckbe\ChuckcmsModuleBooker\Models\Customer::where('user_id', Auth
         }
     }
 
-    function validateLoginForm() {
-        $('form.cmb_login_form small.error-msg').text('');
-
-        let email = $('form.cmb_login_form input[name="email"]').val();
-        let pwd = $('form.cmb_login_form input[name="password"]').val();
-
-        if (!isValidEmail(email)) {
-            $('form.cmb_login_form small.error-msg.error-email').text('Het opgegeven e-mailadres is ongeldig...');
-            return false;
-        }
-
-        if (!isValidPwd(pwd)) {
-            $('form.cmb_login_form small.error-msg.error-password').text('Het opgegeven wachtwoord is ongeldig...');
-            return false;
-        }
-
-        return true;
-    }
-
-    function makeLogin() {
-        let email = $('form.cmb_login_form input[name="email"]').val();
-        let pwd = $('form.cmb_login_form input[name="password"]').val();
-
-        return $.ajax({
-            method: 'POST',
-            url: make_login_url,
-            data: { 
-                email: email,
-                password: pwd,
-                _token: session_token
-            }
-        });
-    }
-
-    async function handleLoginResponse(data) {
-        console.log('make login response data :: ', data);
-
-        if (data.auth == true) {
-            $('#cmb_login_modal_confirm_btn').text('U bent aangemeld...');
-
-            await sleep(2000);
-
-            $('form.cmb_login_form input[name="email"]').val('');
-            $('form.cmb_login_form input[name="password"]').val('');
-            $('form.cmb_login_form small.error-msg').text('');
-
-            $('.cmb_confirmation_error_msg').text('');
-
-            $('form.cmb_booker_app input[name="first_name"]').val(data.customer.first_name).prop('disabled', true);
-            $('form.cmb_booker_app input[name="last_name"]').val(data.customer.last_name).prop('disabled', true);
-            $('form.cmb_booker_app input[name="email"]').val(data.customer.email).prop('disabled', true);
-            $('form.cmb_booker_app input[name="tel"]').val(data.customer.tel).prop('disabled', false);
-
-            $('form.cmb_booker_app input[name="general_conditions"]').prop('checked', true).prop('disabled', true);
-            $('form.cmb_booker_app input[name="medical_declaration"]').prop('checked', true).prop('disabled', true);
-
-            $('form.cmb_booker_app input[name="customer_id"]').val(data.customer.id);
-
-            $('form.cmb_booker_app label[for="cmb_create_customer"]').remove();
-
-            $('form.cmb_booker_app .cmb_email_correction').addClass('d-none');
-            $('form.cmb_booker_app .cmb_email_suggestion').addClass('d-none');
-
-            $('form.cmb_booker_app .cmb_open_login_modal').hide();
-
-            $('#cmb_login_modal').modal('hide');
-
-            auth_check = true;
-            auth_available_weight = parseInt(data.available_weight);
-            auth_available_weight_not_on_days = data.available_weight_not_on_days.split(',');
-            fillConfirmation();
-            session_token = data.token
-        }
-
-        if (data.auth == false) {
-            
-        }
-    }
-
     function isValidEmail(email) {
         if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
             return true;
         }
         
-        return false;
-    }
-
-    function isValidPwd(pwd) {
-        if (pwd.length > 5) {
-            return true;
-        }
-
         return false;
     }
 

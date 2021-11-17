@@ -87,6 +87,11 @@ class Appointment extends Eloquent
         return ChuckModuleBooker::getSetting('appointment.statuses.'.$this->status.'.short.'.app()->getLocale());
     }
 
+    public function getIsFreeSessionAttribute()
+    {
+        return array_key_exists('is_free_session', $this->json);
+    }
+
     public function getIsPaidAttribute()
     {
         return ChuckModuleBooker::getSetting('appointment.statuses.'.$this->status.'.paid');
@@ -95,5 +100,15 @@ class Appointment extends Eloquent
     public function getIsDepositPaidAttribute()
     {
         return ChuckModuleBooker::getSetting('appointment.statuses.'.$this->status.'.deposit_paid');
+    }
+
+    public function getBillingAddressAttribute() 
+    {
+        return array_key_exists('address', $this->json) ? $this->json['address']['billing'] : array();
+    }
+
+    public function getShippingAddressAttribute() 
+    {
+        return array_key_exists('address', $this->json) ? $this->json['address']['shipping'] : array();
     }
 }

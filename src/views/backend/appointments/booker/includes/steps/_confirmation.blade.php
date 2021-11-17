@@ -1,10 +1,9 @@
 <div class="cmb_confirmation_wrapper d-none">
 	<div class="form-group mb-2">
-		<small class="d-inline-block"><a href="#" class="cmb_back_to_datepicker_btn text-dark"><i class="fa fa-arrow-left"></i> Terug</a></small>
-		@guest
-		<small class="float-right float-end text-muted"><a href="#" class="cmb_open_login_modal text-muted">Klik om aan te melden</a></small>
-		@endguest
-		<span class="d-block lead text-black font-weight-bold fw-bold">Klantgegevens <span class="float-right" style="margin-top: -3px;"><small><div class="badge badge-secondary font-weight-normal" role="button" id="cmb_selectExistingCustomer">Klant selecteren</div></small></span></span>
+		<span class="d-block lead text-black font-weight-bold fw-bold">
+			<small class="d-inline-block font-size-small"><a href="#" class="cmb_back_to_datepicker_btn text-dark"><small><i class="fa fa-arrow-left"></i> Terug</small></a></small>
+			Klantgegevens <span class="float-right" style="margin-top: -3px;"><small><div class="badge badge-secondary font-weight-normal" role="button" id="cmb_selectExistingCustomer">Klant selecteren</div></small></span>
+		</span>
 	</div>
 
 	<div class="row d-none" id="cmb_selectExistingCustomerWrapper">
@@ -12,7 +11,15 @@
 			<select name="customers" id="" class="select2 custom-select">
 				<option value="0" selected>-- Nieuwe klant --</option>
 				@foreach($customers as $customer)
-				<option value="{{ $customer->id }}">{{ $customer->first_name }} {{ $customer->last_name }} ({{ $customer->email }})</option>
+				<option value="{{ $customer->id }}" 
+					data-customer-id="{{ $customer->id }}"
+					data-first-name="{{ $customer->first_name }}"
+					data-last-name="{{ $customer->last_name }}"
+					data-email="{{ $customer->email }}"
+					data-tel="{{ $customer->tel }}"
+					data-available-weight="{{ $customer->getAvailableWeight()}}"
+					data-available-weight-not-on-days="{{ $customer->getDatesWhenAvailableWeightNotAvailable()}}" 
+					data-has-free-session="{{ $customer->has_free_session }}">{{ $customer->first_name }} {{ $customer->last_name }} ({{ $customer->email }})</option>
 				@endforeach
 			</select>
 		</div>
@@ -43,7 +50,7 @@
 		</div>
 	</div>
 	<div class="row">
-		<div class="form-group col-12">
+		<div class="form-group col-12 mb-1">
 			<label class="mt-0 mb-0" for="cmb_general_conditions">
 				<small>
 					<input type="checkbox" class="mr-2 me-2" name="general_conditions" id="cmb_general_conditions"> Klant gaat akkoord met de <a href="" class="cmb_show_general_conditions_btn text-dark"><u>algemene voorwaarden</u></a>.
@@ -58,73 +65,20 @@
 			<div class="w-100 d-block"></div>
 			<label class="mt-0 mb-0" for="cmb_promo_check">
 				<small>
-					<input type="checkbox" class="mr-2 me-2" name="promo" id="cmb_promo_check"> Ja, CCA mag de klant per email op de hoogte houden van de toekomstige acties of promoties.
+					<input type="checkbox" class="mr-2 me-2" name="promo" id="cmb_promo_check"> De klant op de hoogte houden van de toekomstige acties of promoties.
 				</small>
 			</label>
 			<div class="w-100 d-block"></div>
 			<label class="mt-0 mb-0" for="cmb_create_customer">
 				<small>
-					<input type="checkbox" class="mr-2 me-2" name="create_customer" id="cmb_create_customer"> Ik wil een account aanmaken
+					<input type="checkbox" class="mr-2 me-2" name="create_customer" id="cmb_create_customer"> Klant wil een account aanmaken
 				</small>
 			</label>
 		</div>
 	</div>
-	
-	
-	@auth
-	@role('customer')
-	@php
-	$customer = \Chuckbe\ChuckcmsModuleBooker\Models\Customer::where('user_id', Auth::user()->id)->first();
-	@endphp
-	<div class="row">
-		<div class="form-group mb-2 col-6">
-			<label for="" class="sr-only">Voornaam</label>
-			<input type="text" class="form-control form-control-sm" name="first_name" placeholder="Voornaam *" value="{{ $customer->first_name }}" disabled required>
-		</div>
-		<div class="form-group mb-2 col-6">
-			<label for="" class="sr-only">Achternaam</label>
-			<input type="text" class="form-control form-control-sm" name="last_name" placeholder="Achternaam *" value="{{ $customer->last_name }}" disabled required>
-		</div>
-	</div>
-	<div class="row">
-		<div class="form-group mb-2 col-12">
-			<label for="" class="sr-only">E-mailadres</label>
-			<input type="email" class="form-control form-control-sm" name="email" placeholder="E-mailadres *" value="{{ $customer->email }}" disabled required>
-		</div>
-	</div>
-	<div class="row">
-		<div class="form-group mb-2 col-12">
-			<label for="" class="sr-only">Telefoonnummer</label>
-			<input type="tel" class="form-control form-control-sm" name="tel" placeholder="Telefoonnummer *" value="{{ $customer->tel }}" required>
-		</div>
-	</div>
-	<div class="row">
-		<div class="form-group col-12">
-			<label class="mb-0" for="cmb_general_conditions">
-				<small>
-					<input type="checkbox" class="mr-2 me-2" name="general_conditions" id="cmb_general_conditions" checked disabled> Ik ga akkoord met de algemene voorwaarden
-				</small>
-			</label>
-			<div class="w-100 d-block"></div>
-			<label class="mb-0" for="cmb_medical_declaration">
-				<small>
-					<input type="checkbox" class="mr-2 me-2" name="medical_declaration" id="cmb_medical_declaration" checked disabled> Ik ga akkoord met de medische verklaring
-				</small>
-			</label>
-			<div class="w-100 d-block"></div>
-			<label class="mb-0" for="cmb_promo_check">
-				<small>
-					<input type="checkbox" class="mr-2 me-2" name="promo" id="cmb_promo_check"> Ja, CCA mag mij per email op de hoogte houden van de toekomstige acties of promoties.
-				</small>
-			</label>
-		</div>
-	</div>
-	@endrole
-	@endauth
 
 
-
-	<div class="form-group mb-2">
+	<div class="form-group mb-1">
 		<span class="d-block lead text-black font-weight-bold fw-bold">Overzicht</span>
 	</div>
 	<div class="cmb_confirmation_overview_section py-2 px-3 border rounded row no-gutters g-0 mb-2">
@@ -147,6 +101,32 @@
 			</div>
 		</div>
 	</div>
+
+	<div class="form-group mb-1">
+		<span class="d-block lead text-black font-weight-bold fw-bold">Betaling</span>
+	</div>
+	<div class="row cmb_confirmation_payment_section">
+		<div class="form-group col-12 mb-0">
+			<label class="mt-0 mb-0" for="cmb_is_free_session">
+				<small>
+					<input type="checkbox" class="mr-2 me-2" name="is_free_session" id="cmb_is_free_session"> Gratis sessie?
+				</small>
+			</label>
+			<div class="w-100 d-block"></div>
+			<label class="mt-0 mb-0" for="cmb_paid">
+				<small>
+					<input type="checkbox" class="mr-2 me-2" name="paid" id="cmb_paid"> Afspraak is betaald.
+				</small>
+			</label>
+			<div class="w-100 d-block"></div>
+			<label class="mt-0 mb-0" for="cmb_needs_payment">
+				<small>
+					<input type="checkbox" class="mr-2 me-2" name="needs_payment" id="cmb_needs_payment"> Verstuur betalingsuitnodiging.
+				</small>
+			</label>
+		</div>
+	</div>
+
 	<div class="form-group">
 		<p class="font-size-small text-danger font-weight-bold fw-bold cmb_confirmation_error_msg"></p>
 	</div>

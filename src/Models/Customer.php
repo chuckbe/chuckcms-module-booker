@@ -67,6 +67,11 @@ class Customer extends Eloquent
         return array_key_exists('mollie_id', $this->json);
     }
 
+    public function getHasFreeSessionAttribute()
+    {
+        return $this->appointments()->where('json->is_free_session', true)->where('is_canceled', 0)->where('status', 'confirmed')->count() == 0;
+    }
+
     public function getAvailableWeight()
     {
         $subs = $this->subscriptions()->where('is_active', 1)->whereDate('expires_at', '>', now())->get();
@@ -133,5 +138,15 @@ class Customer extends Eloquent
         return '';
 
         //get available weight when multiple subs available
+    }
+
+    public function getBillingAddressAttribute() 
+    {
+        return array_key_exists('address', $this->json) ? $this->json['address']['billing'] : array();
+    }
+
+    public function getShippingAddressAttribute() 
+    {
+        return array_key_exists('address', $this->json) ? $this->json['address']['shipping'] : array();
     }
 }
