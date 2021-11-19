@@ -93,6 +93,16 @@ class AppointmentRepository
     {
         $weight = $this->serviceRepository->getWeightForIds($request->services);
 
+        $json = [];
+        
+        if (array_key_exists('address', $customer->json)) {
+            $json['address'] = $customer->json['address'];
+        }
+
+        if (array_key_exists('company', $customer->json)) {
+            $json['company'] = $customer->json['company'];
+        }
+
         $appointment = $this->appointment->create([
             'location_id' => $request->location,
             'customer_id' => is_null($customer) ? $request->customer : $customer->id,
@@ -106,7 +116,7 @@ class AppointmentRepository
             'status' => 'awaiting',
             'is_canceled' => false,
             'price' => 0,
-            'json' => array()
+            'json' => $json
         ]);
 
         $appointment->services()->attach($request->services);
@@ -627,6 +637,10 @@ class AppointmentRepository
             $json['invoice_number'] = $this->generateInvoiceNumber();
             $appointment->json = $json;
             $appointment->has_invoice = true;
+        }
+
+        if ($status == 'canceled') {
+            $appointment->is_canceled = true;
         }
 
         $appointment->update();

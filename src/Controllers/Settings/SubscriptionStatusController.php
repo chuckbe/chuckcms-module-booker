@@ -147,7 +147,7 @@ class SubscriptionStatusController extends Controller
         $booker->json = $json;
         $booker->update();
 
-        return redirect()->route('dashboard.module.booker.settings.index.statuses.subscriptions.edit', ['status' => $statusKey])->with('notification', 'Instellingen opgeslagen!');
+        return redirect()->route('dashboard.module.booker.settings.index.subscriptions.statuses.edit', ['status' => $statusKey])->with('notification', 'Instellingen opgeslagen!');
     }
 
     public function emailDelete(Request $request)

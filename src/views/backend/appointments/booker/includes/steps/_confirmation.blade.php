@@ -94,7 +94,7 @@
 				    <span class="col-md-12 cmb_confirmation_overview_services_name_text font-weight-bold fw-bold">Cryosessie <small>(30 min)</small></span>
 				  </label>
 				</div>
-				<span class="col-sm-1 cmb_confirmation_overview_services_dd_btn text-right text-end collapsed" type="button" data-toggle="collapse" data-target="#service_description0" aria-expanded="false" aria-controls="service_description0"><i class="fa fa-chevron-down"></i></span>
+				<span class="col-sm-1 cmb_confirmation_overview_services_dd_btn text-right text-end collapsed" data-toggle="collapse" data-target="#service_description0" aria-expanded="false" aria-controls="service_description0"><i class="fa fa-chevron-down"></i></span>
 			    <div class="collapse col-md-12 cmb_confirmation_overview_services_dd_text" id="service_description0">
 			    	<p class="mb-0 pb-2 pt-2 description">Mollit tempor veniam ut fugiat amet deserunt do sunt labore sed tempor anim esse incididunt.</p>
 				</div>

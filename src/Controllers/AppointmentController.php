@@ -150,11 +150,10 @@ class AppointmentController extends Controller
             Newsletter::subscribeOrUpdate($customer->email, ['FNAME' => $customer->first_name, 'LNAME' => $customer->last_name]);
         }
 
-
-
-
         if (is_array($appointment->json) && (array_key_exists('subscription', $appointment->json) || array_key_exists('is_free_session', $appointment->json)) ) {
-            $this->appointmentRepository->updateStatus($appointment, 'confirmed', true);
+            if ($appointment->status !== 'confirmed') {
+                $this->appointmentRepository->updateStatus($appointment, 'confirmed', true);
+            }
 
             return response()->json(['status' => 'success'], 200);
         }
@@ -168,6 +167,22 @@ class AppointmentController extends Controller
         }
 
         return response()->json(['status' => 'success'], 200);
+    }
+
+    /**
+     * Cancel the appointment.
+     *
+     * @param Request $request
+     *
+     * @return Illuminate\Response\Json
+     */
+    public function cancel(Request $request)
+    {
+        $appointment = $this->appointmentRepository->find($request->id);
+
+        $this->appointmentRepository->updateStatus($appointment, 'canceled', true);
+
+        return response()->json(['status' => 'success']);
     }
 
     /**

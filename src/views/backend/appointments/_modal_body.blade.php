@@ -54,7 +54,7 @@
 	<div class="row">
 		<div class="col-sm-12">
 			@if($appointment->status !== 'canceled' && $appointment->status !== 'error')
-			<button class="btn btn-sm btn-danger" id="editAppointmentModalCancelAppBtn">Annuleer afspraak</button>
+			<button class="btn btn-sm btn-danger" id="editAppointmentModalCancelAppBtn" data-event-id="{{ $appointment->id }}">Annuleer afspraak</button>
 			@endif
 		</div>
 	</div>

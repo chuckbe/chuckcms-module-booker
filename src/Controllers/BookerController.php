@@ -185,6 +185,30 @@ class BookerController extends Controller
         return redirect()->to($payment->getCheckoutUrl());
     }
 
+    public function subscriptionPayment(Subscription $subscription)
+    {
+        $payment = $subscription->payments()->first();
+
+        if ($payment == null) {
+            $payment = $this->subscriptionRepository->makePayment($subscription, $subscription->customer);
+            return redirect()->to($payment->getCheckoutUrl());
+        }
+
+        $mollie = Mollie::api()->payments()->get($payment->external_id);
+
+        if ($mollie->isPaid()) {
+            if (!$subscription->is_paid) {
+                $this->subscriptionRepository->updateStatus($appointment, 'payment', true);
+            }
+
+            return redirect()->to(config('chuckcms-module-booker.followup.subscription'))->with('subscription', $subscription);
+        } else {
+            $payment = $this->subscriptionRepository->makePayment($subscription, $subscription->customer);
+        }
+
+        return redirect()->to($payment->getCheckoutUrl());
+    }
+
     public function makeSubscription(Request $request)
     {
         $this->validate($request, [

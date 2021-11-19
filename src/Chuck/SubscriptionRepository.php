@@ -5,6 +5,7 @@ namespace Chuckbe\ChuckcmsModuleBooker\Chuck;
 use Chuckbe\ChuckcmsModuleBooker\Requests\StoreSubscriptionRequest;
 use Chuckbe\ChuckcmsModuleBooker\Chuck\SubscriptionPlanRepository;
 use Chuckbe\ChuckcmsModuleBooker\Chuck\CustomerRepository;
+use Chuckbe\ChuckcmsModuleBooker\Models\SubscriptionPlan;
 use Chuckbe\ChuckcmsModuleBooker\Models\Subscription;
 use Chuckbe\ChuckcmsModuleBooker\Models\Customer;
 use Chuckbe\ChuckcmsModuleBooker\Models\Payment;
@@ -127,6 +128,40 @@ class SubscriptionRepository
         if ($subscription->price > 0) {
             $payment = $this->makePayment($subscription, $customer);
         } 
+
+        return $subscription;
+    }
+
+    /**
+     * Make a subscription based on the plan and customer
+     *
+     * @param SubscriptionPlan $plan
+     * @param Customer $customer
+     * 
+     * @return mixed
+     **/
+    public function makeFromPlanAndCustomer(SubscriptionPlan $plan, Customer $customer)
+    {
+        $json = [];
+        
+        if (array_key_exists('address', $customer->json)) {
+            $json['address'] = $customer->json['address'];
+        }
+
+        if (array_key_exists('company', $customer->json)) {
+            $json['company'] = $customer->json['company'];
+        }
+
+        $subscription = $this->subscription->create([
+            'subscription_plan_id' => $plan->id,
+            'customer_id' => $customer->id,
+            'type' => $plan->type,
+            'weight' => $plan->weight,
+            'price' => $plan->price,
+            'expires_at' => $this->getExpiresAt($plan->type, $plan),
+            'will_renew' => $plan->type !== 'one-off',
+            'json' => $json
+        ]);
 
         return $subscription;
     }
@@ -265,6 +300,16 @@ class SubscriptionRepository
     {
         $plan = $this->subscriptionPlanRepository->find($request->subscription_plan);
 
+        $json = [];
+        
+        if (array_key_exists('address', $customer->json)) {
+            $json['address'] = $customer->json['address'];
+        }
+
+        if (array_key_exists('company', $customer->json)) {
+            $json['company'] = $customer->json['company'];
+        }
+
         $subscription = $this->subscription->create([
             'subscription_plan_id' => $plan->id,
             'customer_id' => $customer->id,
@@ -273,7 +318,7 @@ class SubscriptionRepository
             'price' => $plan->price,
             'expires_at' => $this->getExpiresAt($plan->type, $plan),
             'will_renew' => $plan->type !== 'one-off',
-            'json' => array()
+            'json' => $json
         ]);
 
         return $subscription;
@@ -412,7 +457,7 @@ class SubscriptionRepository
     // }
 
 
-    public function updateStatus(Subscription $subscription, $status)
+    public function updateStatus(Subscription $subscription, $status, $email = true)
     {
         if ($status == 'paid') {
             $status = 'payment';
@@ -445,7 +490,7 @@ class SubscriptionRepository
 
         $subscription->update();
 
-        if($status_object['send_email']) {
+        if($status_object['send_email'] && $email) {
             if($status_object['invoice'] && $subscription->has_invoice) {
                 $pdf = $this->generatePDF($subscription);
             } else {
@@ -560,8 +605,10 @@ class SubscriptionRepository
                 // if (strpos($foundVariable, 'SUBSCRIPTION_BILLING_COUNTRY') !== false) {
                 //     $value = str_replace('[%SUBSCRIPTION_BILLING_COUNTRY%]', config('chuckcms-module-ecommerce.countries_data.'.$order->json['address']['billing']['country'].'.native'), $value);
                 // }
-
-
+                
+                if (strpos($foundVariable, 'SUBSCRIPTION_PAYMENT_URL') !== false) {
+                    $value = str_replace('[%SUBSCRIPTION_PAYMENT_URL%]', route('module.booker.checkout.subscription_payment', ['subscription' => $subscription->id]), $value);
+                }
 
                 if (strpos($foundVariable, 'SUBSCRIPTION_SUBSCRIPTION_PLAN') !== false) {
                     $value = str_replace('[%SUBSCRIPTION_SUBSCRIPTION_PLAN%]', $this->formatSubscription($subscription), $value);

@@ -23,7 +23,27 @@ $(function() {
 	    theme: 'bootstrap4',
 	    minimumResultsForSearch: Infinity
 	});
-	
+
+	$('body').on('change', '#cmb_paid', function (event) {
+        event.preventDefault();
+
+        if ($(this).is(':checked')) {
+            $('input[name="needs_payment"]').prop('checked', false).prop('disabled', true);
+        } else {
+            $('input[name="needs_payment"]').prop('checked', false).prop('disabled', false);
+        }
+    });
+
+    $('body').on('change', '#cmb_needs_payment', function (event) {
+        event.preventDefault();
+
+        if ($(this).is(':checked')) {
+            $('input[name="paid"]').prop('checked', false).prop('disabled', true);
+        } else {
+            $('input[name="paid"]').prop('checked', false).prop('disabled', false);
+        }
+    });
+
 	$('body').on('click', '.service_delete', function (event) {
 		event.preventDefault();
 

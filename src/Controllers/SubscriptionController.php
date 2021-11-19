@@ -81,7 +81,27 @@ class SubscriptionController extends Controller
      */
     public function store(StoreSubscriptionRequest $request)
     {
-        $this->locationRepository->createOrUpdate($request);
+        $customer = $this->customerRepository->find($request->customer);
+
+        if ($customer == false || $customer == null) {
+            return response()->json(['status' => 'error'], 200);
+        }
+
+        $plan = $this->subscriptionPlanRepository->find($request->subscription_plan);
+
+        $subscription = $this->subscriptionRepository->makeFromPlanAndCustomer($plan, $customer);
+
+        if ($subscription == false || $subscription == null) {
+            return response()->json(['status' => 'error'], 200);
+        }
+        
+        if ($request->get('needs_payment') == 1) {
+            $this->subscriptionRepository->updateStatus($subscription, 'awaiting', true);
+        }
+
+        if ($request->get('paid') == 1) {
+            $this->subscriptionRepository->updateStatus($subscription, 'payment', true);
+        }
 
         return redirect()->route('dashboard.module.booker.locations.index');
     }

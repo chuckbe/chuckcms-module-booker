@@ -23,7 +23,7 @@
               <div class="col-sm-12">
                 <div class="form-group form-group-default">
                   <label>Selecteer plan</label>
-                  <select name="subscription_plan_id" id="create_subscription_subscription_plan" class="custom-control">
+                  <select name="subscription_plan" id="create_subscription_subscription_plan" class="custom-control" required>
                     @foreach($subscription_plans as $plan)
                     <option value="{{ $plan->id }}">{{ $plan->name }} ({{ $plan->type }})</option>
                     @endforeach
@@ -35,18 +35,10 @@
             <div class="row" id="cmb_selectExistingCustomerWrapper">
               <div class="form-group mb-2 col-12">
                 <label for="">Selecteer klant</label>
-                <select name="customer_id" id="" class="select2 custom-select">
-                  <option value="0" selected>-- Nieuwe klant --</option>
+                <select name="customer" id="" class="select2 custom-select" required>
+                  <option value="0" selected disabled>-- Nieuwe klant --</option>
                   @foreach($customers as $customer)
-                  <option value="{{ $customer->id }}" 
-                    data-customer-id="{{ $customer->id }}"
-                    data-first-name="{{ $customer->first_name }}"
-                    data-last-name="{{ $customer->last_name }}"
-                    data-email="{{ $customer->email }}"
-                    data-tel="{{ $customer->tel }}"
-                    data-available-weight="{{ $customer->getAvailableWeight()}}"
-                    data-available-weight-not-on-days="{{ $customer->getDatesWhenAvailableWeightNotAvailable()}}" 
-                    data-has-free-session="{{ $customer->has_free_session }}">{{ $customer->first_name }} {{ $customer->last_name }} ({{ $customer->email }})</option>
+                  <option value="{{ $customer->id }}">{{ $customer->first_name }} {{ $customer->last_name }} ({{ $customer->email }})</option>
                   @endforeach
                 </select>
               </div>

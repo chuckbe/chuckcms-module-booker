@@ -9,6 +9,9 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.9.0/main.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" integrity="sha512-+4zCK9k+qNFUR5X+cKL9EIR+ZOhtIloNl9GIKS57V1MyNsYpYcUrUeQc9vNfzsWfV28IaLL3i96P9sdNyeRssA==" crossorigin="anonymous">
 @include('chuckcms-module-booker::backend.appointments.booker.css')
+<style>
+    .fc-toolbar-chunk { font-size: 0.8em;}
+</style>
 @endsection
 
 @section('content')
@@ -35,6 +38,7 @@
     document.addEventListener('DOMContentLoaded', function() {
         var session_token = "{{ Session::token() }}";
         var get_appointment_modal_url = "{{ route('dashboard.module.booker.appointments.modal') }}";
+        var cancel_appointment_url = "{{ route('dashboard.module.booker.appointments.cancel') }}";
         var calendarEl = document.getElementById('calendar');
         var calendar = new FullCalendar.Calendar(calendarEl, {
             initialView: 'timeGridDay',
@@ -42,7 +46,7 @@
             headerToolbar: {
               start: 'prev,next', 
               center: 'title',
-              end: 'dayGridMonth,timeGridWeek,timeGridDay'
+              end: 'timeGridWeek,timeGridDay'
             },
             slotDuration: '00:15:00',
             slotMinTime: '07:00:00',
@@ -101,7 +105,7 @@
             }
 
             if (status == "canceled") {
-                return "dark gray";
+                return "red";
             }
 
             if (status == "error") {
@@ -142,20 +146,28 @@
         $('body').on('click', '#editAppointmentModalCancelAppBtn', function (event) {
             event.preventDefault();
 
-            // return $.ajax({
-            //     method: 'POST',
-            //     url: get_appointment_modal_url,
-            //     data: { 
-            //         id: info.event.id,
-            //         _token: session_token
-            //     }
-            // }).done(function (data) {
-            //     let html = data.html;
-            //     $('#appointmentDetailsModal').find('.modal-body').remove();
-            //     $('#appointmentDetailsModal').find('.modal-footer').remove();
+            let event_id = $(this).data('event-id');
 
-            //     $(html).appendTo('#appointmentDetailsModal .modal-content');
-            // });
+            var r = confirm("Bent u zeker dat u de afspraak wilt annuleren? Indien dit een betalende afspraak is dient U de terugbetaling momenteel nog manueel uit te voeren.");
+            
+            if (r == true) {
+
+                $(this).html('<i class="fas fa-spinner fa-pulse"></i> Even geduld...');
+
+                return $.ajax({
+                    method: 'POST',
+                    url: cancel_appointment_url,
+                    data: { 
+                        id: event_id,
+                        _token: session_token
+                    }
+                }).done(function (data) {
+                    if (data.status == 'success') {
+                        $('#appointmentDetailsModal').modal('hide');
+                        calendar.refetchEvents();
+                    }
+                });
+            } 
         });
     });
 </script>

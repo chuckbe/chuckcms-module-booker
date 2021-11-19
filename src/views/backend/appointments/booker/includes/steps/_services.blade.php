@@ -13,7 +13,7 @@
 				    <span class="font-weight-bold fw-bold col-md-3 text-right text-end">{{ '€ '.number_format($service->price, 2, ',', '.') }}</span>
 				  </label>
 				</div>
-				<span class="col-md-1 text-right text-end collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#service_description{{ $service->id }}" aria-expanded="false" aria-controls="service_description{{ $service->id }}"><i class="fa fa-chevron-down"></i></span>
+				<span class="col-md-1 text-right text-end collapsed" data-bs-toggle="collapse" data-bs-target="#service_description{{ $service->id }}" aria-expanded="false" aria-controls="service_description{{ $service->id }}"><i class="fa fa-chevron-down"></i></span>
 			    <div class="collapse col-md-12" id="service_description{{ $service->id }}">
 			    	<p class="mb-0 pb-2 pt-2 description">Mollit tempor veniam ut fugiat amet deserunt do sunt labore sed tempor anim esse incididunt.</p>
 				</div>
