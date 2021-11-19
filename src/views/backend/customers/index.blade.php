@@ -91,6 +91,7 @@ $('input[type="tel"]').intlTelInput({
 						<th scope="col">Naam</th>
 						<th scope="col">Account?</th>
 						<th scope="col">Actief?</th>
+						<th scope="col">B2B?</th>
 						<th scope="col">Acties</th>
 					</thead>
 					<tbody>
@@ -109,6 +110,11 @@ $('input[type="tel"]').intlTelInput({
 								<td class="semi-bold">
 									<span class="badge badge-{{ !is_null($customer->user_id) && $customer->user->active ? 'success' : 'danger' }}">
 										{!! !is_null($customer->user_id) && $customer->user->active ? '✓' : '✕'!!}
+									</span>
+								</td>
+								<td class="semi-bold">
+									<span class="badge badge-{{ $customer->hasCompany() ? 'success' : 'danger' }}">
+										{!! $customer->hasCompany() ? '✓' : '✕'!!}
 									</span>
 								</td>
 								<td>

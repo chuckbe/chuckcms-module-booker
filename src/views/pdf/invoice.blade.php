@@ -260,7 +260,14 @@
         <div style="width:auto;height:auto;margin: 0 auto;">
           <div id="client">
             <div class="to">FACTUUR VOOR:</div>
-            <h2 class="name" style="color:#000;">{{ $appointment->customer->first_name .' '. $appointment->customer->last_name }}</h2>
+            <h2 class="name" style="color:#000;">{{ $appointment->hasCompany() ? $appointment->company_name : $appointment->customer->first_name .' '. $appointment->customer->last_name }}</h2>
+            @if(count($appointment->billing_address) > 0)
+            <div class="address">{{ $appointment->billing_address['street'] }} {{ $appointment->billing_address['housenumber'] }}</div>
+            <div class="address">{{ $appointment->billing_address['postalcode'] }} {{ $appointment->billing_address['city'] }}, {{ $appointment->billing_address['country'] }}</div>
+            @endif
+            @if($appointment->hasCompany())
+            <div class="address">BTW: {{ $appointment->json['company']['vat'] }}</div>
+            @endif
             @if(!is_null($appointment->customer->tel))
             <div class="clientphone">TEL: {{ $appointment->customer->tel }}</div>
             @endif
@@ -294,7 +301,7 @@
               <td class="no">{{ $loop->index + 1 }}</td>
               <td class="desc">
                 <h3 style="color:#000;">{{ $service->name }}</h3>
-                <span class="beschrijving">Lorem ipsum </span>
+                <span class="beschrijving">{{ $appointment->date->format('d/m/Y') }} om {{ $appointment->time }}</span>
               </td>
               <td class="qty">1</td>
               <td class="qty">21%</td>

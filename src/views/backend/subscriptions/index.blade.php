@@ -5,6 +5,8 @@ Subcriptions
 @endsection
 
 @section('css')
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ttskch/select2-bootstrap4-theme@x.x.x/dist/select2-bootstrap4.min.css">
 <style>
 .bg-white{
 	background: #fff;
@@ -13,9 +15,15 @@ Subcriptions
 @endsection
 
 @section('scripts')
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script src="https://cdn.chuck.be/assets/plugins/sweetalert2.all.js"></script>
 <script>
 $(function() {
+	$('select').select2({
+	    theme: 'bootstrap4',
+	    minimumResultsForSearch: Infinity
+	});
+	
 	$('body').on('click', '.service_delete', function (event) {
 		event.preventDefault();
 

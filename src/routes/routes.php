@@ -17,6 +17,7 @@ Route::group(['middleware' => ['web']], function() {
 
         //START OF: SUBSCRIPTIONS ROUTES
         Route::get('/dashboard/booker/subscriptions', 'Chuckbe\ChuckcmsModuleBooker\Controllers\SubscriptionController@index')->name('dashboard.module.booker.subscriptions.index');
+        Route::post('/dashboard/booker/subscription/save', 'Chuckbe\ChuckcmsModuleBooker\Controllers\SubscriptionController@store')->name('dashboard.module.booker.subscription.save');
         Route::get('/dashboard/booker/subscriptions/{subscription}/invoice', 'Chuckbe\ChuckcmsModuleBooker\Controllers\SubscriptionController@invoice')->name('dashboard.module.booker.subscriptions.invoice');
         //END OF:   SUBSCRIPTIONS ROUTES
         

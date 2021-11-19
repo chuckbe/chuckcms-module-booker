@@ -10,11 +10,15 @@ use Chuckbe\ChuckcmsModuleBooker\Models\Appointment;
 use Chuckbe\ChuckcmsModuleBooker\Models\Subscription;
 use Chuckbe\ChuckcmsModuleBooker\Chuck\ServiceRepository;
 use Chuckbe\ChuckcmsModuleBooker\Chuck\LocationRepository;
+use Chuckbe\ChuckcmsModuleBooker\Chuck\CustomerRepository;
 use Chuckbe\ChuckcmsModuleBooker\Chuck\AppointmentRepository;
 use Chuckbe\ChuckcmsModuleBooker\Chuck\SubscriptionRepository;
+use Chuckbe\ChuckcmsModuleBooker\Chuck\SubscriptionPlanRepository;
+use Chuckbe\ChuckcmsModuleBooker\Requests\StoreSubscriptionRequest;
 
 class SubscriptionController extends Controller
 {
+    private $subscriptionPlanRepository;
     private $subscriptionRepository;
     private $appointmentRepository;
     private $locationRepository;
@@ -26,13 +30,17 @@ class SubscriptionController extends Controller
      * @return void
      */
     public function __construct(
+        SubscriptionPlanRepository $subscriptionPlanRepository, 
         SubscriptionRepository $subscriptionRepository, 
         AppointmentRepository $appointmentRepository, 
+        CustomerRepository $customerRepository,
         LocationRepository $locationRepository,
         ServiceRepository $serviceRepository)
     {
+        $this->subscriptionPlanRepository = $subscriptionPlanRepository;
         $this->subscriptionRepository = $subscriptionRepository;
         $this->appointmentRepository = $appointmentRepository;
+        $this->customerRepository = $customerRepository;
         $this->locationRepository = $locationRepository;
         $this->serviceRepository = $serviceRepository;
     }
@@ -45,7 +53,11 @@ class SubscriptionController extends Controller
     public function index()
     {   
         $subscriptions = $this->subscriptionRepository->getWithoutPrevious();
-        return view('chuckcms-module-booker::backend.subscriptions.index', compact('subscriptions'));
+        $subscription_plans = $this->subscriptionPlanRepository->get();
+        
+        $customers = $this->customerRepository->get();
+
+        return view('chuckcms-module-booker::backend.subscriptions.index', compact('subscriptions', 'subscription_plans', 'customers'));
     }
 
     /**
@@ -58,6 +70,20 @@ class SubscriptionController extends Controller
     public function detail(Appointment $appointment)
     {
         return view('chuckcms-module-booker::backend.appointments.detail', compact('appointments'));
+    }
+
+    /**
+     * Save a new subscription from the request.
+     *
+     * @param StoreSubscriptionRequest $request
+     *
+     * @return Illuminate\Http\RedirectResponse
+     */
+    public function store(StoreSubscriptionRequest $request)
+    {
+        $this->locationRepository->createOrUpdate($request);
+
+        return redirect()->route('dashboard.module.booker.locations.index');
     }
 
     /**

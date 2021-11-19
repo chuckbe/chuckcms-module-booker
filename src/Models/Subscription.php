@@ -120,4 +120,14 @@ class Subscription extends Eloquent
     {
         return $this->weight == -1 ? '∞' : $this->weight;
     }
+
+    public function getCompanyNameAttribute() 
+    {
+        return $this->hasCompany() ? $this->json['company']['name'] : null;
+    }
+
+    public function getCompanyVatAttribute() 
+    {
+        return $this->hasCompany() ? $this->json['company']['vat'] : null;
+    }
 }

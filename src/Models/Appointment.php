@@ -72,9 +72,29 @@ class Appointment extends Eloquent
         return $this->belongsTo(Customer::class);
     }
 
+    /**
+    * Does the appointment has a company
+    *
+    * @return bool
+    */
+    public function hasCompany()
+    {
+        return array_key_exists('company', $this->json);
+    }
+
     public function getInvoiceFileNameAttribute()
     {
         return 'factuur_' . ChuckModuleBooker::getSetting('invoice.prefix') . str_pad($this->json['invoice_number'], 4, '0', STR_PAD_LEFT) . '.pdf';
+    }
+
+    public function getBillingAddressAttribute() 
+    {
+        return array_key_exists('address', $this->json) ? $this->json['address']['billing'] : array();
+    }
+
+    public function getShippingAddressAttribute() 
+    {
+        return array_key_exists('address', $this->json) ? $this->json['address']['shipping'] : array();
     }
 
     public function getStatusLabelAttribute()
@@ -100,15 +120,5 @@ class Appointment extends Eloquent
     public function getIsDepositPaidAttribute()
     {
         return ChuckModuleBooker::getSetting('appointment.statuses.'.$this->status.'.deposit_paid');
-    }
-
-    public function getBillingAddressAttribute() 
-    {
-        return array_key_exists('address', $this->json) ? $this->json['address']['billing'] : array();
-    }
-
-    public function getShippingAddressAttribute() 
-    {
-        return array_key_exists('address', $this->json) ? $this->json['address']['shipping'] : array();
     }
 }
