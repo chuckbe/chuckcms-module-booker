@@ -138,6 +138,25 @@
                 $(html).appendTo('#appointmentDetailsModal .modal-content');
             });
         }
+
+        $('body').on('click', '#editAppointmentModalCancelAppBtn', function (event) {
+            event.preventDefault();
+
+            // return $.ajax({
+            //     method: 'POST',
+            //     url: get_appointment_modal_url,
+            //     data: { 
+            //         id: info.event.id,
+            //         _token: session_token
+            //     }
+            // }).done(function (data) {
+            //     let html = data.html;
+            //     $('#appointmentDetailsModal').find('.modal-body').remove();
+            //     $('#appointmentDetailsModal').find('.modal-footer').remove();
+
+            //     $(html).appendTo('#appointmentDetailsModal .modal-content');
+            // });
+        });
     });
 </script>
 
