@@ -221,7 +221,11 @@ class BookerController extends Controller
             'tel' => 'required'
         ]);
 
-        $customer = $this->customerRepository->makeFromRequest($request);
+        if ($request->create_customer == 1) {
+            $customer = $this->customerRepository->makeFromRequest($request);
+        } else {
+            $customer = $this->customerRepository->makeGuestFromRequest($request);
+        }
 
         if ($customer == false || $customer == null) {
             return response()->json(['status' => 'error'], 200);
