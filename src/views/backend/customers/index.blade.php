@@ -58,6 +58,47 @@ $(function() {
 			})
 		});
 	});
+
+	$('body').on('click', '.customer_refresh', function (event) {
+		event.preventDefault();
+
+		let customerId = $(this).data('id');
+		let token = '{{ Session::token() }}';
+
+		swal({
+			title: 'Ben je zeker?',
+			text: "Dit zal het huidige wachtwoord van de gebruiken resetten en zal opnieuw de account bevestigingsemail verzenden.",
+			type: 'warning',
+			showCancelButton: true,
+			confirmButtonColor: '#3085d6',
+			cancelButtonColor: '#d33',
+			confirmButtonText: 'Ja, resetten en verzenden!'
+		}).then((result)=>{
+			$.ajax({
+				method: 'POST',
+				url: "{{ route('dashboard.module.booker.customers.reactivate') }}",
+				data: { 
+					customer_id: customerId, 
+					_token: token
+				}
+			}).done(function(data){
+				if(data.status == 'success'){
+					swal(
+						'Gelukt!',
+						'Het wachtwoord van de klant werd gereset en er werd een nieuwe bevestigingsemail verzonden.',
+						'success'
+					)
+				}else{
+					swal(
+						'Oops!',
+						'Er is iets misgegaan...',
+						'danger'
+					)
+				}
+			})
+		});
+	});
+
 });
 $('input[type="tel"]').intlTelInput({
 	initialCountry: "be",
@@ -121,9 +162,15 @@ $('input[type="tel"]').intlTelInput({
 									<a href="{{ route('dashboard.module.booker.customers.detail', ['customer' => $customer->id]) }}" class="btn btn-sm btn-outline-secondary rounded d-inline-block">
 						    			<i class="fa fa-search"></i> 
 						    		</a>
+						    		@if(!is_null($customer->user_id))
+									<a href="#" class="btn btn-secondary btn-sm btn-rounded m-r-20 customer_refresh" data-id="{{ $customer->id }}">
+						    			<i class="fa fa-refresh"></i> 
+						    		</a>
+						    		@endif
+						    		{{-- 
 									<a href="#" class="btn btn-danger btn-sm btn-rounded m-r-20 customer_delete" data-id="{{ $customer->id }}">
 						    			<i class="fa fa-trash"></i> 
-						    		</a>
+						    		</a> --}}
 								</td>
 							</tr>
 						@endforeach

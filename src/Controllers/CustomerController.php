@@ -197,4 +197,32 @@ class CustomerController extends Controller
         echo 'Something went wrong, please contact the webmaster.';
         return false;
     }
+
+    /**
+     * Reactivate the given customer.
+     *
+     * @param Illuminate\Http\Request $request
+     *
+     * @return Illuminate\Http\JsonResponse
+     */
+    public function reactivate(Request $request)
+    {
+        $this->validate(request(), [
+            'customer_id' => 'required',
+        ]);
+
+        $customer = $this->customerRepository->find($request->get('customer_id'));
+        $user = $customer->user;
+
+        $user->password = '';
+        $user->token = $this->userRepository->createToken();
+        $user->active = 0;
+
+        $user->save();
+        $user->refresh();
+
+        $this->customerRepository->sendActivationEmailForCustomer($customer, $user);
+        
+        return response()->json(['status' => 'success'], 200);    
+    }
 }
