@@ -137,10 +137,11 @@ class SubscriptionRepository
      *
      * @param SubscriptionPlan $plan
      * @param Customer $customer
+     * @param Request $request
      * 
      * @return mixed
      **/
-    public function makeFromPlanAndCustomer(SubscriptionPlan $plan, Customer $customer)
+    public function makeFromPlanAndCustomerAndRequest(SubscriptionPlan $plan, Customer $customer, Request $request)
     {
         $json = [];
         
@@ -156,8 +157,9 @@ class SubscriptionRepository
             'subscription_plan_id' => $plan->id,
             'customer_id' => $customer->id,
             'type' => $plan->type,
-            'weight' => $plan->weight,
-            'price' => $plan->price,
+            'weight' => $request->weight,
+            'price' => $request->price,
+            'usage' => $request->usage,
             'expires_at' => $this->getExpiresAt($plan->type, $plan),
             'will_renew' => $plan->type !== 'one-off',
             'json' => $json

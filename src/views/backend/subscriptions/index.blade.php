@@ -44,6 +44,20 @@ $(function() {
         }
     });
 
+    $('body').on('change', '#create_subscription_subscription_plan', function (event) {
+    	event.preventDefault();
+
+    	if ($(this).find('option:selected:not(:disabled)').length) {
+    		let option = $(this).find('option:selected:not(:disabled)').first();
+    		let price = option.data('price');
+    		let weight = option.data('weight');
+
+    		$('input[name="price"]').val(price);
+    		$('input[name="weight"]').val(weight);
+    		$('input[name="usage"]').val(0);
+    	}
+    });
+
 	$('body').on('click', '.service_delete', function (event) {
 		event.preventDefault();
 

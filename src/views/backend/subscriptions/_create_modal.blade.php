@@ -24,8 +24,9 @@
                 <div class="form-group form-group-default">
                   <label>Selecteer plan</label>
                   <select name="subscription_plan" id="create_subscription_subscription_plan" class="custom-control" required>
+                    <option disabled selected>Selecteer abonnement</option>
                     @foreach($subscription_plans as $plan)
-                    <option value="{{ $plan->id }}">{{ $plan->name }} ({{ $plan->type }})</option>
+                    <option value="{{ $plan->id }}" data-price="{{ $plan->price }}" data-weight="{{ $plan->weight }}" data-usage="{{ $plan->usage }}">{{ $plan->name }} ({{ $plan->type }})</option>
                     @endforeach
                   </select>
                 </div>
@@ -41,6 +42,28 @@
                   <option value="{{ $customer->id }}">{{ $customer->first_name }} {{ $customer->last_name }} ({{ $customer->email }})</option>
                   @endforeach
                 </select>
+              </div>
+            </div>
+          </div>
+
+            <div class="row">
+              <div class="form-group mb-2 col-12">
+                <label>Prijs *</label>
+                <input class="form-control" type="number" step="0.01" min="0" name="price" required>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="form-group mb-2 col-12">
+                <label>Gewicht *</label>
+                <input class="form-control" type="number" step="1" min="0" name="weight" required>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="form-group mb-2 col-12">
+                <label>Hoeveel x reeds gebruikt? *</label>
+                <input class="form-control" type="number" step="1" min="0" name="usage" value="0" required>
               </div>
             </div>
             
@@ -65,7 +88,6 @@
               </div>
             </div>
 
-          </div>
           <div class="row">
             <div class="col-md-12 m-t-10 sm-m-t-10">
               <input type="hidden" name="create">

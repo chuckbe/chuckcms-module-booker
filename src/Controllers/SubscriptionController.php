@@ -89,12 +89,12 @@ class SubscriptionController extends Controller
 
         $plan = $this->subscriptionPlanRepository->find($request->subscription_plan);
 
-        $subscription = $this->subscriptionRepository->makeFromPlanAndCustomer($plan, $customer);
+        $subscription = $this->subscriptionRepository->makeFromPlanAndCustomerAndRequest($plan, $customer, $request);
 
         if ($subscription == false || $subscription == null) {
             return response()->json(['status' => 'error'], 200);
         }
-        
+
         if ($request->get('needs_payment') == 1) {
             $this->subscriptionRepository->updateStatus($subscription, 'awaiting', true);
         }
@@ -103,7 +103,7 @@ class SubscriptionController extends Controller
             $this->subscriptionRepository->updateStatus($subscription, 'payment', true);
         }
 
-        return redirect()->route('dashboard.module.booker.locations.index');
+        return redirect()->route('dashboard.module.booker.subscriptions.index');
     }
 
     /**
