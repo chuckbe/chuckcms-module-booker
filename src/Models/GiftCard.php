@@ -6,7 +6,7 @@ use Eloquent;
 use ChuckModuleBooker;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Subscription extends Eloquent
+class GiftCard extends Eloquent
 {
     use SoftDeletes;
     
@@ -15,7 +15,7 @@ class Subscription extends Eloquent
      *
      * @var string
      */
-    protected $table = 'cmb_subscriptions';
+    protected $table = 'cmb_gift_cards';
 
     /**
      * The attributes that are mass assignable.
@@ -23,16 +23,13 @@ class Subscription extends Eloquent
      * @var array
      */
     protected $fillable = [
-        'is_expired', 'is_active', 'is_paid', 'is_previous_cycle', 'subscription_plan_id', 'customer_id', 'expires_at', 'usage', 'weight', 'type', 'price', 'has_invoice', 'will_renew', 'json'
+        'customer_id', 'code', 'is_claimed', 'is_paid', 'weight', 'price', 'has_invoice', 'json'
     ];
 
     protected $casts = [
-        'is_expired' => 'boolean',
-        'is_active' => 'boolean',
+        'is_claimed' => 'boolean',
         'is_paid' => 'boolean',
-        'is_previous_cycle' => 'boolean',
         'has_invoice' => 'boolean',
-        'expires_at' => 'datetime',
         'json' => 'array',
     ];
 
@@ -41,23 +38,13 @@ class Subscription extends Eloquent
     *
     * @var array
     */
-    public function subscriptionPlan()
+    public function subscription()
     {
-        return $this->belongsTo(SubscriptionPlan::class);
+        return $this->belongsTo(Subscription::class);
     }
 
     /**
-    * A subscription belongs to a subscription plan.
-    *
-    * @var array
-    */
-    public function subscription_plan()
-    {
-        return $this->belongsTo(SubscriptionPlan::class);
-    } 
-
-    /**
-    * A subscription belongs to a customer.
+    * A gift card can belong to a customer.
     *
     * @var array
     */
@@ -67,7 +54,7 @@ class Subscription extends Eloquent
     }
 
     /**
-    * A subscription may have many payments.
+    * A gift card may have many payments.
     *
     * @var array
     */
@@ -77,7 +64,7 @@ class Subscription extends Eloquent
     }
 
     /**
-    * Does the subscription has a company
+    * Does the gift card has a company
     *
     * @return bool
     */
@@ -87,7 +74,7 @@ class Subscription extends Eloquent
     }
 
     /**
-    * Does the subscription has a company
+    * Does the gift card has a credit note
     *
     * @return bool
     */

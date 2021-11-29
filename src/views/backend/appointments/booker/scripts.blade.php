@@ -9,6 +9,7 @@ $(document).ready(function (event) {
     var session_token = "{{Session::token()}}";
     var get_available_dates_url = "{{route('module.booker.get_available_dates')}}";
     var make_appointment_url = "{{route('dashboard.module.booker.appointments.create')}}";
+    var check_payment_url = "{{route('dashboard.module.booker.appointments.status')}}";
     var auth_check = false;
     var auth_available_weight = 0;
     var auth_has_free_session = false;
@@ -176,10 +177,12 @@ $(document).ready(function (event) {
         if ($(this).is(':checked')) {
             $('input[name="paid"]').prop('checked', false).prop('disabled', true);
             $('input[name="needs_payment"]').prop('checked', false).prop('disabled', true);
+            $('input[name="qr_code"]').prop('checked', false).prop('disabled', true);
             auth_has_free_session = true;
         } else {
             $('input[name="paid"]').prop('checked', false).prop('disabled', false);
             $('input[name="needs_payment"]').prop('checked', false).prop('disabled', false);
+            $('input[name="qr_code"]').prop('checked', false).prop('disabled', false);
             auth_has_free_session = false;
         }
 
@@ -192,9 +195,11 @@ $(document).ready(function (event) {
         if ($(this).is(':checked')) {
             $('input[name="is_free_session"]').prop('checked', false).prop('disabled', true);
             $('input[name="needs_payment"]').prop('checked', false).prop('disabled', true);
+            $('input[name="qr_code"]').prop('checked', false).prop('disabled', true);
         } else {
             $('input[name="is_free_session"]').prop('checked', false).prop('disabled', false);
             $('input[name="needs_payment"]').prop('checked', false).prop('disabled', false);
+            $('input[name="qr_code"]').prop('checked', false).prop('disabled', false);
         }
     });
 
@@ -204,9 +209,25 @@ $(document).ready(function (event) {
         if ($(this).is(':checked')) {
             $('input[name="paid"]').prop('checked', false).prop('disabled', true);
             $('input[name="is_free_session"]').prop('checked', false).prop('disabled', true);
+            $('input[name="qr_code"]').prop('checked', false).prop('disabled', true);
         } else {
             $('input[name="paid"]').prop('checked', false).prop('disabled', false);
             $('input[name="is_free_session"]').prop('checked', false).prop('disabled', false);
+            $('input[name="qr_code"]').prop('checked', false).prop('disabled', false);
+        }
+    });
+
+    $('body').on('change', '#cmb_qr_code', function (event) {
+        event.preventDefault();
+
+        if ($(this).is(':checked')) {
+            $('input[name="paid"]').prop('checked', false).prop('disabled', true);
+            $('input[name="is_free_session"]').prop('checked', false).prop('disabled', true);
+            $('input[name="needs_payment"]').prop('checked', false).prop('disabled', true);
+        } else {
+            $('input[name="paid"]').prop('checked', false).prop('disabled', false);
+            $('input[name="is_free_session"]').prop('checked', false).prop('disabled', false);
+            $('input[name="needs_payment"]').prop('checked', false).prop('disabled', false);
         }
     });
 
@@ -704,7 +725,8 @@ $(document).ready(function (event) {
 
         if (!$('input[name="is_free_session"]').is(':checked') 
             && !$('input[name="paid"]').is(':checked') 
-            && !$('input[name="needs_payment"]').is(':checked')) {
+            && !$('input[name="needs_payment"]').is(':checked')
+            && !$('input[name="qr_code"]').is(':checked')) {
             $('.cmb_confirmation_error_msg').text('Gelieve een betaalmethode aan te duiden.');
             return false;
         }
@@ -736,6 +758,7 @@ $(document).ready(function (event) {
         let is_free_session = $('form.cmb_booker_app input[name="is_free_session"]').is(':checked') ? 1 : 0;
         let paid = $('form.cmb_booker_app input[name="paid"]').is(':checked') ? 1 : 0;
         let needs_payment = $('form.cmb_booker_app input[name="needs_payment"]').is(':checked') ? 1 : 0;
+        let qr_code = $('form.cmb_booker_app input[name="qr_code"]').is(':checked') ? 1 : 0;
 
         return $.ajax({
             method: 'POST',
@@ -756,12 +779,23 @@ $(document).ready(function (event) {
                 is_free_session: is_free_session,
                 paid: paid,
                 needs_payment: needs_payment,
+                qr_code: qr_code,
                 _token: session_token
             }
         });
     }
 
     function handleResponseFromMakeAppointment(data) {
+        if (data.status == 'qr_code') {
+            let qr_code_image = data.qr;
+
+            $('.cmb_confirmation_wrapper').addClass('d-none');
+            $('.cmb_qr_code').removeClass('d-none');
+            $('.cmb_qr_code').find('img').prop('src', qr_code_image);
+
+            checkPaymentStatus(data.appointment_id);
+        }
+
         if (data.status == 'success') {
             window.location = window.location;
         }
@@ -789,6 +823,27 @@ $(document).ready(function (event) {
         }
     }
 
+    function checkPaymentStatus(appointment_id) {
+        $.ajax({
+            method: 'POST',
+            url: check_payment_url,
+            data: { 
+                id: appointment_id,
+                _token: session_token
+            }
+        }).done(function (data) {
+            if (data.status == 'paid') {
+                $('.cmb_qr_code').find('.cmb_qr_code_status').html('<i class="fas fa-check"></i> Betaling ontvangen!');
+
+                sleep(2500).then(() => {
+                    window.location = window.location;
+                });
+            } else {
+                setTimeout(checkPaymentStatus(appointment_id), 12000);
+            }
+        });
+    }
+
     function isValidEmail(email) {
         if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
             return true;
@@ -797,8 +852,8 @@ $(document).ready(function (event) {
         return false;
     }
 
-    function sleep(ms) {
-        return new Promise(resolve => setTimeout(resolve, ms));
+    function sleep (time) {
+        return new Promise((resolve) => setTimeout(resolve, time));
     }
 });
 </script>

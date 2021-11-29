@@ -194,4 +194,13 @@ class Customer extends Eloquent
     {
         return $this->hasCompany() ? $this->json['company']['vat'] : null;
     }
+
+    public function getIsDeletableAttribute()
+    {
+        if (is_null($this->user_id) && $this->appointments->count() == 0) {
+            return true;
+        }
+
+        return false;
+    }
 }

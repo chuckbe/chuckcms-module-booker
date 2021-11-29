@@ -80,6 +80,7 @@ class ChuckcmsModuleBookerServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__.'/../database/migrations/create_appointments_table.php.stub' => $this->getMigrationFileName('create_appointments_table.php'),
             __DIR__.'/../database/migrations/create_appointments_services_table.php.stub' => $this->getMigrationFileName('create_appointments_services_table.php'),
+            __DIR__.'/../database/migrations/create_gift_cards_table.php.stub' => $this->getMigrationFileName('create_gift_cards_table.php'),
             __DIR__.'/../database/migrations/create_locations_services_table.php.stub' => $this->getMigrationFileName('create_locations_services_table.php'),
             __DIR__.'/../database/migrations/create_subscription_plans_table.php.stub' => $this->getMigrationFileName('create_subscription_plans_table.php'),
             __DIR__.'/../database/migrations/create_subscriptions_table.php.stub' => $this->getMigrationFileName('create_subscriptions_table.php'),

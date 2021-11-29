@@ -1,0 +1,50 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+class CreateGiftCardsTable extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create(config('chuckcms-module-booker.gift_cards.table'), function (Blueprint $table) {
+            $table->bigIncrements('id');
+
+            $table->bigInteger('customer_id')->unsigned()->index();
+            $table->foreign('customer_id')
+                  ->references('id')
+                  ->on(config('chuckcms-module-booker.customers.table'));
+            
+            $table->string('code');
+
+            $table->integer('weight')->default(1); //-1 == unlimited
+            $table->decimal('price', 6,2);
+
+            $table->boolean('is_claimed')->default(false);
+            $table->boolean('is_paid')->default(false);
+
+            $table->boolean('has_invoice')->default(false);
+            
+            $table->longtext('json')->nullable()->default(null);
+            
+            $table->timestamps();
+            $table->softDeletes();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::dropIfExists(config('chuckcms-module-booker.gift_cards.table'));
+    }
+}

@@ -307,13 +307,39 @@ class AppointmentRepository
                 'price' => number_format( ( (float)$appointment->price ), 2, '.', ''),
                 'appointment_id' => $appointment->id
                 )
-        ]);
+        ], ['include' => 'details.qrCode']);
 
         $payment = $this->payment->create(['appointment_id' => $appointment->id, 'external_id' => $mollie->id, 'type' => 'one-off', 'status' => 'awaiting', 'amount' => $appointment->price, 'log' => array(), 'json' => array()]);
 
         $mollie = Mollie::api()->payments()->get($mollie->id);
 
         return $mollie;
+    }
+
+    /**
+     * Get the QR code for the appointment
+     *
+     * @param Chuckbe\ChuckcmsModuleBooker\Models\Appointment $appointment
+     * 
+     * @return mixed
+     **/
+    public function getQrCode(Appointment $appointment)
+    {
+        if ($appointment->is_paid) {
+            return false;
+        }
+
+        config(['mollie.key' => ChuckSite::module('chuckcms-module-booker')->getSetting('integrations.mollie.key')]);
+
+        $payment = $appointment->payments->first();
+
+        $mollie = Mollie::api()->payments()->get($payment->external_id, ['include' => 'details.qrCode']);
+
+        if (is_null($mollie->details)) {
+            return false;
+        }
+
+        return $mollie->details->qrCode->src;
     }
 
     /**

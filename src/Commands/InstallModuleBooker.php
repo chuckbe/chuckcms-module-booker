@@ -90,6 +90,12 @@ class InstallModuleBooker extends Command
                         )
                     )
                 ),
+                'aaa' => array(
+                    'name' => 'Cadeaubonnen',
+                    'route' => 'dashboard.module.booker.gift_cards.index',
+                    'has_submenu' => false,
+                    'submenu' => null
+                ),
                 'b' => array(
                     'name' => 'Klanten',
                     'route' => 'dashboard.module.booker.customers.index',
@@ -302,6 +308,9 @@ Als je een klacht hebt over de wijze van verwerking van jouw persoonsgegevens ku
 
         $json['settings']['invoice']['prefix'] = '';
         $json['settings']['invoice']['number'] = 0;
+
+        $json['settings']['credit_note']['prefix'] = '';
+        $json['settings']['credit_note']['number'] = 0;
 
 
         $json['settings']['appointment']['statuses'] = [

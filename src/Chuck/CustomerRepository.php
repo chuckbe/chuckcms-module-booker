@@ -283,6 +283,11 @@ class CustomerRepository
      **/
     public function delete(Customer $customer)
     {
+        if (!is_null($customer->user_id)) {
+            $user = $customer->user;
+            $user->delete();
+        }
+
         return $customer->delete();
     }
 

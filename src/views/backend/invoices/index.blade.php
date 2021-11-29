@@ -34,6 +34,7 @@ Invoices
 					<thead>
 						<th scope="col">ID</th>
 						<th scope="col">Naam</th>
+						<th scope="col">Type</th>
 						<th scope="col">Datum</th>
 						<th scope="col">Bedrag</th>
 						<th scope="col">Acties</th>
@@ -41,14 +42,29 @@ Invoices
 					<tbody>
 						@foreach ($invoices as $invoice)
 							<tr data-id="{{$invoice->id}}">
-								<td>{{$invoice->id}}</td>
+								<td>{{$invoice->number}}</td>
 								<td class="semi-bold">{{ $invoice->name }}</td>
-								<td class="semi-bold">{{ $invoice->formatted_price }}</td>
-								<td class="semi-bold">{{ $invoice->formatted_deposit }}</td>
+								<td class="semi-bold">{{ $invoice->type == 'appointment' ? 'Afspraak' : ($invoice->type == 'subscription' ? 'Abonnement' : 'Cadeaubon') }}</td>
+								<td class="semi-bold">{{ $invoice->object->created_at->format('d/m/Y') }}</td>
+								<td class="semi-bold">{{ $invoice->object->price }}</td>
 								<td>
-									<a href="{{ route('dashboard.module.booker.services.edit', ['service' => $invoice->id]) }}" class="btn btn-sm btn-outline-secondary rounded d-inline-block">
-						    			<i class="fa fa-edit"></i> edit
+									@if($invoice->type == 'appointment')
+									<a href="{{ route('dashboard.module.booker.appointments.invoice', ['appointment' => $invoice->object->id]) }}" class="btn btn-sm btn-outline-secondary rounded d-inline-block" alt="Invoice">
+						    			<i class="fa fa-file-pdf-o"></i> 
 						    		</a>
+									@else
+									<a href="{{ route('dashboard.module.booker.subscriptions.invoice', ['subscription' => $invoice->object->id]) }}" class="btn btn-sm btn-outline-secondary rounded d-inline-block" alt="Invoice">
+						    			<i class="fa fa-file-pdf-o"></i> 
+						    		</a>
+									@endif
+
+									@if($invoice->object->has_credit_note)
+									@if($invoice->type == 'subscription')
+									<a href="{{ route('dashboard.module.booker.subscriptions.credit_note', ['subscription' => $invoice->object->id]) }}" class="btn btn-sm btn-outline-secondary rounded d-inline-block" alt="Credit Note">
+						    			<i class="fa fa-file"></i> 
+						    		</a>
+						    		@endif
+									@endif
 								</td>
 							</tr>
 						@endforeach

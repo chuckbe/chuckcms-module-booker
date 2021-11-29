@@ -14,6 +14,7 @@ Route::group(['middleware' => ['web']], function() {
         Route::post('/dashboard/booker/appointment/create', 'Chuckbe\ChuckcmsModuleBooker\Controllers\AppointmentController@create')->name('dashboard.module.booker.appointments.create');
         Route::post('/dashboard/booker/appointment/modal', 'Chuckbe\ChuckcmsModuleBooker\Controllers\AppointmentController@modal')->name('dashboard.module.booker.appointments.modal');
         Route::post('/dashboard/booker/appointment/cancel', 'Chuckbe\ChuckcmsModuleBooker\Controllers\AppointmentController@cancel')->name('dashboard.module.booker.appointments.cancel');
+        Route::post('/dashboard/booker/appointment/status', 'Chuckbe\ChuckcmsModuleBooker\Controllers\AppointmentController@status')->name('dashboard.module.booker.appointments.status');
 
         Route::get('/dashboard/booker/appointment/{appointment}/invoice', 'Chuckbe\ChuckcmsModuleBooker\Controllers\AppointmentController@invoice')->name('dashboard.module.booker.appointments.invoice');
 
@@ -22,6 +23,8 @@ Route::group(['middleware' => ['web']], function() {
         Route::get('/dashboard/booker/subscriptions', 'Chuckbe\ChuckcmsModuleBooker\Controllers\SubscriptionController@index')->name('dashboard.module.booker.subscriptions.index');
         Route::post('/dashboard/booker/subscription/save', 'Chuckbe\ChuckcmsModuleBooker\Controllers\SubscriptionController@store')->name('dashboard.module.booker.subscriptions.save');
         Route::get('/dashboard/booker/subscriptions/{subscription}/invoice', 'Chuckbe\ChuckcmsModuleBooker\Controllers\SubscriptionController@invoice')->name('dashboard.module.booker.subscriptions.invoice');
+        Route::get('/dashboard/booker/subscriptions/{subscription}/credit_note', 'Chuckbe\ChuckcmsModuleBooker\Controllers\SubscriptionController@creditNote')->name('dashboard.module.booker.subscriptions.credit_note');
+        Route::post('/dashboard/booker/subscription/cancel', 'Chuckbe\ChuckcmsModuleBooker\Controllers\SubscriptionController@cancel')->name('dashboard.module.booker.subscriptions.cancel');
         //END OF:   SUBSCRIPTIONS ROUTES
         
         //START OF: SUBSCRIPTION PLANS ROUTES
@@ -29,6 +32,13 @@ Route::group(['middleware' => ['web']], function() {
         Route::get('/dashboard/booker/subscription/plans/{subscription_plan}/edit', 'Chuckbe\ChuckcmsModuleBooker\Controllers\SubscriptionPlanController@edit')->name('dashboard.module.booker.subscription_plans.edit');
         Route::post('/dashboard/booker/subscription/plans/save', 'Chuckbe\ChuckcmsModuleBooker\Controllers\SubscriptionPlanController@store')->name('dashboard.module.booker.subscription_plans.save');
         //END OF:   SUBSCRIPTION PLANS ROUTES
+        
+        //START OF: GIFT CARDS ROUTES
+        Route::get('/dashboard/booker/gift-cards', 'Chuckbe\ChuckcmsModuleBooker\Controllers\GiftCardController@index')->name('dashboard.module.booker.gift_cards.index');
+        Route::post('/dashboard/booker/gift-cards/save', 'Chuckbe\ChuckcmsModuleBooker\Controllers\GiftCardController@store')->name('dashboard.module.booker.gift_cards.save');
+        Route::get('/dashboard/booker/gift-cards/{giftCard}/invoice', 'Chuckbe\ChuckcmsModuleBooker\Controllers\GiftCardController@invoice')->name('dashboard.module.booker.gift_cards.invoice');
+        Route::get('/dashboard/booker/gift-cards/{giftCard}/credit_note', 'Chuckbe\ChuckcmsModuleBooker\Controllers\GiftCardController@creditNote')->name('dashboard.module.booker.gift_cards.credit_note');
+        //END OF:   GIFT CARDS ROUTES
         
         //START OF: INVOICES ROUTES
         Route::get('/dashboard/booker/invoices', 'Chuckbe\ChuckcmsModuleBooker\Controllers\InvoiceController@index')->name('dashboard.module.booker.invoices.index');

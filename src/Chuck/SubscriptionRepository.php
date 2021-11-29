@@ -459,7 +459,7 @@ class SubscriptionRepository
     // }
 
 
-    public function updateStatus(Subscription $subscription, $status, $email = true)
+    public function updateStatus(Subscription $subscription, $status, $email = true, $credit = 0)
     {
         if ($status == 'paid') {
             $status = 'payment';
@@ -482,6 +482,12 @@ class SubscriptionRepository
         if ($status == 'failed' || $status == 'canceled' || $status == 'expired') {
             $subscription->is_active = false;
             $subscription->is_paid = false;
+
+            if ($subscription->has_invoice) {
+                $json['credit_note'] = $this->generateCreditNoteNumber();
+                $json['credit_price'] = $credit;
+                $subscription->json = $json;
+            }
         }
         
         if($status_object['invoice'] && !$subscription->has_invoice) {
@@ -675,5 +681,24 @@ class SubscriptionRepository
         $invoice_number = ChuckModuleBooker::getSetting('invoice.number') + 1;
         ChuckModuleBooker::setSetting('invoice.number', $invoice_number);
         return $invoice_number;
+    }
+
+    private function generateCreditNotePDF(Subscription $subscription)
+    {
+        $pdf = PDF::loadView('chuckcms-module-booker::pdf.subscription_credit_note', compact('subscription'));
+        return $pdf->output();
+    }
+
+    public function downloadCreditNote(Subscription $subscription)
+    {
+        $pdf = PDF::loadView('chuckcms-module-booker::pdf.subscription_credit_note', compact('subscription'));
+        return $pdf->download($subscription->creditNoteFileName);
+    }
+
+    private function generateCreditNoteNumber()
+    {
+        $credit_note_number = ChuckModuleBooker::getSetting('credit_note.number') + 1;
+        ChuckModuleBooker::setSetting('credit_note.number', $credit_note_number);
+        return $credit_note_number;
     }
 }

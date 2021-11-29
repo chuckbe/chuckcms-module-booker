@@ -38,6 +38,10 @@ return [
 		'table' => 'cmb_customers'
 	],
 
+    'gift_cards' => [
+        'table' => 'cmb_gift_cards'
+    ],
+
 	'users' => [
 		'table' => 'users',
 		'model' => Chuckbe\Chuckcms\Models\User::class

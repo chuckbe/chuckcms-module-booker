@@ -129,7 +129,7 @@ class CustomerController extends Controller
             return response()->json(['status' => 'error'], 404);
         }
 
-        if ($this->customerRepository->delete($customer)) {
+        if ($customer->is_deletable && $this->customerRepository->delete($customer)) {
             return response()->json(['status' => 'success'], 200);
         }
 

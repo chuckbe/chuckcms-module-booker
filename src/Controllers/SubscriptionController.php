@@ -15,6 +15,7 @@ use Chuckbe\ChuckcmsModuleBooker\Chuck\AppointmentRepository;
 use Chuckbe\ChuckcmsModuleBooker\Chuck\SubscriptionRepository;
 use Chuckbe\ChuckcmsModuleBooker\Chuck\SubscriptionPlanRepository;
 use Chuckbe\ChuckcmsModuleBooker\Requests\StoreSubscriptionRequest;
+use Chuckbe\ChuckcmsModuleBooker\Requests\CancelSubscriptionRequest;
 
 class SubscriptionController extends Controller
 {
@@ -115,7 +116,37 @@ class SubscriptionController extends Controller
      */
     public function invoice(Subscription $subscription)
     {
-        $pdf = PDF::loadView('chuckcms-module-booker::pdf.subscription_invoice', compact('subscription'));
-        return $pdf->download($subscription->invoiceFileName);
+        return $this->subscriptionRepository->downloadInvoice($subscription);
+    }
+
+    /**
+     * Return the subscription invoice.
+     *
+     * @param Subscription $subscription
+     * 
+     * @return Illuminate\View\View
+     */
+    public function creditNote(Subscription $subscription)
+    {
+        return $this->subscriptionRepository->downloadCreditNote($subscription);
+    }
+
+    /**
+     * Cancel a subscription from the request.
+     *
+     * @param CancelSubscriptionRequest $request
+     *
+     * @return Illuminate\Http\RedirectResponse
+     */
+    public function cancel(CancelSubscriptionRequest $request)
+    {
+        $subscription = $this->subscriptionRepository->find($request->subscription_id);
+
+        $email = $request->get('email') == 0 ? false : true;
+        $credit = $subscription->has_invoice ? $request->get('credit') : 0;
+
+        $this->subscriptionRepository->updateStatus($subscription, 'canceled', $email, $credit);
+
+        return redirect()->route('dashboard.module.booker.subscriptions.index');
     }
 }

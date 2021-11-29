@@ -120,6 +120,7 @@ class AppointmentController extends Controller
             'is_free_session' => 'required',
             'paid' => 'required',
             'needs_payment' => 'required',
+            'qr_code' => 'required',
         ]);
 
         if ($request->create_customer == 1) {
@@ -166,6 +167,11 @@ class AppointmentController extends Controller
             $this->appointmentRepository->updateStatus($appointment, 'payment', true);
         }
 
+        if ($request->get('qr_code') == 1) {
+            $this->appointmentRepository->updateStatus($appointment, 'awaiting', false);
+            return response()->json(['status' => 'qr_code', 'qr' => $this->appointmentRepository->getQrCode($appointment), 'appointment_id' => $appointment->id], 200);
+        }
+
         return response()->json(['status' => 'success'], 200);
     }
 
@@ -181,6 +187,24 @@ class AppointmentController extends Controller
         $appointment = $this->appointmentRepository->find($request->id);
 
         $this->appointmentRepository->updateStatus($appointment, 'canceled', true);
+
+        return response()->json(['status' => 'success']);
+    }
+
+    /**
+     * Return the appointment status.
+     *
+     * @param Request $request
+     *
+     * @return Illuminate\Response\Json
+     */
+    public function status(Request $request)
+    {
+        $appointment = $this->appointmentRepository->find($request->id);
+
+        if ($appointment->is_paid) {
+            return response()->json(['status' => 'paid']);
+        } 
 
         return response()->json(['status' => 'success']);
     }

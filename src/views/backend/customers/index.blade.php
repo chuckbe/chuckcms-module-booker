@@ -167,10 +167,12 @@ $('input[type="tel"]').intlTelInput({
 						    			<i class="fa fa-refresh"></i> 
 						    		</a>
 						    		@endif
-						    		{{-- 
+						    		
+						    		@if($customer->is_deletable)
 									<a href="#" class="btn btn-danger btn-sm btn-rounded m-r-20 customer_delete" data-id="{{ $customer->id }}">
 						    			<i class="fa fa-trash"></i> 
-						    		</a> --}}
+						    		</a>
+						    		@endif
 								</td>
 							</tr>
 						@endforeach

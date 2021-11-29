@@ -124,6 +124,12 @@
 					<input type="checkbox" class="mr-2 me-2" name="needs_payment" id="cmb_needs_payment"> Verstuur betalingsuitnodiging.
 				</small>
 			</label>
+			<div class="w-100 d-block"></div>
+			<label class="mt-0 mb-0" for="cmb_qr_code">
+				<small>
+					<input type="checkbox" class="mr-2 me-2" name="qr_code" id="cmb_qr_code"> Toon Bancontact / Payconiq QR code.
+				</small>
+			</label>
 		</div>
 	</div>
 
