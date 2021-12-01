@@ -52,8 +52,12 @@ Invoices
 									<a href="{{ route('dashboard.module.booker.appointments.invoice', ['appointment' => $invoice->object->id]) }}" class="btn btn-sm btn-outline-secondary rounded d-inline-block" alt="Invoice">
 						    			<i class="fa fa-file-pdf-o"></i> 
 						    		</a>
-									@else
+									@elseif($invoice->type == 'subscription')
 									<a href="{{ route('dashboard.module.booker.subscriptions.invoice', ['subscription' => $invoice->object->id]) }}" class="btn btn-sm btn-outline-secondary rounded d-inline-block" alt="Invoice">
+						    			<i class="fa fa-file-pdf-o"></i> 
+						    		</a>
+									@else
+									<a href="{{ route('dashboard.module.booker.gift_cards.invoice', ['giftCard' => $invoice->object->id]) }}" class="btn btn-sm btn-outline-secondary rounded d-inline-block" alt="Invoice">
 						    			<i class="fa fa-file-pdf-o"></i> 
 						    		</a>
 									@endif

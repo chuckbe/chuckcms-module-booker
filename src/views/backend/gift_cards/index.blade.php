@@ -125,7 +125,7 @@ $(function() {
 	</div>
 	<div class="row bg-light shadow-sm rounded p-3 mb-3 mx-1">
 		<div class="col-sm-12">
-			<i class="fa fa-info-circle mr-r"></i> <b>Dit is momenteel nog een expirementele feature!</b>
+			<i class="fa fa-info-circle mr-r"></i> <b>Dit is momenteel nog een experimentele feature!</b>
 		</div>
 	</div>
 	<div class="row bg-light shadow-sm rounded p-3 mb-3 mx-1">
@@ -169,7 +169,7 @@ $(function() {
 						    		</a>
 						    		@endif
 						    		@if($giftCard->has_credit_note)
-						    		<a href="{{ route('dashboard.module.booker.subscriptions.credit_note', ['giftCard' => $giftCard->id]) }}" class="btn btn-sm btn-outline-secondary rounded d-inline-block" alt="Credit Note">
+						    		<a href="{{ route('dashboard.module.booker.gift_cards.credit_note', ['giftCard' => $giftCard->id]) }}" class="btn btn-sm btn-outline-secondary rounded d-inline-block" alt="Credit Note">
 						    			<i class="fa fa-file"></i> 
 						    		</a>
 						    		@endif

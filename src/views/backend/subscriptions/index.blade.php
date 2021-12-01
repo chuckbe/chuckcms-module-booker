@@ -21,7 +21,7 @@ Subcriptions
 $(function() {
 	$('select').select2({
 	    theme: 'bootstrap4',
-	    minimumResultsForSearch: Infinity
+	    minimumResultsForSearch: 3
 	});
 
 	$('body').on('change', '#cmb_paid', function (event) {
@@ -69,44 +69,6 @@ $(function() {
 		$('#cancelSubscriptionModal').modal('show');
 
 		return;
-
-
-		let serviceId = $(this).data('id');
-		let token = '{{ Session::token() }}';
-
-		swal({
-			title: 'Are you sure?',
-			text: "This will delete this service. You won't be able to revert this!",
-			type: 'warning',
-			showCancelButton: true,
-			confirmButtonColor: '#3085d6',
-			cancelButtonColor: '#d33',
-			confirmButtonText: 'Yes, delete it!'
-		}).then((result)=>{
-			$.ajax({
-				method: 'POST',
-				url: "{{ route('dashboard.module.booker.services.delete') }}",
-				data: { 
-					service_id: serviceId, 
-					_token: token
-				}
-			}).done(function(data){
-				if(data == 'success'){
-					$("tr[data-id='"+serviceId+"']").first().remove();
-					swal(
-						'Deleted!',
-						'The service has been deleted.',
-						'success'
-					)
-				}else{
-					swal(
-						'Oops!',
-						'Something went wrong...',
-						'danger'
-					)
-				}
-			})
-		});
 	});
 });
 </script>
