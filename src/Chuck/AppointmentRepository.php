@@ -343,6 +343,34 @@ class AppointmentRepository
     }
 
     /**
+     * Get the latest QR code for the appointment
+     *
+     * @param Chuckbe\ChuckcmsModuleBooker\Models\Appointment $appointment
+     * 
+     * @return mixed
+     **/
+    public function getNewQrCode(Appointment $appointment)
+    {
+        if ($appointment->is_paid) {
+            return false;
+        }
+
+        $mollie = $this->makePayment($appointment);
+
+        config(['mollie.key' => ChuckSite::module('chuckcms-module-booker')->getSetting('integrations.mollie.key')]);
+
+        $payment = $appointment->payments->where('external_id', $mollie->id)->first();
+
+        $mollie = Mollie::api()->payments()->get($payment->external_id, ['include' => 'details.qrCode']);
+
+        if (is_null($mollie->details)) {
+            return false;
+        }
+
+        return $mollie->details->qrCode->src;
+    }
+
+    /**
      * Get all the availability for the given request
      *
      * @param Illuminate\Http\Request $request
@@ -653,13 +681,13 @@ class AppointmentRepository
         return ($int->days * 24 * 60) + ($int->h * 60) + $int->i;
     }
 
-    public function updateStatus(Appointment $appointment, $status, $sendEmail = false)
+    public function updateStatus(Appointment $appointment, $status, $sendEmail = false, $invoice = true)
     {
         $status_object = ChuckModuleBooker::getSetting('appointment.statuses.'.$status);
         $appointment->status = $status;
         $json = is_null($appointment->json) ? [] : $appointment->json; 
         
-        if($status_object['invoice'] && !array_key_exists('invoice_number', $json) && !array_key_exists('subscription', $json) && !array_key_exists('is_free_session', $json)) {
+        if($status_object['invoice'] && $invoice && !array_key_exists('invoice_number', $json) && !array_key_exists('subscription', $json) && !array_key_exists('is_free_session', $json)) {
             $json['invoice_number'] = $this->generateInvoiceNumber();
             $appointment->json = $json;
             $appointment->has_invoice = true;

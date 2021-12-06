@@ -81,7 +81,7 @@
                     title: eventData.title,
                     start: eventData.start,
                     end: eventData.end,
-                    title: eventData.title,
+                    title: getTitleForEvent(eventData),
                     extendedProps: {
                         time: eventData.time,
                         duration: eventData.duration,
@@ -94,6 +94,26 @@
             }
         });
         calendar.render();
+
+        function getTitleForEvent(eventData) {
+            if (eventData.status == "confirmed" && 'is_free_session' in eventData.json) {
+                return eventData.title+' (Gratis sessie!)';
+            }
+
+            if (eventData.status == "confirmed" && 'subscription' in eventData.json) {
+                return eventData.title+' (Abo!)';
+            }
+
+            if (eventData.status == "confirmed" && !eventData.has_invoice) {
+                return eventData.title+' (Betaling nodig!)';
+            }
+
+            if (eventData.status == "awaiting" && !eventData.has_invoice) {
+                return eventData.title+' (Betaling nodig!)';
+            }
+
+            return eventData.title;
+        }
 
         function getBackgroundColorForStatus(status) {
             if (status == "new") {
@@ -170,6 +190,153 @@
             } 
         });
     });
+
+$(document).ready(function (event) {
+    var update_payment_url = "{{ route('dashboard.module.booker.appointments.payment') }}";
+    var check_payment_url = "{{route('dashboard.module.booker.appointments.status')}}";
+    var session_token = "{{ Session::token() }}";
+
+    $('body').on('change', '#cmb_detail_is_free_session', function (event) {
+        event.preventDefault();
+
+        if ($(this).is(':checked')) {
+            $('div.eAMP input[name="pay_later"]').prop('checked', false).prop('disabled', true);
+            $('div.eAMP input[name="paid"]').prop('checked', false).prop('disabled', true);
+            $('div.eAMP input[name="needs_payment"]').prop('checked', false).prop('disabled', true);
+            $('div.eAMP input[name="qr_code"]').prop('checked', false).prop('disabled', true);
+        } else {
+            $('div.eAMP input[name="pay_later"]').prop('checked', false).prop('disabled', false);
+            $('div.eAMP input[name="paid"]').prop('checked', false).prop('disabled', false);
+            $('div.eAMP input[name="needs_payment"]').prop('checked', false).prop('disabled', false);
+            $('div.eAMP input[name="qr_code"]').prop('checked', false).prop('disabled', false);
+        }
+    });
+
+    $('body').on('change', '#cmb_detail_paid', function (event) {
+        event.preventDefault();
+
+        if ($(this).is(':checked')) {
+            $('div.eAMP input[name="is_free_session"]').prop('checked', false).prop('disabled', true);
+            $('div.eAMP input[name="pay_later"]').prop('checked', false).prop('disabled', true);
+            $('div.eAMP input[name="needs_payment"]').prop('checked', false).prop('disabled', true);
+            $('div.eAMP input[name="qr_code"]').prop('checked', false).prop('disabled', true);
+        } else {
+            $('div.eAMP input[name="is_free_session"]').prop('checked', false).prop('disabled', false);
+            $('div.eAMP input[name="pay_later"]').prop('checked', false).prop('disabled', false);
+            $('div.eAMP input[name="needs_payment"]').prop('checked', false).prop('disabled', false);
+            $('div.eAMP input[name="qr_code"]').prop('checked', false).prop('disabled', false);
+        }
+    });
+
+    $('body').on('change', '#cmb_detail_needs_payment', function (event) {
+        event.preventDefault();
+
+        if ($(this).is(':checked')) {
+            $('div.eAMP input[name="pay_later"]').prop('checked', true).prop('disabled', true);
+            $('div.eAMP input[name="paid"]').prop('checked', false).prop('disabled', true);
+            $('div.eAMP input[name="is_free_session"]').prop('checked', false).prop('disabled', true);
+            $('div.eAMP input[name="qr_code"]').prop('checked', false).prop('disabled', true);
+        } else {
+            $('div.eAMP input[name="pay_later"]').prop('checked', false).prop('disabled', false);
+            $('div.eAMP input[name="paid"]').prop('checked', false).prop('disabled', false);
+            $('div.eAMP input[name="is_free_session"]').prop('checked', false).prop('disabled', false);
+            $('div.eAMP input[name="qr_code"]').prop('checked', false).prop('disabled', false);
+        }
+    });
+
+    $('body').on('change', '#cmb_detail_qr_code', function (event) {
+        event.preventDefault();
+
+        if ($(this).is(':checked')) {
+            $('div.eAMP input[name="pay_later"]').prop('checked', false).prop('disabled', true);
+            $('div.eAMP input[name="paid"]').prop('checked', false).prop('disabled', true);
+            $('div.eAMP input[name="is_free_session"]').prop('checked', false).prop('disabled', true);
+            $('div.eAMP input[name="needs_payment"]').prop('checked', false).prop('disabled', true);
+        } else {
+            $('div.eAMP input[name="pay_later"]').prop('checked', false).prop('disabled', false);
+            $('div.eAMP input[name="paid"]').prop('checked', false).prop('disabled', false);
+            $('div.eAMP input[name="is_free_session"]').prop('checked', false).prop('disabled', false);
+            $('div.eAMP input[name="needs_payment"]').prop('checked', false).prop('disabled', false);
+        }
+    });
+
+    $('body').on('click', '#editAppointmentModalPaymentBtn', function (event) {
+        event.preventDefault();
+
+        $(this).prop('disabled', true);
+        $(this).text('Even geduld...');
+
+        $('.cmb_payment_detail_error_msg').text('');
+
+        if (!$('div.eAMP input[name="is_free_session"]').is(':checked') 
+            && !$('div.eAMP input[name="paid"]').is(':checked') 
+            && !$('div.eAMP input[name="needs_payment"]').is(':checked')
+            && !$('div.eAMP input[name="qr_code"]').is(':checked')) {
+            $('.cmb_payment_detail_error_msg').text('Gelieve een betaalmethode aan te duiden.');
+
+            $(this).prop('disabled', false);
+            $(this).text('Update betalingstatus');
+            return false;
+        }
+
+        let appointment_id = $('div.eAMP input[name="appointment_payment_id"]').val();
+
+        let is_free_session = $('div.eAMP input[name="is_free_session"]').is(':checked') ? 1 : 0;
+        let paid = $('div.eAMP input[name="paid"]').is(':checked') ? 1 : 0;
+        let qr_code = $('div.eAMP input[name="qr_code"]').is(':checked') ? 1 : 0;
+
+        return $.ajax({
+            method: 'POST',
+            url: update_payment_url,
+            data: { 
+                appointment_id: appointment_id,
+                is_free_session: is_free_session,
+                paid: paid,
+                qr_code: qr_code,
+                _token: session_token
+            }
+        }).done(function (data) {
+            if (data.status == 'qr_code') {
+                let qr_code_image = data.qr;
+
+                $('div.eAMP').addClass('d-none');
+                $('.cmb_detail_qr_code').removeClass('d-none');
+                $('.cmb_detail_qr_code').find('img').prop('src', qr_code_image);
+
+                checkDetailPaymentStatus(data.appointment_id);
+            }
+
+            if (data.status == 'success' || data.status == 'paid') {
+                window.location = window.location;
+            }
+        });
+    });
+
+    function checkDetailPaymentStatus(appointment_id) {
+        $.ajax({
+            method: 'POST',
+            url: check_payment_url,
+            data: { 
+                id: appointment_id,
+                _token: session_token
+            }
+        }).done(function (data) {
+            if (data.status == 'paid') {
+                $('.cmb_detail_qr_code').find('.cmb_detail_qr_code_status').html('<i class="fas fa-check"></i> Betaling ontvangen!');
+
+                sleep(2500).then(() => {
+                    window.location = window.location;
+                });
+            } else {
+                setTimeout(checkDetailPaymentStatus(appointment_id), 12000);
+            }
+        });
+    }
+
+    function sleep (time) {
+        return new Promise((resolve) => setTimeout(resolve, time));
+    }
+});
 </script>
 
 @include('chuckcms-module-booker::backend.appointments.booker.scripts')

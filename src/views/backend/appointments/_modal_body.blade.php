@@ -23,6 +23,13 @@
     						{{ ChuckModuleBooker::getSetting('appointment.statuses.'.$appointment->status.'.short.'.config('app.locale')) }}
     					</span>
     				</small>
+                    @if($appointment->status == 'confirmed' && !$appointment->has_invoice)
+                    <small>
+                        <span class="badge badge-danger">
+                            Betaling nodig!
+                        </span>
+                    </small>
+                    @endif
     			</span>
     		</span>
 			<small class="mr-2">
@@ -48,6 +55,50 @@
 	    		<i class="fa fa-phone-alt"></i> <span>{{ $appointment->customer->tel }}</span>
     		</small>
     	</div>
+        @if($appointment->status == 'confirmed' && !$appointment->is_free_session && !$appointment->is_subscription_session && !$appointment->has_invoice)
+        <hr>
+        <div class="col-sm-12 mt-2">
+            <span class="d-block lead text-black font-weight-bold fw-bold">Betaling</span>
+        </div>
+        <div class="editAppointmentModalPayment eAMP col-sm-12 mt-1">
+            <label class="mt-0 mb-0" for="cmb_detail_is_free_session">
+                <small>
+                    <input type="checkbox" class="mr-2 me-2" name="is_free_session" id="cmb_detail_is_free_session"> Gratis sessie?
+                </small>
+            </label>
+            <div class="w-100 d-block"></div>
+            <label class="mt-0 mb-0" for="cmb_detail_paid">
+                <small>
+                    <input type="checkbox" class="mr-2 me-2" name="paid" id="cmb_detail_paid"> Afspraak is ter plaatse betaald.
+                </small>
+            </label>
+            <div class="w-100 d-block"></div>
+            <label class="mt-0 mb-0" for="cmb_detail_qr_code">
+                <small>
+                    <input type="checkbox" class="mr-2 me-2" name="qr_code" id="cmb_detail_qr_code"> Toon Bancontact / Payconiq QR code.
+                </small>
+            </label>
+        </div>
+        <div class="eAMP col-sm-12 mt-2">
+            <div class="form-group">
+                <p class="font-size-small text-danger font-weight-bold fw-bold cmb_payment_detail_error_msg"></p>
+            </div>
+            <input type="hidden" name="appointment_payment_id" value="{{ $appointment->id }}">
+            <button class="btn btn-sm btn-secondary" id="editAppointmentModalPaymentBtn">Update betalingstatus</button>
+        </div>
+        <div class="cmb_detail_qr_code d-none">
+            <div class="row">
+                <div class="col-sm-12 text-center">
+                    <img src="" width="180" height="180" class="cmb_detail_qr_code_img mx-auto m-5">
+                </div>
+                <div class="col-sm-12 text-center">
+                    <span class="badge badge-light cmb_detail_qr_code_status">
+                        <i class="fas fa-spinner fa-pulse"></i> Status checken...
+                    </span>
+                </div>
+            </div>
+        </div>
+        @endif
     </div>
 </div>
 <div class="modal-footer">

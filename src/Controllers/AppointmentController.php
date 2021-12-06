@@ -63,7 +63,7 @@ class AppointmentController extends Controller
      */
     public function json(Request $request)
     {
-        $appointments = $this->appointmentRepository->betweenDates(new DateTime($request->start), new DateTime($request->end), 'asc', ['id', 'title', 'start', 'end', 'time', 'duration', 'status', 'weight', 'price']);
+        $appointments = $this->appointmentRepository->betweenDates(new DateTime($request->start), new DateTime($request->end), 'asc', ['id', 'title', 'start', 'end', 'time', 'duration', 'status', 'weight', 'price', 'is_canceled', 'has_invoice', 'json']);
 
         return response()->json($appointments);
     }
@@ -121,6 +121,7 @@ class AppointmentController extends Controller
             'paid' => 'required',
             'needs_payment' => 'required',
             'qr_code' => 'required',
+            'pay_later' => 'required',
         ]);
 
         if ($request->create_customer == 1) {
@@ -172,6 +173,10 @@ class AppointmentController extends Controller
             return response()->json(['status' => 'qr_code', 'qr' => $this->appointmentRepository->getQrCode($appointment), 'appointment_id' => $appointment->id], 200);
         }
 
+        if ($request->get('pay_later') == 1) {
+            $this->appointmentRepository->updateStatus($appointment, 'confirmed', false, false);
+        }
+
         return response()->json(['status' => 'success'], 200);
     }
 
@@ -205,6 +210,43 @@ class AppointmentController extends Controller
         if ($appointment->is_paid) {
             return response()->json(['status' => 'paid']);
         } 
+
+        return response()->json(['status' => 'success']);
+    }
+
+    /**
+     * Update the the appointment payment.
+     *
+     * @param Request $request
+     *
+     * @return Illuminate\Response\Json
+     */
+    public function payment(Request $request)
+    {
+        $appointment = $this->appointmentRepository->find($request->appointment_id);
+
+        if ($appointment->is_paid) {
+            return response()->json(['status' => 'paid']);
+        } 
+        
+        if ($request->get('is_free_session') == 1) {
+            $json = $appointment->json;
+            $json['is_free_session'] = true;
+            $appointment->json = $json;
+            $appointment->price = 0;
+            $appointment->update();
+
+            $this->appointmentRepository->updateStatus($appointment, 'confirmed', true);
+        }
+
+        if ($request->get('paid') == 1) {
+            $this->appointmentRepository->updateStatus($appointment, 'payment', true);
+        }
+
+        if ($request->get('qr_code') == 1) {
+            $this->appointmentRepository->updateStatus($appointment, 'awaiting', false);
+            return response()->json(['status' => 'qr_code', 'qr' => $this->appointmentRepository->getNewQrCode($appointment), 'appointment_id' => $appointment->id], 200);
+        }
 
         return response()->json(['status' => 'success']);
     }

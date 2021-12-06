@@ -139,9 +139,9 @@ $(function() {
 								</td>
 								<td class="semi-bold">{{ $subscription->available_weight }}</td>
 								<td>
-									{{-- <a href="{{ route('dashboard.module.booker.services.edit', ['service' => $subscription->id]) }}" class="btn btn-sm btn-outline-secondary rounded d-inline-block">
+									<a href="{{ route('dashboard.module.booker.subscriptions.edit', ['subscription' => $subscription->id]) }}" class="btn btn-sm btn-outline-secondary rounded d-inline-block">
 						    			<i class="fa fa-edit"></i> 
-						    		</a> --}}
+						    		</a>
 						    		@if($subscription->has_invoice)
 						    		<a href="{{ route('dashboard.module.booker.subscriptions.invoice', ['subscription' => $subscription->id]) }}" class="btn btn-sm btn-outline-secondary rounded d-inline-block" alt="Invoice">
 						    			<i class="fa fa-file-pdf-o"></i> 

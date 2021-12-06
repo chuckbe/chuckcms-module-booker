@@ -112,8 +112,17 @@ class Appointment extends Eloquent
         return array_key_exists('is_free_session', $this->json);
     }
 
+    public function getIsSubscriptionSessionAttribute()
+    {
+        return array_key_exists('subscription', $this->json);
+    }
+
     public function getIsPaidAttribute()
     {
+        if ($this->status == 'confirmed' && !$this->is_free_session && !$this->is_subscription_session && !$this->has_invoice) {
+            return false;
+        }
+        
         return ChuckModuleBooker::getSetting('appointment.statuses.'.$this->status.'.paid');
     }
 

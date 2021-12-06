@@ -113,6 +113,12 @@
 				</small>
 			</label>
 			<div class="w-100 d-block"></div>
+			<label class="mt-0 mb-0" for="cmb_pay_later">
+				<small>
+					<input type="checkbox" class="mr-2 me-2" name="pay_later" id="cmb_pay_later"> Klant betaalt later.
+				</small>
+			</label>
+			<div class="w-100 d-block"></div>
 			<label class="mt-0 mb-0" for="cmb_paid">
 				<small>
 					<input type="checkbox" class="mr-2 me-2" name="paid" id="cmb_paid"> Afspraak is betaald.

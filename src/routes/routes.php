@@ -15,6 +15,7 @@ Route::group(['middleware' => ['web']], function() {
         Route::post('/dashboard/booker/appointment/modal', 'Chuckbe\ChuckcmsModuleBooker\Controllers\AppointmentController@modal')->name('dashboard.module.booker.appointments.modal');
         Route::post('/dashboard/booker/appointment/cancel', 'Chuckbe\ChuckcmsModuleBooker\Controllers\AppointmentController@cancel')->name('dashboard.module.booker.appointments.cancel');
         Route::post('/dashboard/booker/appointment/status', 'Chuckbe\ChuckcmsModuleBooker\Controllers\AppointmentController@status')->name('dashboard.module.booker.appointments.status');
+        Route::post('/dashboard/booker/appointment/payment', 'Chuckbe\ChuckcmsModuleBooker\Controllers\AppointmentController@payment')->name('dashboard.module.booker.appointments.payment');
 
         Route::get('/dashboard/booker/appointment/{appointment}/invoice', 'Chuckbe\ChuckcmsModuleBooker\Controllers\AppointmentController@invoice')->name('dashboard.module.booker.appointments.invoice');
 
@@ -22,6 +23,8 @@ Route::group(['middleware' => ['web']], function() {
         //START OF: SUBSCRIPTIONS ROUTES
         Route::get('/dashboard/booker/subscriptions', 'Chuckbe\ChuckcmsModuleBooker\Controllers\SubscriptionController@index')->name('dashboard.module.booker.subscriptions.index');
         Route::post('/dashboard/booker/subscription/save', 'Chuckbe\ChuckcmsModuleBooker\Controllers\SubscriptionController@store')->name('dashboard.module.booker.subscriptions.save');
+        Route::get('/dashboard/booker/subscriptions/{subscription}/edit', 'Chuckbe\ChuckcmsModuleBooker\Controllers\SubscriptionController@edit')->name('dashboard.module.booker.subscriptions.edit');
+        Route::post('/dashboard/booker/subscription/update', 'Chuckbe\ChuckcmsModuleBooker\Controllers\SubscriptionController@update')->name('dashboard.module.booker.subscriptions.update');
         Route::get('/dashboard/booker/subscriptions/{subscription}/invoice', 'Chuckbe\ChuckcmsModuleBooker\Controllers\SubscriptionController@invoice')->name('dashboard.module.booker.subscriptions.invoice');
         Route::get('/dashboard/booker/subscriptions/{subscription}/credit_note', 'Chuckbe\ChuckcmsModuleBooker\Controllers\SubscriptionController@creditNote')->name('dashboard.module.booker.subscriptions.credit_note');
         Route::post('/dashboard/booker/subscription/cancel', 'Chuckbe\ChuckcmsModuleBooker\Controllers\SubscriptionController@cancel')->name('dashboard.module.booker.subscriptions.cancel');

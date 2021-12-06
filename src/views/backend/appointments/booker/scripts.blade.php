@@ -175,11 +175,13 @@ $(document).ready(function (event) {
         event.preventDefault();
 
         if ($(this).is(':checked')) {
+            $('input[name="pay_later"]').prop('checked', false).prop('disabled', true);
             $('input[name="paid"]').prop('checked', false).prop('disabled', true);
             $('input[name="needs_payment"]').prop('checked', false).prop('disabled', true);
             $('input[name="qr_code"]').prop('checked', false).prop('disabled', true);
             auth_has_free_session = true;
         } else {
+            $('input[name="pay_later"]').prop('checked', false).prop('disabled', false);
             $('input[name="paid"]').prop('checked', false).prop('disabled', false);
             $('input[name="needs_payment"]').prop('checked', false).prop('disabled', false);
             $('input[name="qr_code"]').prop('checked', false).prop('disabled', false);
@@ -194,10 +196,12 @@ $(document).ready(function (event) {
 
         if ($(this).is(':checked')) {
             $('input[name="is_free_session"]').prop('checked', false).prop('disabled', true);
+            $('input[name="pay_later"]').prop('checked', false).prop('disabled', true);
             $('input[name="needs_payment"]').prop('checked', false).prop('disabled', true);
             $('input[name="qr_code"]').prop('checked', false).prop('disabled', true);
         } else {
             $('input[name="is_free_session"]').prop('checked', false).prop('disabled', false);
+            $('input[name="pay_later"]').prop('checked', false).prop('disabled', false);
             $('input[name="needs_payment"]').prop('checked', false).prop('disabled', false);
             $('input[name="qr_code"]').prop('checked', false).prop('disabled', false);
         }
@@ -207,10 +211,12 @@ $(document).ready(function (event) {
         event.preventDefault();
 
         if ($(this).is(':checked')) {
+            $('input[name="pay_later"]').prop('checked', true).prop('disabled', true);
             $('input[name="paid"]').prop('checked', false).prop('disabled', true);
             $('input[name="is_free_session"]').prop('checked', false).prop('disabled', true);
             $('input[name="qr_code"]').prop('checked', false).prop('disabled', true);
         } else {
+            $('input[name="pay_later"]').prop('checked', false).prop('disabled', false);
             $('input[name="paid"]').prop('checked', false).prop('disabled', false);
             $('input[name="is_free_session"]').prop('checked', false).prop('disabled', false);
             $('input[name="qr_code"]').prop('checked', false).prop('disabled', false);
@@ -221,13 +227,31 @@ $(document).ready(function (event) {
         event.preventDefault();
 
         if ($(this).is(':checked')) {
+            $('input[name="pay_later"]').prop('checked', false).prop('disabled', true);
             $('input[name="paid"]').prop('checked', false).prop('disabled', true);
             $('input[name="is_free_session"]').prop('checked', false).prop('disabled', true);
             $('input[name="needs_payment"]').prop('checked', false).prop('disabled', true);
         } else {
+            $('input[name="pay_later"]').prop('checked', false).prop('disabled', false);
             $('input[name="paid"]').prop('checked', false).prop('disabled', false);
             $('input[name="is_free_session"]').prop('checked', false).prop('disabled', false);
             $('input[name="needs_payment"]').prop('checked', false).prop('disabled', false);
+        }
+    });
+
+    $('body').on('change', '#cmb_pay_later', function (event) {
+        event.preventDefault();
+
+        if ($(this).is(':checked')) {
+            $('input[name="paid"]').prop('checked', false).prop('disabled', true);
+            $('input[name="is_free_session"]').prop('checked', false).prop('disabled', true);
+            $('input[name="needs_payment"]').prop('checked', false).prop('disabled', true);
+            $('input[name="qr_code"]').prop('checked', false).prop('disabled', true);
+        } else {
+            $('input[name="paid"]').prop('checked', false).prop('disabled', false);
+            $('input[name="is_free_session"]').prop('checked', false).prop('disabled', false);
+            $('input[name="needs_payment"]').prop('checked', false).prop('disabled', false);
+            $('input[name="qr_code"]').prop('checked', false).prop('disabled', false);
         }
     });
 
@@ -726,7 +750,8 @@ $(document).ready(function (event) {
         if (!$('input[name="is_free_session"]').is(':checked') 
             && !$('input[name="paid"]').is(':checked') 
             && !$('input[name="needs_payment"]').is(':checked')
-            && !$('input[name="qr_code"]').is(':checked')) {
+            && !$('input[name="qr_code"]').is(':checked')
+            && !$('input[name="pay_later"]').is(':checked')) {
             $('.cmb_confirmation_error_msg').text('Gelieve een betaalmethode aan te duiden.');
             return false;
         }
@@ -759,6 +784,7 @@ $(document).ready(function (event) {
         let paid = $('form.cmb_booker_app input[name="paid"]').is(':checked') ? 1 : 0;
         let needs_payment = $('form.cmb_booker_app input[name="needs_payment"]').is(':checked') ? 1 : 0;
         let qr_code = $('form.cmb_booker_app input[name="qr_code"]').is(':checked') ? 1 : 0;
+        let pay_later = $('form.cmb_booker_app input[name="pay_later"]').is(':checked') ? 1 : 0;
 
         return $.ajax({
             method: 'POST',
@@ -780,6 +806,7 @@ $(document).ready(function (event) {
                 paid: paid,
                 needs_payment: needs_payment,
                 qr_code: qr_code,
+                pay_later: pay_later,
                 _token: session_token
             }
         });
