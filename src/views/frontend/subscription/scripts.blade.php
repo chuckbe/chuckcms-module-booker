@@ -55,7 +55,15 @@ $(document).ready(function (event) {
 
         $(this).parent().addClass('d-none');
         emailInput.trigger('blur');
-    })
+    });
+
+    $('body').on('keyup', '#cmb_customer_password', function (event) {
+        indicatePasswordStrength();
+    });
+
+    $('body').on('keyup', '#password-confirm', function (event) {
+        indicatePasswordStrength();
+    });
 
 
     $('body').on('change', 'form.cmb_booker_subscription_app input[name="cmb_subscription_plan"]', function (event) {
@@ -272,6 +280,53 @@ $(document).ready(function (event) {
             return false;
         }
 
+        if ($('form.cmb_booker_subscription_app input[name="create_customer"]').is(':checked')) {
+            let pwd = $('form.cmb_booker_subscription_app input[name="password"]').val();
+            let pwd_check = $('form.cmb_booker_subscription_app input[name="password_confirmation"]').val();
+
+            if (pwd.length == 0) {
+                $('.cmb_confirmation_error_msg').text('Gelieve een wachtwoord in te vullen.');
+                return false;
+            }
+
+            if (pwd_check.length == 0) {
+                $('.cmb_confirmation_error_msg').text('Gelieve uw wachtwoord opnieuw in te vullen.');
+                return false;
+            }
+
+            if (pwd_check != pwd) {
+                $('.cmb_confirmation_error_msg').text('De ingevulde wachtwoorden komen niet overeen.');
+                return false;
+            }
+
+            if (pwd.length < 8) {
+                $('.cmb_confirmation_error_msg').text('Uw wachtwoord moet minstens 8 tekens bevatten.');
+                return false;
+            }
+            
+            let spec_chars = /[ `!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
+
+            if (!spec_chars.test(pwd)) {
+                $('.cmb_confirmation_error_msg').text('Uw wachtwoord moet minstens 1 speciaal teken bevatten.');
+                return false;
+            }
+
+            if (!new RegExp("^(?=.*\\d).+$").test(pwd)) {
+                $('.cmb_confirmation_error_msg').text('Uw wachtwoord moet cijfers bevatten.');
+                return false;
+            }
+
+            if (!new RegExp("^(?=.*[a-z]).+$").test(pwd)) {
+                $('.cmb_confirmation_error_msg').text('Uw wachtwoord moet kleine letters bevatten.');
+                return false;
+            }
+
+            if (!new RegExp("^(?=.*[A-Z]).+$").test(pwd)) {
+                $('.cmb_confirmation_error_msg').text('Uw wachtwoord moet hoofdletters bevatten.');
+                return false;
+            }
+        }
+
         let general_conditions = $('form.cmb_booker_subscription_app input[name="general_conditions"]')
                                         .is(':checked');
         let medical_declaration = $('form.cmb_booker_subscription_app input[name="medical_declaration"]')
@@ -295,6 +350,9 @@ $(document).ready(function (event) {
         let customer = null;
         let create_customer = $('form.cmb_booker_subscription_app input[name="create_customer"]').is(':checked') ? 1 : 0;
 
+        let pwd = $('form.cmb_booker_subscription_app input[name="password"]').val();
+        let pwd_check = $('form.cmb_booker_subscription_app input[name="password_confirmation"]').val();
+
         if (auth_check) {
             customer = $('form.cmb_booker_subscription_app input[name="customer_id"]').val();
             create_customer = 0;
@@ -312,6 +370,8 @@ $(document).ready(function (event) {
                 subscription_plan: subscription_plan, 
                 customer: customer,
                 create_customer: create_customer,
+                password: pwd,
+                password_confirmation: pwd_check,
                 first_name: first_name,
                 last_name: last_name,
                 email: email,
@@ -433,6 +493,61 @@ $(document).ready(function (event) {
 
     function sleep(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    function indicatePasswordStrength() {
+        $('.cmb_create_customer_password_confirmation_check div')
+            .first()
+            .removeClass('bg-success')
+            .removeClass('bg-danger');
+
+        $('.cmb_create_customer_password_strenth div')
+            .removeClass('bg-success')
+            .removeClass('bg-warning');
+
+        let checks = 0;
+        let pwd = $('form.cmb_booker_subscription_app #cmb_customer_password').val();
+        let pwd_check = $('form.cmb_booker_subscription_app #password-confirm').val();
+
+        if (pwd.length > 8) {
+            checks++;
+        }
+        
+        let spec_chars = /[ `!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
+
+        if (spec_chars.test(pwd)) {
+            checks++;
+        }
+
+        if (new RegExp("^(?=.*\\d).+$").test(pwd)) {
+            checks++;
+        }
+
+        if (new RegExp("^(?=.*[A-Z]).+$").test(pwd)) {
+            checks++;
+        }
+
+        if (new RegExp("^(?=.*[a-z]).+$").test(pwd)) {
+            checks++;
+        }
+
+        for (var i = 0; i < checks; i++) {
+            if (i == 3) {
+                $('.cmb_create_customer_password_strenth div').eq(i).addClass('bg-warning');
+            } else if (i == 4) {
+                $('.cmb_create_customer_password_strenth div').eq((i-1)).removeClass('bg-warning').addClass('bg-success');
+            } else {
+                $('.cmb_create_customer_password_strenth div').eq(i).addClass('bg-success');
+            }
+        };
+
+        if (pwd.length > 0 && pwd_check.length > 0 && pwd != pwd_check) {
+            $('.cmb_create_customer_password_confirmation_check div').first().addClass('bg-danger');
+        }
+
+        if (pwd.length > 0 && pwd_check.length > 0 && pwd == pwd_check) {
+            $('.cmb_create_customer_password_confirmation_check div').first().addClass('bg-success');
+        }
     }
 });
 </script>

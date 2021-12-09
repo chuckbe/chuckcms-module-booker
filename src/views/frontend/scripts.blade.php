@@ -84,7 +84,15 @@ $customer = \Chuckbe\ChuckcmsModuleBooker\Models\Customer::where('user_id', Auth
 
         $(this).parent().addClass('d-none');
         emailInput.trigger('blur');
-    })
+    });
+
+    $('body').on('keyup', '#cmb_customer_password', function (event) {
+        indicatePasswordStrength();
+    });
+
+    $('body').on('keyup', '#password-confirm', function (event) {
+        indicatePasswordStrength();
+    });
 
 
     $('body').on('change', 'form.cmb_booker_app input[name="cmb_services"]', function (event) {
@@ -187,6 +195,16 @@ $customer = \Chuckbe\ChuckcmsModuleBooker\Models\Customer::where('user_id', Auth
 
         $('form.cmb_booker_app input[name="medical_declaration"]').prop('checked', true);
         $('#medicalDeclarationModal').modal('hide');
+    });
+
+    $('body').on('change', 'input[name="create_customer"]', function (event) {
+        event.preventDefault();
+
+        $('form.cmb_booker_app .cmb_create_customer_password_wrapper').addClass('d-none');
+
+        if ($(this).is(':checked')) {
+            $('form.cmb_booker_app .cmb_create_customer_password_wrapper').removeClass('d-none');
+        }
     });
 
     $('body').on('click', '#cmb_confirmation_booker_btn', function (event) {
@@ -566,6 +584,53 @@ $customer = \Chuckbe\ChuckcmsModuleBooker\Models\Customer::where('user_id', Auth
             return false;
         }
 
+        if ($('form.cmb_booker_app input[name="create_customer"]').is(':checked')) {
+            let pwd = $('form.cmb_booker_app input[name="password"]').val();
+            let pwd_check = $('form.cmb_booker_app input[name="password_confirmation"]').val();
+
+            if (pwd.length == 0) {
+                $('.cmb_confirmation_error_msg').text('Gelieve een wachtwoord in te vullen.');
+                return false;
+            }
+
+            if (pwd_check.length == 0) {
+                $('.cmb_confirmation_error_msg').text('Gelieve uw wachtwoord opnieuw in te vullen.');
+                return false;
+            }
+
+            if (pwd_check != pwd) {
+                $('.cmb_confirmation_error_msg').text('De ingevulde wachtwoorden komen niet overeen.');
+                return false;
+            }
+
+            if (pwd.length < 8) {
+                $('.cmb_confirmation_error_msg').text('Uw wachtwoord moet minstens 8 tekens bevatten.');
+                return false;
+            }
+            
+            let spec_chars = /[ `!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
+
+            if (!spec_chars.test(pwd)) {
+                $('.cmb_confirmation_error_msg').text('Uw wachtwoord moet minstens 1 speciaal teken bevatten.');
+                return false;
+            }
+
+            if (!new RegExp("^(?=.*\\d).+$").test(pwd)) {
+                $('.cmb_confirmation_error_msg').text('Uw wachtwoord moet cijfers bevatten.');
+                return false;
+            }
+
+            if (!new RegExp("^(?=.*[a-z]).+$").test(pwd)) {
+                $('.cmb_confirmation_error_msg').text('Uw wachtwoord moet kleine letters bevatten.');
+                return false;
+            }
+
+            if (!new RegExp("^(?=.*[A-Z]).+$").test(pwd)) {
+                $('.cmb_confirmation_error_msg').text('Uw wachtwoord moet hoofdletters bevatten.');
+                return false;
+            }
+        }
+
         let general_conditions = $('form.cmb_booker_app input[name="general_conditions"]')
                                         .is(':checked');
         let medical_declaration = $('form.cmb_booker_app input[name="medical_declaration"]')
@@ -593,11 +658,14 @@ $customer = \Chuckbe\ChuckcmsModuleBooker\Models\Customer::where('user_id', Auth
         let customer = null;
         let create_customer = $('form.cmb_booker_app input[name="create_customer"]').is(':checked') ? 1 : 0;
 
+        let pwd = $('form.cmb_booker_app input[name="password"]').val();
+        let pwd_check = $('form.cmb_booker_app input[name="password_confirmation"]').val();
+
+        let promo_check = 0;
+        
         if ($('form.cmb_booker_app input[name="promo"]').length) {
             let promo_check = $('form.cmb_booker_app input[name="promo"]').is(':checked') ? 1 : 0;
-        } else {
-            let promo_check = 0;
-        }
+        } 
 
         if (auth_check) {
             customer = $('form.cmb_booker_app input[name="customer_id"]').val();
@@ -622,6 +690,8 @@ $customer = \Chuckbe\ChuckcmsModuleBooker\Models\Customer::where('user_id', Auth
                 duration: duration,
                 customer: customer,
                 create_customer: create_customer,
+                password: pwd,
+                password_confirmation: pwd_check,
                 first_name: first_name,
                 last_name: last_name,
                 email: email,
@@ -757,6 +827,61 @@ $customer = \Chuckbe\ChuckcmsModuleBooker\Models\Customer::where('user_id', Auth
 
     function sleep(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    function indicatePasswordStrength() {
+        $('.cmb_create_customer_password_confirmation_check div')
+            .first()
+            .removeClass('bg-success')
+            .removeClass('bg-danger');
+
+        $('.cmb_create_customer_password_strenth div')
+            .removeClass('bg-success')
+            .removeClass('bg-warning');
+
+        let checks = 0;
+        let pwd = $('form.cmb_booker_app #cmb_customer_password').val();
+        let pwd_check = $('form.cmb_booker_app #password-confirm').val();
+
+        if (pwd.length > 8) {
+            checks++;
+        }
+        
+        let spec_chars = /[ `!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
+
+        if (spec_chars.test(pwd)) {
+            checks++;
+        }
+
+        if (new RegExp("^(?=.*\\d).+$").test(pwd)) {
+            checks++;
+        }
+
+        if (new RegExp("^(?=.*[A-Z]).+$").test(pwd)) {
+            checks++;
+        }
+
+        if (new RegExp("^(?=.*[a-z]).+$").test(pwd)) {
+            checks++;
+        }
+
+        for (var i = 0; i < checks; i++) {
+            if (i == 3) {
+                $('.cmb_create_customer_password_strenth div').eq(i).addClass('bg-warning');
+            } else if (i == 4) {
+                $('.cmb_create_customer_password_strenth div').eq((i-1)).removeClass('bg-warning').addClass('bg-success');
+            } else {
+                $('.cmb_create_customer_password_strenth div').eq(i).addClass('bg-success');
+            }
+        };
+
+        if (pwd.length > 0 && pwd_check.length > 0 && pwd != pwd_check) {
+            $('.cmb_create_customer_password_confirmation_check div').first().addClass('bg-danger');
+        }
+
+        if (pwd.length > 0 && pwd_check.length > 0 && pwd == pwd_check) {
+            $('.cmb_create_customer_password_confirmation_check div').first().addClass('bg-success');
+        }
     }
 });
 </script>

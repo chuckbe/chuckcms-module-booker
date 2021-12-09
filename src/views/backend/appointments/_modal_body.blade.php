@@ -23,7 +23,7 @@
     						{{ ChuckModuleBooker::getSetting('appointment.statuses.'.$appointment->status.'.short.'.config('app.locale')) }}
     					</span>
     				</small>
-                    @if($appointment->status == 'confirmed' && !$appointment->has_invoice)
+                    @if($appointment->status == 'confirmed' && !$appointment->is_free_session && !$appointment->is_subscription_session && !$appointment->has_invoice)
                     <small>
                         <span class="badge badge-danger">
                             Betaling nodig!

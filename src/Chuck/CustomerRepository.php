@@ -106,7 +106,7 @@ class CustomerRepository
         $user = User::create([
             'name' => $request->first_name.' '.$request->last_name,
             'email' => $request->email,
-            'password' => '',
+            'password' => bcrypt($request->password),
             'token' => $this->userRepository->createToken(),
             'active' => 0,
         ]);

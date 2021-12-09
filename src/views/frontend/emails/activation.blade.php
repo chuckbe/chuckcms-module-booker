@@ -152,7 +152,7 @@
                                             <td style="padding: 20px 0 0 0; font-size: 16px; line-height: 25px; font-family: Helvetica, Arial, sans-serif; color: #666666;" class="padding">
                                                 Beste {{ $customer->first_name . ' ' . $customer->last_name }}<br><br>
 
-                                                Bedankt om een account aan te maken. Klik hieronder op de link om uw account te activeren en een nieuw wachtwoord te kiezen. Heeft u nog vragen? Neem gerust contact met ons op. <br>
+                                                Bedankt om een account aan te maken. Klik hieronder op de link om uw account te activeren. Heeft u nog vragen? Neem gerust contact met ons op. <br>
                                             </td>
                                         </tr>
                                     </table>

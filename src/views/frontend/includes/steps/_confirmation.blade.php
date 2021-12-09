@@ -56,6 +56,32 @@
 					<input type="checkbox" class="mr-2 me-2" name="create_customer" id="cmb_create_customer"> Ik wil een account aanmaken
 				</small>
 			</label>
+			<div class="w-100 d-block"></div>
+			<div class="cmb_create_customer_password_wrapper d-none">
+				<small>Kies een wachtwoord voor uw account.</small>
+				<div class="form-group row mb-1">
+	                <div class="col-sm-12">
+	                	<input type="password" class="form-control form-control-sm" id="cmb_customer_password" placeholder="Wachtwoord" name="password">
+		                <div class="w-100 d-block"></div>
+		                <div class="row mx-0 cmb_create_customer_password_strenth">
+			                <div class="col-sm-3 rounded card"></div>
+			                <div class="col-sm-3 rounded card"></div>
+			                <div class="col-sm-3 rounded card"></div>
+			                <div class="col-sm-3 rounded card"></div>
+		                </div>
+	                </div>
+	            </div>
+	            <div class="form-group row mb-2">
+	                <div class="col-sm-12">
+		                <input type="password" class="form-control form-control-sm" id="password-confirm" placeholder="Wachtwoord bevestigen" name="password_confirmation">
+		                <div class="w-100 d-block"></div>
+		                <div class="row mx-0 cmb_create_customer_password_confirmation_check">
+			                <div class="col-sm-12 rounded card"></div>
+		                </div>
+	                </div>
+	            </div>
+	            <small>U krijgt nog een bevestigingsmail, vergeet niet op de link te klikken om uw account te activeren.</small>
+			</div>
 		</div>
 	</div>
 	@endguest

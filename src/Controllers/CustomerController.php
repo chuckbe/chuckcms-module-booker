@@ -149,14 +149,26 @@ class CustomerController extends Controller
             return redirect()->to('/');
         }
 
-        $user = User::where('token', $user_token)->where('active', 0)->first();
+        $user = User::where('token', $user_token)->first();
 
         $templateHintpath = config('chuckcms-module-booker.auth.template.hintpath');
         $template = Template::where('active', 1)->where('hintpath', $templateHintpath)->first();
         $blade = $templateHintpath . '::templates.' . $template->slug .'.'. config('chuckcms-module-booker.auth.template.activation_blade');
 
+        if (is_null($user)) {
+            return abort(404);
+        }
+
         if (view()->exists($blade)) {
-            $activated = false;
+            $activated = (bool)$user->active;
+            
+            if (!$user->active && strlen((string)$user->password) > 0) {
+                $user->token = $this->userRepository->createToken();
+                $user->active = 1;
+                $user->update();
+
+                $activated = true;
+            }
 
             return view($blade, compact('template', 'user', 'activated'));
         }
