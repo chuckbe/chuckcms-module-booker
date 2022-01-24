@@ -72,11 +72,12 @@ Klant: {{ $customer->first_name . ' ' . $customer->last_name }}
 			    <div class="col-sm-12">
 					<p class="lead">Details</p>
 
-                    <b>Naam</b>: {{ $customer->first_name . ' ' . $customer->last_name }} <br>
-                    <b>E-mail</b>: {{ $customer->email }} 
+                    <span><b>Naam</b>: {{ $customer->first_name . ' ' . $customer->last_name }}</span>
+                    <div class="w-100 d-block"></div>
+                    <span><b>E-mail</b>: {{ $customer->email }} <button class="btn btn-sm btn-outline-secondary" data-target="#editCustomerEmailModal" data-toggle="modal">edit</button></span>
                     @if(!is_null($customer->tel)) 
-                    <br>
-                    <b>Tel</b>: {{ $customer->tel }} 
+                    <div class="w-100 d-block"></div>
+                    <span><b>Tel</b>: {{ $customer->tel }} </span>
                     @endif
 
                     <br>
@@ -258,4 +259,5 @@ Klant: {{ $customer->first_name . ' ' . $customer->last_name }}
         </div>
     </div>
 </div>
+@include('chuckcms-module-booker::backend.customers._edit_modal')
 @endsection

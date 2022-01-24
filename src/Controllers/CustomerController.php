@@ -93,6 +93,20 @@ class CustomerController extends Controller
     }
 
     /**
+     * Update email on a customer from the request.
+     *
+     * @param Request $request
+     *
+     * @return Illuminate\Http\RedirectResponse
+     */
+    public function email(Request $request)
+    {
+        $customer = $this->customerRepository->updateEmail($request);
+
+        return redirect()->route('dashboard.module.booker.customers.detail', ['customer' => $customer->id]);
+    }
+
+    /**
      * Update address/company on a customer from the request.
      *
      * @param Request $request

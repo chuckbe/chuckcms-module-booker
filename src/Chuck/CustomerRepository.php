@@ -275,6 +275,27 @@ class CustomerRepository
     }
 
     /**
+     * Update a customer
+     *
+     * @var Request $request
+     **/
+    public function updateEmail(Request $request)
+    {
+        $customer = $this->find($request->customer_id);
+
+        $customer->email = $request->email;
+        $customer->update();
+
+        if ($customer->user_id !== null) {
+            $user = $customer->user;
+            $user->email = $request->email;
+            $user->update();
+        }
+
+        return $customer;
+    }
+
+    /**
      * Delete the given customer.
      *
      * @param Customer $customer
