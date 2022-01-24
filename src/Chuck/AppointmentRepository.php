@@ -470,7 +470,7 @@ class AppointmentRepository
      **/
     public function getAvailableTimeslots(DateTime $date, Location $location, int $duration, int $weight, $appointments)
     {
-        $openingHoursSections = $location->getOpeningHoursSectionsForDay(strtolower($date->format('l')));
+        $openingHoursSections = $location->getOpeningHoursSectionsForDate($date);
         
         $appointments = $appointments->filter(function ($item) use ($date) {
             return $item->date->format('Y-m-d') == $date->format('Y-m-d');

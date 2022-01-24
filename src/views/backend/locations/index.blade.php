@@ -76,6 +76,79 @@ $( document ).ready(function() {
 	});
 
 
+
+	$('body').on('change', 'input[name="disabled_dates_check"]', function (event) {
+		event.preventDefault();
+
+		if ($(this).is(':checked')) {
+			$(this).val(1);
+			$('.disabledDatesInputSection').removeClass('d-none');
+			$('.disabledDatesInputSection')
+								.find('input[type="date"]')
+								.prop('disabled', false)
+								.prop('required', true);
+			$('.disabledDatesInputSection')
+								.find('input[type="time"]')
+								.prop('disabled', false)
+								.prop('required', true);
+		} else {
+			$(this).val(0);
+			$('.disabledDatesInputSection').addClass('d-none');
+			$('.disabledDatesInputSection')
+								.find('input[type="date"]')
+								.prop('disabled', true)
+								.prop('required', false);
+			$('.disabledDatesInputSection')
+								.find('input[type="time"]')
+								.prop('disabled', false)
+								.prop('required', true);
+		}
+	});
+
+	$('body').on('click', '.addDisabledDatesInputRowBtn', function (event) {
+		event.preventDefault();
+
+		//let dayOfTheWeek = $(this).attr('data-day');
+		
+		firstRangeInputRow = $('.disabledDatesInputWrapper')
+								.find('.disabledDatesInputRow')
+								.first();
+
+		firstRangeInputRow.clone().appendTo('.disabledDatesInputWrapper');
+
+		$('.disabledDatesInputWrapper')
+								.find('.removeDisabledDatesInputRowBtn')
+								.removeClass('d-none');
+	});
+
+	$('body').on('click', '.removeDisabledDatesInputRowBtn', function (event) {
+		event.preventDefault();
+
+		rangeInputWrapper = $(this).parents('.disabledDatesInputWrapper');
+
+		if (rangeInputWrapper.find('.disabledDatesInputRow').length == 1) return;
+
+		$(this).parents('.disabledDatesInputRow').remove();
+
+		if (rangeInputWrapper.find('.disabledDatesInputRow').length == 1) {
+			rangeInputWrapper.find('.removeDisabledDatesInputRowBtn')
+								.addClass('d-none');
+		}
+	});
+
+	$('body').on('change', '.disabledDateFullDayCheckbox', function (event) {
+		event.preventDefault();
+
+		if ($(this).is(':checked')) {
+			$(this).val(1);
+			$(this).parents('.form-group').find('input[type="hidden"]').prop('disabled', true);
+		} else {
+			$(this).val(0);
+			$(this).parents('.form-group').find('input[type="hidden"]').prop('disabled', false);
+		}
+	});
+
+
 	init();
 	function init () {
 		//init media manager inputs 

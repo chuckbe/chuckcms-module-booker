@@ -248,8 +248,44 @@
             <div class="row">
               <div class="col-sm-12">
                 <div class="form-group form-group-default">
-                  <label>Uitgesloten Datums (dd/mm/yyyy,dd/mm/yyyy,...)</label>
-                  <input type="text" id="create_location_dates_disabled" name="disabled_dates" class="form-control">
+                  <label>Uitgesloten Datums</label>
+                  <input type="checkbox" name="disabled_dates_check" value="0">
+                </div>
+              </div>
+              <div class="col-sm-12 disabledDatesInputSection d-none">
+                <div>
+                  <label><small>Datum - Hele dag? - Van - Tot</small></label>
+                  <span class="badge badge-secondary addDisabledDatesInputRowBtn float-right" type="button">+</span>
+                </div>
+                <div class="row">
+                  <div class="col-sm-12 disabledDatesInputWrapper">
+                    <div class="row disabledDatesInputRow">
+                      <div class="col-sm-4">
+                        <div class="input-group">
+                          <div class="input-group-prepend">
+                            <button class="btn btn-outline-secondary removeDisabledDatesInputRowBtn d-none" type="button">-</button>
+                          </div>
+                          <input type="date" class="form-control" name="disabled_date[]" disabled>
+                        </div>
+                      </div>
+                      <div class="col-sm-2">
+                        <div class="form-group form-group-default">
+                          <input type="hidden" name="disabled_date_full_day[]" value="0">
+                          <label><input type="checkbox" class="form-control-sm disabledDateFullDayCheckbox d-inline-block mb-0" name="disabled_date_full_day[]" value="0"> Ja</label>
+                        </div>
+                      </div>
+                      <div class="col-sm-3">
+                        <div class="form-group form-group-default">
+                          <input type="time" class="form-control disabled_date_start_time" name="disabled_date_start_time[]" value="08:00" disabled>
+                        </div>
+                      </div>
+                      <div class="col-sm-3">
+                        <div class="form-group form-group-default">
+                          <input type="time" class="form-control disabled_date_end_time" name="disabled_date_end_time[]" value="17:00" disabled>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

@@ -66,16 +66,17 @@ class LocationRepository
     public function create(StoreLocationRequest $request)
     {
         $opening_hours = $this->formatOpeningHours($request);
+        $disabled_dates = $this->formatDisabledDates($request);
 
         $location = $this->location->create([
-            'name' => $request->get('name'),
+            'name'              => $request->get('name'),
             'disabled_weekdays' => $request->get('disabled_weekdays'),
-            'disabled_dates' => explode(',', $request->get('disabled_dates')),
-            'opening_hours' => $opening_hours,
-            'order' => (int)$request->get('order'),
-            'max_weight' => (int)$request->get('max_weight'),
-            'interval' => (int)$request->get('interval'),
-            'json' => array()
+            'disabled_dates'    => $disabled_dates,
+            'opening_hours'     => $opening_hours,
+            'order'             => (int)$request->get('order'),
+            'max_weight'        => (int)$request->get('max_weight'),
+            'interval'          => (int)$request->get('interval'),
+            'json'              => array()
         ]);
 
         $location->refresh();
@@ -97,18 +98,19 @@ class LocationRepository
     public function update(StoreLocationRequest $request)
     {
         $opening_hours = $this->formatOpeningHours($request);
+        $disabled_dates = $this->formatDisabledDates($request);
 
         $location = $this->location->where('id', $request->get('id'))->first();
 
         $location->update([
-            'name' => $request->get('name'),
+            'name'              => $request->get('name'),
             'disabled_weekdays' => $request->get('disabled_weekdays'),
-            'disabled_dates' => explode(',', $request->get('disabled_dates')),
-            'opening_hours' => $opening_hours,
-            'order' => (int)$request->get('order'),
-            'max_weight' => (int)$request->get('max_weight'),
-            'interval' => (int)$request->get('interval'),
-            'json' => array()
+            'disabled_dates'    => $disabled_dates,
+            'opening_hours'     => $opening_hours,
+            'order'             => (int)$request->get('order'),
+            'max_weight'        => (int)$request->get('max_weight'),
+            'interval'          => (int)$request->get('interval'),
+            'json'              => array()
         ]);
 
         $location->refresh();
@@ -139,6 +141,35 @@ class LocationRepository
      * 
      * @return array
      **/
+    public function formatDisabledDates(StoreLocationRequest $request)
+    {
+        $disabled_dates = array();
+
+        if ($request->get('disabled_dates_check') == 0) {
+            return $disabled_dates;
+        }
+
+        $disabled_date = $request->get('disabled_date');
+
+        foreach ($disabled_date as $key => $date) {
+            $disabled_dates[] = array(
+                'date'      => date('Y-m-d', strtotime($date)),
+                'full_day'  => $request->get('disabled_date_full_day')[$key] == 1,
+                'start'     => $request->get('disabled_date_start_time')[$key],
+                'end'       => $request->get('disabled_date_end_time')[$key],
+            );
+        }
+
+        return $disabled_dates;
+    }
+
+    /**
+     * Format the opening hours from a request.
+     *
+     * @param Location $location
+     * 
+     * @return array
+     **/
     public function formatOpeningHours(StoreLocationRequest $request)
     {
         $opening_hours = array();
@@ -151,7 +182,7 @@ class LocationRepository
         $opening_hours['thursday']  = $this->formatOpeningHoursForDay($request, 'thursday');
         $opening_hours['friday']    = $this->formatOpeningHoursForDay($request, 'friday');
         $opening_hours['saturday']  = $this->formatOpeningHoursForDay($request, 'saturday');
-        $opening_hours['sunday']   = $this->formatOpeningHoursForDay($request, 'sunday');
+        $opening_hours['sunday']    = $this->formatOpeningHoursForDay($request, 'sunday');
 
         return $opening_hours;
     }
@@ -175,8 +206,8 @@ class LocationRepository
         
         foreach ($request->get('start_time_'.$day) as $key => $value) {
             $hours = array();
-            $hours['start'] = $request->get('start_time_'.$day)[$key];
-            $hours['end'] = $request->get('end_time_'.$day)[$key];
+            $hours['start']  = $request->get('start_time_'.$day)[$key];
+            $hours['end']    = $request->get('end_time_'.$day)[$key];
             $opening_hours[] = $hours;
         }
 
@@ -193,14 +224,6 @@ class LocationRepository
      **/
     public function isDateAvailable(Location $location, \DateTime $date)
     {
-        if (in_array($date->format('w'), $location->disabled_weekdays)) {
-            return false;
-        }
-
-        if (in_array($date->format('d/m/Y'), $location->disabled_dates)) {
-            return false;
-        }
-
-        return true;
+        return $location->isDateAvailable($date);
     }
 }

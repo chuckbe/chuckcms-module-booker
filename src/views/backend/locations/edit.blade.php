@@ -70,6 +70,79 @@ $( document ).ready(function() {
 	});
 
 
+
+	$('body').on('change', 'input[name="disabled_dates_check"]', function (event) {
+		event.preventDefault();
+
+		if ($(this).is(':checked')) {
+			$(this).val(1);
+			$('.disabledDatesInputSection').removeClass('d-none');
+			$('.disabledDatesInputSection')
+								.find('input[type="date"]')
+								.prop('disabled', false)
+								.prop('required', true);
+			$('.disabledDatesInputSection')
+								.find('input[type="time"]')
+								.prop('disabled', false)
+								.prop('required', true);
+		} else {
+			$(this).val(0);
+			$('.disabledDatesInputSection').addClass('d-none');
+			$('.disabledDatesInputSection')
+								.find('input[type="date"]')
+								.prop('disabled', true)
+								.prop('required', false);
+			$('.disabledDatesInputSection')
+								.find('input[type="time"]')
+								.prop('disabled', false)
+								.prop('required', true);
+		}
+	});
+
+	$('body').on('click', '.addDisabledDatesInputRowBtn', function (event) {
+		event.preventDefault();
+
+		//let dayOfTheWeek = $(this).attr('data-day');
+		
+		firstRangeInputRow = $('.disabledDatesInputWrapper')
+								.find('.disabledDatesInputRow')
+								.first();
+
+		firstRangeInputRow.clone().appendTo('.disabledDatesInputWrapper');
+
+		$('.disabledDatesInputWrapper')
+								.find('.removeDisabledDatesInputRowBtn')
+								.removeClass('d-none');
+	});
+
+	$('body').on('click', '.removeDisabledDatesInputRowBtn', function (event) {
+		event.preventDefault();
+
+		rangeInputWrapper = $(this).parents('.disabledDatesInputWrapper');
+
+		if (rangeInputWrapper.find('.disabledDatesInputRow').length == 1) return;
+
+		$(this).parents('.disabledDatesInputRow').remove();
+
+		if (rangeInputWrapper.find('.disabledDatesInputRow').length == 1) {
+			rangeInputWrapper.find('.removeDisabledDatesInputRowBtn')
+								.addClass('d-none');
+		}
+	});
+
+	$('body').on('change', '.disabledDateFullDayCheckbox', function (event) {
+		event.preventDefault();
+
+		if ($(this).is(':checked')) {
+			$(this).val(1);
+			$(this).parents('.form-group').find('input[type="hidden"]').prop('disabled', true);
+		} else {
+			$(this).val(0);
+			$(this).parents('.form-group').find('input[type="hidden"]').prop('disabled', false);
+		}
+	});
+
+
 	init();
 	function init () {
 		//init media manager inputs 
@@ -175,12 +248,86 @@ $( document ).ready(function() {
 			            </div>
 			            
 			            <div class="row">
-			              <div class="col-sm-12">
-			                <div class="form-group form-group-default">
-			                  <label>Uitgesloten Datums (dd/mm/yyyy,dd/mm/yyyy,...)</label>
-			                  <input type="text" id="edit_location_disabled_dates" name="disabled_dates" class="form-control" value="{{ old('disabled_dates', implode(',',$location->disabled_dates ?? [])) }}">
-			                </div>
-			              </div>
+			              	<div class="col-sm-12">
+				                <div class="form-group form-group-default">
+				                  <label>Uitgesloten Datums</label>
+				                  @if((is_array($location->disabled_dates) && count($location->disabled_dates) == 0) || (is_array($location->disabled_dates) && count($location->disabled_dates) > 0 && !is_array($location->disabled_dates[0])))
+				                  <input type="checkbox" name="disabled_dates_check" value="0">
+				                  @elseif(is_array($location->disabled_dates) && count($location->disabled_dates) > 0 && array_key_exists('date', $location->disabled_dates[0]))
+				                  <input type="checkbox" name="disabled_dates_check" value="1" checked>
+				                  @endif
+				                </div>
+			              	</div>
+			              	<div class="col-sm-12 disabledDatesInputSection{{ (is_array($location->disabled_dates) && count($location->disabled_dates) == 0) || (is_array($location->disabled_dates) && count($location->disabled_dates) > 0 && !is_array($location->disabled_dates[0])) ? ' d-none' : '' }}">
+				                <div>
+				                  	<label><small>Datum - Hele dag? - Van - Tot</small></label>
+				                  	<span class="badge badge-secondary addDisabledDatesInputRowBtn float-right" type="button">+</span>
+				                </div>
+				                <div class="row">
+				                	@if(is_array($location->disabled_dates) && count($location->disabled_dates) > 0 && is_array($location->disabled_dates[0]))
+				                	
+				                  	<div class="col-sm-12 disabledDatesInputWrapper">
+				                  		@foreach($location->disabled_dates as $disabled_date)
+					                    <div class="row disabledDatesInputRow">
+					                      	<div class="col-sm-4">
+						                        <div class="input-group">
+						                          <div class="input-group-prepend">
+						                            <button class="btn btn-outline-secondary removeDisabledDatesInputRowBtn d-none" type="button">-</button>
+						                          </div>
+						                          <input type="date" class="form-control" name="disabled_date[]" value="{{ $disabled_date['date'] }}">
+						                        </div>
+					                      	</div>
+					                      	<div class="col-sm-2">
+						                        <div class="form-group form-group-default">
+						                          <input type="hidden" name="disabled_date_full_day[]" value="0" @if($disabled_date['full_day']) disabled @endif>
+						                          <label><input type="checkbox" class="form-control-sm disabledDateFullDayCheckbox d-inline-block mb-0" name="disabled_date_full_day[]" value="{{ $disabled_date['full_day'] ? 1 : 0 }}" @if($disabled_date['full_day']) checked @endif> Ja</label>
+						                        </div>
+					                      	</div>
+					                      	<div class="col-sm-3">
+						                        <div class="form-group form-group-default">
+						                          <input type="time" class="form-control disabled_date_start_time" name="disabled_date_start_time[]" value="{{ $disabled_date['start'] }}">
+						                        </div>
+					                      	</div>
+					                      	<div class="col-sm-3">
+						                        <div class="form-group form-group-default">
+						                          <input type="time" class="form-control disabled_date_end_time" name="disabled_date_end_time[]" value="{{ $disabled_date['end'] }}">
+						                        </div>
+					                      	</div>
+					                    </div>
+				                  		@endforeach
+				                  	</div>
+				                  	@elseif((is_array($location->disabled_dates) && count($location->disabled_dates) == 0) || is_array($location->disabled_dates) && count($location->disabled_dates) > 0 && !is_array($location->disabled_dates[0]))
+				                  	<div class="col-sm-12 disabledDatesInputWrapper">
+					                    <div class="row disabledDatesInputRow">
+					                      	<div class="col-sm-4">
+						                        <div class="input-group">
+						                          <div class="input-group-prepend">
+						                            <button class="btn btn-outline-secondary removeDisabledDatesInputRowBtn d-none" type="button">-</button>
+						                          </div>
+						                          <input type="date" class="form-control" name="disabled_date[]" disabled>
+						                        </div>
+					                      	</div>
+					                      	<div class="col-sm-2">
+						                        <div class="form-group form-group-default">
+						                          <input type="hidden" name="disabled_date_full_day[]" value="0">
+						                          <label><input type="checkbox" class="form-control-sm disabledDateFullDayCheckbox d-inline-block mb-0" name="disabled_date_full_day[]" value="0"> Ja</label>
+						                        </div>
+					                      	</div>
+					                      	<div class="col-sm-3">
+						                        <div class="form-group form-group-default">
+						                          <input type="time" class="form-control disabled_date_start_time" name="disabled_date_start_time[]" value="08:00" disabled>
+						                        </div>
+					                      	</div>
+					                      	<div class="col-sm-3">
+						                        <div class="form-group form-group-default">
+						                          <input type="time" class="form-control disabled_date_end_time" name="disabled_date_end_time[]" value="17:00" disabled>
+						                        </div>
+					                      	</div>
+					                    </div>
+				                  	</div>
+				                  	@endif
+				                </div>
+			              	</div>
 			            </div>
 
 			            <div class="row">
