@@ -86,7 +86,7 @@ Klant: {{ $customer->first_name . ' ' . $customer->last_name }}
                         <b>Wachtwoord</b>: 
                         @if(!is_null($customer->user_id))
                         <button class="btn btn-sm btn-outline-secondary btn-rounded" data-target="#resetCustomerPasswordModal" data-toggle="modal">
-                            resetlink laten zien
+                            activeren en resetlink laten zien
                         </button>
                         @endif
                     </span>

@@ -9,7 +9,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <p>Dit laat een link zien die je aan de klant kan bezorgen. Hiermee kan de klant zijn wachtwoord opnieuw instellen.</p>
+                    <p>Dit genereert een random wachtwoord, activeert het account van de klant en laat een link zien die je aan de klant kan bezorgen. Hiermee kan de klant zijn wachtwoord opnieuw instellen naar eigen keuze.</p>
                     <div>
                         @if($errors->any())
                         @foreach ($errors->all() as $error)
