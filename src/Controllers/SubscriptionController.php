@@ -122,7 +122,6 @@ class SubscriptionController extends Controller
         if ($subscription == false || $subscription == null) {
             return response()->json(['status' => 'error'], 200);
         }
-//dd($request->get('expires_at'));
 
         $expires_at = explode('T', $request->get('expires_at'));
 
