@@ -38,7 +38,7 @@
 			              	<div class="col-md-12">
 				                <div class="form-group form-group-default required">
 				                  	<label>Vervaldatum</label>
-				                  	<input type="datetime-local" min="{{ now()->format('Y-m-d').'T'.now()->format('h:i') }}" name="expires_at" class="form-control" value="{{ old('expires_at', $subscription->expires_at->format('Y-m-d').'T'.$subscription->expires_at->format('h:i')) }}" required>
+				                  	<input type="datetime-local" min="{{ now()->format('Y-m-d').'T'.now()->format('H:i') }}" name="expires_at" class="form-control" value="{{ old('expires_at', $subscription->expires_at->format('Y-m-d').'T'.$subscription->expires_at->format('H:i')) }}" required>
 				                </div>
 			              	</div>
 			              	<div class="col-md-12">
