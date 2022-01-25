@@ -3,14 +3,17 @@
 namespace Chuckbe\ChuckcmsModuleBooker\Controllers;
 
 use Auth;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Chuckbe\Chuckcms\Models\User;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Hash;
 use Chuckbe\Chuckcms\Models\Template;
 use Chuckbe\Chuckcms\Chuck\UserRepository;
 use Chuckbe\ChuckcmsModuleBooker\Models\Customer;
 use Chuckbe\ChuckcmsModuleBooker\Chuck\CustomerRepository;
 use Chuckbe\ChuckcmsModuleBooker\Requests\StoreCustomerRequest;
+use Illuminate\Support\Facades\Password;
 
 class CustomerController extends Controller
 {
@@ -250,5 +253,40 @@ class CustomerController extends Controller
         $this->customerRepository->sendActivationEmailForCustomer($customer, $user);
         
         return response()->json(['status' => 'success'], 200);    
+    }
+
+    public function passwordResetLink(Request $request)
+    {
+        $this->validate(request(), [
+            'reset_text' => 'string|in:RESET',
+            'customer_id' => 'required'
+        ]);
+
+        $customer = $this->customerRepository->find($request->get('customer_id'));
+        $user = $customer->user;
+
+        $user->password = Hash::make(Str::random(30));
+        $user->token = $this->userRepository->createToken();
+        $user->active = 1;
+
+        $user->save();
+        $user->refresh();
+
+        $token = $this->broker()->createToken($user);
+
+        return redirect()->back()->with([
+            'status_reset_link' => 'success', 
+            'reset_link' => url()->to(route('password.reset', ['token' => $token, 'email' => $user->email], false))
+        ]);
+    }
+
+    /**
+     * Get the broker to be used during password reset.
+     *
+     * @return \Illuminate\Contracts\Auth\PasswordBroker
+     */
+    public function broker()
+    {
+        return Password::broker();
     }
 }

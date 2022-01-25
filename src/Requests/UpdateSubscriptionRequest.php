@@ -25,7 +25,8 @@ class UpdateSubscriptionRequest extends FormRequest
     {
         return [
             'id' => 'required',
-            'weight' => 'required'
+            'weight' => 'required',
+            'expires_at' => 'required'
         ];
     }
 }

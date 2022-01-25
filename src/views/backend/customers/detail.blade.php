@@ -72,11 +72,26 @@ Klant: {{ $customer->first_name . ' ' . $customer->last_name }}
 			    <div class="col-sm-12">
 					<p class="lead">Details</p>
 
+                    @if(session('status_reset_link'))
+                        <div class="alert alert-primary" role="alert">
+                            Kopier de volgende link en stuur deze naar de klant: <code>{{ session('reset_link') }}</code>
+                        </div>
+                    @endif
+
                     <span><b>Naam</b>: {{ $customer->first_name . ' ' . $customer->last_name }}</span>
                     <div class="w-100 d-block"></div>
                     <span><b>E-mail</b>: {{ $customer->email }} <button class="btn btn-sm btn-outline-secondary" data-target="#editCustomerEmailModal" data-toggle="modal">edit</button></span>
+                    <div class="w-100 d-block mb-3"></div>
+                    <span class="my-3">
+                        <b>Wachtwoord</b>: 
+                        @if(!is_null($customer->user_id))
+                        <button class="btn btn-sm btn-outline-secondary btn-rounded" data-target="#resetCustomerPasswordModal" data-toggle="modal">
+                            resetlink laten zien
+                        </button>
+                        @endif
+                    </span>
                     @if(!is_null($customer->tel)) 
-                    <div class="w-100 d-block"></div>
+                    <div class="w-100 d-block mt-3"></div>
                     <span><b>Tel</b>: {{ $customer->tel }} </span>
                     @endif
 
@@ -260,4 +275,5 @@ Klant: {{ $customer->first_name . ' ' . $customer->last_name }}
     </div>
 </div>
 @include('chuckcms-module-booker::backend.customers._edit_modal')
+@include('chuckcms-module-booker::backend.customers._reset_modal')
 @endsection

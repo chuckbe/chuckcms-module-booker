@@ -122,8 +122,12 @@ class SubscriptionController extends Controller
         if ($subscription == false || $subscription == null) {
             return response()->json(['status' => 'error'], 200);
         }
+//dd($request->get('expires_at'));
+
+        $expires_at = explode('T', $request->get('expires_at'));
 
         $subscription->weight = $request->get('weight');
+        $subscription->expires_at = $expires_at[0].' '.$expires_at[1].':00';
         $subscription->update();
 
         return redirect()->route('dashboard.module.booker.subscriptions.index');
