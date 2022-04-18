@@ -168,7 +168,7 @@
                                             <table border="0" cellpadding="0" cellspacing="0">
                                               <tbody>
                                                 <tr>
-                                                  <td> <a href="{{ route('module.booker.activate.account', ['token' => $user->token]) }}" target="_blank" style="font-family: Helvetica, Arial, sans-serif;">Account Bevestigen</a> </td>
+                                                  <td> <a href="{{ route('module.booker.activate.account', ['user_token' => $user->token]) }}" target="_blank" style="font-family: Helvetica, Arial, sans-serif;">Account Bevestigen</a> </td>
                                                 </tr>
                                               </tbody>
                                             </table>

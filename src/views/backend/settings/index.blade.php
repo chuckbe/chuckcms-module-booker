@@ -87,7 +87,7 @@
 
 @section('scripts')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
-<script src="{{ URL::to('vendor/laravel-filemanager/js/lfm.js') }}"></script>
+<script src="{{ URL::to('vendor/laravel-filemanager/js/stand-alone-button.js') }}"></script>
 <script src="//cdn.chuck.be/assets/plugins/jquery-autonumeric/autoNumeric.js"></script>
 <script src="//cdn.chuck.be/assets/plugins/summernote/js/summernote.min.js"></script>
 <script>
@@ -97,6 +97,10 @@ $( document ).ready(function() {
   function init() {
     //Autonumeric plug-in
     $('.autonumeric').autoNumeric('init');
+
+    $(function () {
+      $('[data-toggle="tooltip"]').tooltip()
+    })
 
     //init media manager inputs 
     var domain = "{{ URL::to('dashboard/media')}}";

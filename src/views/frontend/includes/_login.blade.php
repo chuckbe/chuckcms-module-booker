@@ -6,10 +6,10 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <div>
+                <div data-cmb-login-errors>
                     @if($errors->any())
                     @foreach ($errors->all() as $error)
-                    <p class="text-danger">{{ $error }}</p>
+                    <p data-cmb-login-error class="text-danger">{{ $error }}</p>
                     @endforeach
                     @endif
                 </div>

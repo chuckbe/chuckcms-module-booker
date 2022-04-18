@@ -303,7 +303,7 @@ Als je een klacht hebt over de wijze van verwerking van jouw persoonsgegevens ku
 
         $json['settings']['appointment'] = [
             'can_guest_checkout' => true,
-            'title' => 'string',
+            'free_session' => false
         ];
 
         $json['settings']['invoice']['prefix'] = '';

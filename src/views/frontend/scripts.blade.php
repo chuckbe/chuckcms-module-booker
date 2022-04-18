@@ -161,11 +161,30 @@ $customer = \Chuckbe\ChuckcmsModuleBooker\Models\Customer::where('user_id', Auth
     $('body').on('click', '#cmb_login_modal_confirm_btn', function (event) {
         event.preventDefault();
 
+        $('[data-cmb-login-errors]').html('');
+
         $(this).prop('disabled', true);
         $(this).text('Even geduld...');
 
         if (validateLoginForm()) {
-            makeLogin().done(function (data) {
+            makeLogin().catch(function (error) {
+                $('#cmb_login_modal_confirm_btn').prop('disabled', false);
+                $('#cmb_login_modal_confirm_btn').text('Aanmelden');
+
+                console.log('error :: ',error.responseJSON);
+
+                if ('email' in error.responseJSON.errors) {
+                    let emailError = error.responseJSON.errors.email;
+                    $('<p class="text-danger">'+emailError+'</p>')
+                        .appendTo('[data-cmb-login-errors]');
+                }
+
+                if ('password' in error.responseJSON.errors) {
+                    let pwdError = error.responseJSON.errors.password;
+                    $('<p class="text-danger">'+pwdError+'</p>')
+                        .appendTo('[data-cmb-login-errors]');
+                }
+            }).done(function (data) {
                 handleLoginResponse(data);
             });
         }

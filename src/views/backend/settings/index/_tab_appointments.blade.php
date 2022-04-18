@@ -43,15 +43,19 @@
     <div class="row column-seperation">
         <div class="col-lg-12">
             <div class="form-group form-group-default required ">
-                <label>Can guest checkout</label>
+                <label>Kan er als gast worden geboekt? <i class="fa fa-info-circle" data-toggle="tooltip" data-placement="top" title="Zonder dat de klant een account moet maken."></i></label>
                 <select class="full-width select2 form-control" data-init-plugin="select2" name="can_guest_checkout">
                     <option value="1" @if($settings['appointment']['can_guest_checkout'] == true) selected @endif>Ja</option>
                     <option value="0" @if($settings['appointment']['can_guest_checkout']  !== true) selected @endif>Nee</option>
                 </select>
             </div>
+
             <div class="form-group form-group-default required ">
-                <label>Title</label>
-                <input type="text" class="form-control" placeholder="{{$settings['appointment']['title']}}" name="title" value="{{$settings['appointment']['title']}}" required>
+                <label>Gratis eerste sessie voor nieuwe klanten? <i class="fa fa-info-circle" data-toggle="tooltip" data-placement="top" title="De klant krijgt zijn eerste afspraak een gratis sessie. Ter validatie wordt er gekeken naar het e-mailadres."></i></label>
+                <select class="full-width select2 form-control" data-init-plugin="select2" name="can_guest_checkout">
+                    <option value="1" @if(array_key_exists('free_session', $settings['appointment']) && $settings['appointment']['free_session'] == true) selected @endif>Ja</option>
+                    <option value="0" @if((array_key_exists('free_session', $settings['appointment']) && $settings['appointment']['free_session'] !== true) || !array_key_exists('free_session', $settings['appointment'])) selected @endif>Nee</option>
+                </select>
             </div>
         </div>
     </div>

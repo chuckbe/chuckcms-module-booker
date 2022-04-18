@@ -253,18 +253,22 @@ class AppointmentRepository
     public function makePayment(Appointment $appointment)
     {
         $appointment->refresh();
+        $free_session = ChuckSite::module('chuckcms-module-booker')
+            ->getSetting('appointment.free_session');
 
-        $customer = $appointment->customer;
-        $otherAppointments = $customer->appointments()->where('json->is_free_session', true)->where('is_canceled', 0)->where('status', 'confirmed')->count();
+        if ($free_session == true) {
+            $customer = $appointment->customer;
+            $otherAppointments = $customer->appointments()->where('json->is_free_session', true)->where('is_canceled', 0)->where('status', 'confirmed')->count();
 
-        if ($otherAppointments == 0) {
-            $json = $appointment->json;
-            $json['is_free_session'] = true;
-            $appointment->json = $json;
-            $appointment->price = 0;
-            $appointment->update();
+            if ($otherAppointments == 0) {
+                $json = $appointment->json;
+                $json['is_free_session'] = true;
+                $appointment->json = $json;
+                $appointment->price = 0;
+                $appointment->update();
 
-            return false;
+                return false;
+            }
         }
         
         if ( ($appointment->customer->getAvailableWeight() == -1 || $appointment->customer->getAvailableWeight() >= $appointment->weight) && !in_array($appointment->start->format('Y-m-d'), explode(',', $appointment->customer->getDatesWhenAvailableWeightNotAvailable())) ) {

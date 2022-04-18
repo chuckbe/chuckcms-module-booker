@@ -190,8 +190,7 @@ class CustomerController extends Controller
             return view($blade, compact('template', 'user', 'activated'));
         }
 
-        echo 'Something went wrong, please contact the webmaster.';
-        return false;
+        return abort(404);
     }
 
     /**

@@ -3,6 +3,7 @@
 namespace Chuckbe\ChuckcmsModuleBooker\Models;
 
 use Chuckbe\ChuckcmsModuleBooker\Models\Appointment;
+use ChuckSite;
 use Eloquent;
 
 class Customer extends Eloquent
@@ -79,7 +80,10 @@ class Customer extends Eloquent
 
     public function getHasFreeSessionAttribute()
     {
-        return $this->appointments()->where('json->is_free_session', true)->where('is_canceled', 0)->where('status', 'confirmed')->count() == 0;
+        $free_session = ChuckSite::module('chuckcms-module-booker')
+            ->getSetting('appointment.free_session');
+
+        return $free_session == true && $this->appointments()->where('json->is_free_session', true)->where('is_canceled', 0)->where('status', 'confirmed')->count() == 0;
     }
 
     public function getAvailableWeight()

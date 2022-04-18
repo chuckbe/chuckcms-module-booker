@@ -143,6 +143,8 @@ class BookerController extends Controller
             return redirect()->to(config('chuckcms-module-booker.followup.appointment'))->with('appointment', $appointment);
         }
 
+        config(['mollie.key' => ChuckSite::module('chuckcms-module-booker')->getSetting('integrations.mollie.key')]);
+
         $payment = $appointment->payments()->where('type', 'one-off')->first();
         $mollie = Mollie::api()->payments()->get($payment->external_id);
 
@@ -164,6 +166,8 @@ class BookerController extends Controller
         if (is_array($appointment->json) && (array_key_exists('subscription', $appointment->json) || array_key_exists('is_free_session', $appointment->json))) {
             return redirect()->to(config('chuckcms-module-booker.followup.appointment'))->with('appointment', $appointment);
         }
+
+        config(['mollie.key' => ChuckSite::module('chuckcms-module-booker')->getSetting('integrations.mollie.key')]);
 
         $payment = $appointment->payments()->where('type', 'one-off')->first();
         $mollie = Mollie::api()->payments()->get($payment->external_id);
@@ -194,6 +198,8 @@ class BookerController extends Controller
             $payment = $this->subscriptionRepository->makePayment($subscription, $subscription->customer);
             return redirect()->to($payment->getCheckoutUrl());
         }
+
+        config(['mollie.key' => ChuckSite::module('chuckcms-module-booker')->getSetting('integrations.mollie.key')]);
 
         $mollie = Mollie::api()->payments()->get($payment->external_id);
 
@@ -251,6 +257,8 @@ class BookerController extends Controller
 
     public function subscriptionFollowup(Subscription $subscription)
     {
+        config(['mollie.key' => ChuckSite::module('chuckcms-module-booker')->getSetting('integrations.mollie.key')]);
+        
         $payment = $subscription->payments()->where('type', 'first')->first();
         $mollie = Mollie::api()->payments()->get($payment->external_id);
 

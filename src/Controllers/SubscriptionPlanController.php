@@ -59,7 +59,7 @@ class SubscriptionPlanController extends Controller
      */
     public function detail(SubscriptionPlan $subscription_plan)
     {
-        return view('chuckcms-module-booker::backend.subscription_plan.detail', compact('subscription_plan'));
+        return view('chuckcms-module-booker::backend.subscription_plans.detail', compact('subscription_plan'));
     }
 
     /**
@@ -71,7 +71,7 @@ class SubscriptionPlanController extends Controller
      */
     public function edit(SubscriptionPlan $subscription_plan)
     {
-        return view('chuckcms-module-booker::backend.subscription_plan.edit', compact('subscription_plan'));
+        return view('chuckcms-module-booker::backend.subscription_plans.edit', compact('subscription_plan'));
     }
 
     /**

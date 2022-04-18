@@ -29,7 +29,7 @@ class AppointmentController extends Controller
         $booker = $this->module->where('slug', 'chuckcms-module-booker')->first();
         $json = $booker->json;
         $json['settings']['appointment']['can_guest_checkout'] = $request->get('can_guest_checkout') == '1' ? true : false;
-        $json['settings']['appointment']['title'] = $request->get('title');
+        $json['settings']['appointment']['free_session'] = $request->get('free_session') == '1' ? true : false;
         $booker->json = $json;
         $booker->update();
         return redirect()->route('dashboard.module.booker.settings.index')->with('notification', 'Instellingen opgeslagen!');

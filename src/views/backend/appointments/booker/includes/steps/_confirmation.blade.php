@@ -107,12 +107,14 @@
 	</div>
 	<div class="row cmb_confirmation_payment_section">
 		<div class="form-group col-12 mb-0">
+			@if(ChuckSite::module('chuckcms-module-booker')->getSetting('appointment.free_session') == true)
 			<label class="mt-0 mb-0" for="cmb_is_free_session">
 				<small>
 					<input type="checkbox" class="mr-2 me-2" name="is_free_session" id="cmb_is_free_session"> Gratis sessie?
 				</small>
 			</label>
 			<div class="w-100 d-block"></div>
+			@endif
 			<label class="mt-0 mb-0" for="cmb_pay_later">
 				<small>
 					<input type="checkbox" class="mr-2 me-2" name="pay_later" id="cmb_pay_later"> Klant betaalt later.
