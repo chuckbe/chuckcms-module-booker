@@ -254,6 +254,8 @@ class Location extends Eloquent
             return false;
         }
 
+        $disabled_dates = [];
+
         if (is_array($this->disabled_dates) && count($this->disabled_dates) > 0 && !is_array($this->disabled_dates[0])) {
             $disabled_dates = $this->disabled_dates;
         } 
