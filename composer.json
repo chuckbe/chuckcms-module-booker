@@ -7,7 +7,7 @@
         "php": ">=7.2.5",
         "laravel/framework": "^6.20.26||^7.30.4||^8.82.2||^9.0",
         "spatie/laravel-newsletter": "^4.1",
-        "barryvdh/laravel-dompdf": "^0.8.1",
+        "barryvdh/laravel-dompdf": "^0.8.1||^1.0",
         "mollie/laravel-mollie": "^2.0",
         "jsvrcek/ics": "^0.7.0",
         "chuckbe/chuckcms": "*"
