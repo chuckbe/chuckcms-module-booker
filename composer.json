@@ -9,7 +9,7 @@
         "spatie/laravel-newsletter": "^4.1",
         "barryvdh/laravel-dompdf": "^0.8.1||^1.0",
         "mollie/laravel-mollie": "^2.0",
-        "jsvrcek/ics": "^0.7.0",
+        "jsvrcek/ics": "^0.8",
         "chuckbe/chuckcms": "*"
     },
     "authors": [
